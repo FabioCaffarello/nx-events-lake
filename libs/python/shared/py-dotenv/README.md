@@ -1,13 +1,13 @@
-# py-log
+# py-dotenv
 
-`py-log` is a Python library that provides a simple way to set up logging with a JSON format. It is designed to be easy to use and configure, allowing you to quickly integrate structured logging into your Python applications.
+`py-dotenv` is a Python library for loading environment variables from .env files. It provides a convenient way to manage and access environment-specific configuration settings in your Python applications.
 
 ## Installation
 
-You can install `py-log` using `nx`:
+You can install `py-dotenv` using `nx`:
 
 ```sh
-npx nx add <project> --name python-shared-py-log --local
+npx nx add <project> --name python-shared-py-dotenv --local
 ```
 
 ## Usage
@@ -15,26 +15,24 @@ npx nx add <project> --name python-shared-py-log --local
 ### Importing the Library
 
 ```python
-from pylog.log import setup_logging
+from dotenv import load_dotenv
+```
 
-# Set up logging
-logger = setup_logging(module_name="your_module_name")
+#### Class: DotEnvLoader
 
-# Log a message
-logger.info("This is an info message")
+DotEnvLoader is a utility class provided by py-dotenv to manage the loading of environment variables from .env files.
 
-# Log an error
-try:
-    # some code that may raise an exception
-    result = 10 / 0
-except ZeroDivisionError as e:
-    logger.error("An error occurred", exc_info=True)
+Initialization
+To begin using DotEnvLoader, you can create an instance by specifying the environment and an optional path to the directory containing .env files.
 
-# Change the log level (optional)
-logger.setLevel(logging.WARNING)
-logger.warning("This is a warning message")
+Retrieving Environment Variables
+You can retrieve the value of an environment variable by its key using the get_variable method.
 
-# For more advanced configuration, you can also set up custom logging handlers and formatters.
+```python
+
+loader_vars = DotEnvLoader(environment="development", path=Path("/path/to/dotenv"))
+
+env_value = loader.get_variable("SECRET_KEY")
 
 ```
 

@@ -7,7 +7,7 @@
 You can install `py-serializer` using `nx`:
 
 ```sh
-npx nx run <project>:add --name python-shared-py-serializer --local
+npx nx add <project> --name python-shared-py-serializer --local
 ```
 
 ## Usage
@@ -80,5 +80,5 @@ print(new_person)  # Output: Person(name='Bob', age=25)
 ### Run tests
 
 ```sh
-npx nx run python-shared-py-serializer:test
+npx nx test python-shared-py-serializer
 ```
