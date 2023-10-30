@@ -20,6 +20,14 @@ readme = "README.md"
     path = "libs/python/shared/py-dotenv"
     develop = true
 
+    [tool.poetry.dependencies.shared-py-request]
+    path = "libs/python/shared/py-request"
+    develop = true
+
+    [tool.poetry.dependencies.shared-py-sd]
+    path = "libs/python/shared/py-sd"
+    develop = true
+
 [tool.poetry.group.dev.dependencies]
 flake8 = "6.0.0"
 autopep8 = "2.0.2"
