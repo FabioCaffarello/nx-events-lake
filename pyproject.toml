@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "nx-events-lake"
+version = "0.1.0"
+description = ""
+authors = [ "FabioCaffarello <fabio.caffarello@gmail.com>" ]
+readme = "README.md"
+
+  [tool.poetry.dependencies]
+  python = "^3.10"
+
+    [tool.poetry.dependencies.shared-py-log]
+    path = "libs/python/shared/py-log"
+    develop = true
+
+    [tool.poetry.dependencies.shared-py-serializer]
+    path = "libs/python/shared/py-serializer"
+    develop = true
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "6.0.0"
+autopep8 = "2.0.2"
+pytest = "7.3.1"
+pytest-sugar = "0.9.7"
+pytest-cov = "4.1.0"
+pytest-html = "3.2.0"
+
+[build-system]
+requires = [ "poetry-core" ]
+build-backend = "poetry.core.masonry.api"
