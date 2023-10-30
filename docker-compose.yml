@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: /
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 2
+    networks:
+      - nx-events-lake-network
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ROOT_USER: new-minio-root-user
+      MINIO_ROOT_PASSWORD: new-minio-root-password
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://minio:9000/minio/health/live"]
+      interval: 10s
+      timeout: 1s
+      retries: 4
+    volumes:
+      - ./data/minio:/data
+    networks:
+      - nx-events-lake-network
+
+networks:
+  nx-events-lake-network:
+    name: nx-events-lake-network
+    driver: bridge
+
+volumes:
+  minio_data:
