@@ -1,0 +1,8 @@
+go 1.20
+
+use (
+	apps/services-orchestration/services-config-handler
+	libs/golang/shared/go-events
+	libs/golang/shared/go-id
+	libs/golang/shared/go-request
+)
