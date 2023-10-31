@@ -1,10 +1,10 @@
 package encryptid
 
 import (
-     "testing"
+	"testing"
 
-     "github.com/stretchr/testify/assert"
-     "github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
 type SchemaIDEncryptSuite struct {
@@ -12,9 +12,8 @@ type SchemaIDEncryptSuite struct {
 }
 
 func TestSchemaIDEncryptSuite(t *testing.T) {
-     suite.Run(t, new(SchemaIDEncryptSuite))
+	suite.Run(t, new(SchemaIDEncryptSuite))
 }
-
 
 func (suite *SchemaIDEncryptSuite) TestGenerateSchemaID() {
 	properties := map[string]interface{}{
@@ -31,5 +30,5 @@ func (suite *SchemaIDEncryptSuite) TestGenerateSchemaID() {
 
 	assert.NoError(suite.T(), err)
 	assert.NotEmpty(suite.T(), schemaID)
-     assert.Equal(suite.T(), "a68b228e-e042-5855-81a3-d0f803c86af9", schemaID)
+	assert.Equal(suite.T(), "a68b228e-e042-5855-81a3-d0f803c86af9", schemaID)
 }
