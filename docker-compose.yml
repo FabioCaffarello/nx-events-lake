@@ -41,6 +41,7 @@ services:
     <<: *minio-common
     hostname: minio1
     volumes:
+      - common-data:/common-data
       - data1-1:/data1
       - data1-2:/data2
 
@@ -48,6 +49,7 @@ services:
     <<: *minio-common
     hostname: minio2
     volumes:
+      - common-data:/common-data
       - data2-1:/data1
       - data2-2:/data2
 
@@ -55,6 +57,7 @@ services:
     <<: *minio-common
     hostname: minio3
     volumes:
+      - common-data:/common-data
       - data3-1:/data1
       - data3-2:/data2
 
@@ -62,6 +65,7 @@ services:
     <<: *minio-common
     hostname: minio4
     volumes:
+      - common-data:/common-data
       - data4-1:/data1
       - data4-2:/data2
 
@@ -83,6 +87,13 @@ services:
 
 
 volumes:
+  common-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data/minio/common-data
+
   data1-1:
     driver: local
     driver_opts:
