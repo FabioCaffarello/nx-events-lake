@@ -34,7 +34,7 @@ func (la *ListAllConfigsByServiceAndContextUseCase) Execute(service string, cont
 			Source:            item.Source,
 			Context:           item.Context,
 			DependsOn:         ConvertEntityToUseCaseDependencies(item.DependsOn),
-      ConfigID:          item.ConfigID,
+			ConfigID:          item.ConfigID,
 			ServiceParameters: item.ServiceParameters,
 			JobParameters:     item.JobParameters,
 			CreatedAt:         item.CreatedAt,

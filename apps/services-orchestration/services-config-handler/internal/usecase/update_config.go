@@ -27,9 +27,9 @@ func NewUpdateConfigUseCase(
 }
 
 func (ccu *UpdateConfigUseCase) Execute(config inputDTO.ConfigDTO) (outputDTO.ConfigDTO, error) {
-// FIXME:
+	// FIXME:
 
-    configEntity, err := entity.NewConfig(
+	configEntity, err := entity.NewConfig(
 		config.Name,
 		config.Active,
 		config.Frequency,
@@ -68,7 +68,7 @@ func (ccu *UpdateConfigUseCase) Execute(config inputDTO.ConfigDTO) (outputDTO.Co
 	}
 
 	ccu.ConfigUpdated.SetPayload(dto)
-	ccu.EventDispatcher.Dispatch(ccu.ConfigUpdated, "configs", fmt.Sprintf("%s.%s", dto.Service, dto.Source))
+	ccu.EventDispatcher.Dispatch(ccu.ConfigUpdated, "services", fmt.Sprintf("config.%s.%s.%s", dto.Context, dto.Service, dto.Source))
 
 	return dto, nil
 }

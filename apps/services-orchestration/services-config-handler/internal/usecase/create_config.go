@@ -34,7 +34,7 @@ func (ccu *CreateConfigUseCase) Execute(config inputDTO.ConfigDTO) (outputDTO.Co
 		config.Service,
 		config.Source,
 		config.Context,
-        ConvertDependsOnDTOToEntity(config.DependsOn),
+		ConvertDependsOnDTOToEntity(config.DependsOn),
 		config.JobParameters,
 		config.ServiceParameters,
 	)

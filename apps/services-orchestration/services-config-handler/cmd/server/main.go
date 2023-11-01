@@ -17,7 +17,7 @@ import (
 
 func main() {
   environment := os.Getenv("ENVIRONMENT")
-  configs, err := configs.LoadConfig("./configs", environment)
+  configs, err := configs.LoadConfig(".", environment)
   if err != nil {
     panic(err)
   }

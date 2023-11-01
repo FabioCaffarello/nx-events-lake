@@ -18,17 +18,17 @@ func NewListAllConfigsVersionUseCase(
 }
 
 func (la *ListAllConfigsVersionUseCase) Execute() ([]outputDTO.ConfigVersionDTO, error) {
-    items, err := la.ConfigVersionRepository.FindAll()
-    if err != nil {
-        return []outputDTO.ConfigVersionDTO{}, err
-    }
-    var result []outputDTO.ConfigVersionDTO
-    for _, item := range items {
-        dto := outputDTO.ConfigVersionDTO{
-            ID:                string(item.ID),
-            Versions:         ConvertEntityToUseCaseConfigVersion(item.Versions),
-        }
-        result = append(result, dto)
-    }
-    return result, nil
+	items, err := la.ConfigVersionRepository.FindAll()
+	if err != nil {
+		return []outputDTO.ConfigVersionDTO{}, err
+	}
+	var result []outputDTO.ConfigVersionDTO
+	for _, item := range items {
+		dto := outputDTO.ConfigVersionDTO{
+			ID:       string(item.ID),
+			Versions: ConvertEntityToUseCaseConfigVersion(item.Versions),
+		}
+		result = append(result, dto)
+	}
+	return result, nil
 }
