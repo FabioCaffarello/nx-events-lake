@@ -45,7 +45,6 @@ func NewWebConfigHandler(client *mongo.Client, eventDispatcher events.EventDispa
 	return &webHandler.WebConfigHandler{}
 }
 
-
 func NewHealthzHandler() *webHandler.WebHealthzHandler {
     wire.Build(
          webHandler.NewWebHealthzHandler,

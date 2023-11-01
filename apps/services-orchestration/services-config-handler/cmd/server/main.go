@@ -2,25 +2,23 @@ package main
 
 import (
 	"apps/services-orchestration/services-config-handler/configs"
+	"apps/services-orchestration/services-config-handler/internal/event/handler"
+	"apps/services-orchestration/services-config-handler/internal/infra/web/webserver"
 	"context"
 	"fmt"
 	mongoClient "libs/golang/resources/go-mongo/client"
-    "apps/services-orchestration/services-config-handler/internal/event/handler"
-    "apps/services-orchestration/services-config-handler/internal/infra/web/webserver"
 	"libs/golang/resources/go-rabbitmq/queue"
-    "libs/golang/shared/go-events/events"
+	"libs/golang/shared/go-events/events"
 	"os"
 	"time"
 )
 
-
-
 func main() {
-  environment := os.Getenv("ENVIRONMENT")
-  configs, err := configs.LoadConfig(".", environment)
-  if err != nil {
-    panic(err)
-  }
+	environment := os.Getenv("ENVIRONMENT")
+	configs, err := configs.LoadConfig(".", environment)
+	if err != nil {
+		panic(err)
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
@@ -29,7 +27,7 @@ func main() {
 	client := mongoDB.Client
 	defer client.Disconnect(ctx)
 
-  rabbitMQ := getRabbitMQChannel(configs)
+	rabbitMQ := getRabbitMQChannel(configs)
 	defer rabbitMQ.Close()
 
 	eventDispatcher := events.NewEventDispatcher()
@@ -56,15 +54,13 @@ func main() {
 	webserver.AddHandler("/", "GET", "/configs/service/{service}/source/{source}", webConfigHandler.ListAllConfigsByDependentJob)
 	webserver.AddHandler("/", "GET", "/configs/service/{service}/source/{source}/context/{context}", webConfigHandler.ListOneConfigByServiceAndSourceAndContext)
 
-
 	webserver.HandleHealthz(healthzUseCase.Healthz)
 
 	fmt.Println("Server is running on port", configs.WebServerPort)
 	webserver.Start()
 
-    select {}
+	select {}
 }
-
 
 func getRabbitMQChannel(config configs.Config) *queue.RabbitMQ {
 	rabbitMQ := queue.NewRabbitMQ(
