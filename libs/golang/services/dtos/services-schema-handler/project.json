@@ -1,0 +1,18 @@
+{
+  "name": "golang-services-dtos-services-schema-handler",
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/golang/services/dtos/services-schema-handler",
+  "targets": {
+    "test": {
+      "executor": "@nx-go/nx-go:test"
+    },
+    "lint": {
+      "executor": "@nx-go/nx-go:lint"
+    }
+  },
+  "tags": [
+    "lang:golang",
+    "scope:dtos"
+  ]
+}
