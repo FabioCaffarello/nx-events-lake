@@ -8,13 +8,13 @@
       "executor": "@nx-go/nx-go:build",
       "options": {
         "outputPath": "dist/apps/services-orchestration/services-config-handler",
-        "main": "apps/services-orchestration/services-config-handler/main.go"
+        "main": "apps/services-orchestration/services-config-handler/cmd/server/main.go"
       }
     },
     "serve": {
       "executor": "@nx-go/nx-go:serve",
       "options": {
-        "main": "apps/services-orchestration/services-config-handler/main.go"
+        "main": "apps/services-orchestration/services-config-handler/cmd/server/main.go"
       }
     },
     "test": {
@@ -22,6 +22,43 @@
     },
     "lint": {
       "executor": "@nx-go/nx-go:lint"
+    },
+    "go-tidy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go mod tidy",
+        "cwd": "apps/services-orchestration/services-config-handler"
+      }
+    },
+    "build-go": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["go-tidy", "wire"],
+      "options": {
+        "command": "GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build -ldflags=\"-w -s\" -o dist/server ./cmd/server/main.go ./cmd/server/wire_gen.go",
+        "cwd": "apps/services-orchestration/services-config-handler"
+      }
+    },
+    "wire": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "wire",
+        "cwd": "apps/services-orchestration/services-config-handler/cmd/server"
+      }
+    },
+    "image": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-go"],
+      "options": {
+        "command": "docker build -t fabiocaffarello/config-handler:latest --build-arg ENVIRONMENT={args.env} -f ./Dockerfile .",
+        "cwd": "apps/services-orchestration/services-config-handler"
+      }
+    },
+    "swag-doc": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx --yes snippet-enricher-cli@0.0.8 --input=docs/openapi/swagger.yaml > docs/openapi/openapi.json",
+        "cwd": "apps/services-orchestration/services-config-handler"
+      }
     }
   },
   "tags": [
