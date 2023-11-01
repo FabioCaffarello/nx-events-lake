@@ -1,6 +1,5 @@
 # py-minio
 
-# py-minio
 
 `py-minio` is a Python library that provides a client class for interacting with a Minio server. It allows you to create buckets, upload and download objects, list buckets and objects, and generate URIs for accessing objects on a Minio server.
 
