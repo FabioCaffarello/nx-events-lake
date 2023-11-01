@@ -17,7 +17,7 @@ type EventHandlerInterface interface {
 }
 
 type EventListenerInterface interface {
-     Handle(event EventInterface, wg *sync.WaitGroup)
+	Handle(event EventInterface, wg *sync.WaitGroup)
 }
 
 type EventDispatcherInterface interface {
