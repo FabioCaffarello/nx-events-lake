@@ -1,0 +1,186 @@
+swagger: "2.0"
+host: "localhost:8003"
+basePath: "/"
+
+info:
+  description: "Output Handler API"
+  version: "1.0.0"
+  title: "Output Handler API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: fabio.caffarello@gmail.com
+    name: Fabio Caffarello
+
+definitions:
+  inputDTO.ServiceOutputDTO:
+    properties:
+      data:
+        type: object
+      metadata:
+        $ref: "#/definitions/inputDTO.MetadataInputDTO"
+      context:
+        type: string
+
+  outputDTO.ServiceOutputDTO:
+    properties:
+      id:
+        type: string
+      data:
+        type: object
+      metadata:
+        $ref: "#/definitions/outputDTO.MetadataDTO"
+      context:
+        type: string
+      created_at:
+        type: string
+      updated_at:
+        type: string
+
+  sharedDTO.Metadata:
+    properties:
+      input_id:
+        type: string
+      input:
+        $ref: "#/definitions/inputDTO.MetadataInput"
+      service:
+        type: string
+      source:
+        type: string
+
+  sharedDTO.MetadataInput:
+    properties:
+      id:
+        type: string
+      data:
+        type: object
+      processing_id:
+        type: string
+      processing_timestamp:
+        type: string
+
+  handlers.Error:
+    properties:
+      message:
+        type: string
+    type: object
+
+
+paths:
+  /outputs/service/{service}:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Output to be created
+        required: true
+        schema:
+          $ref: "#/definitions/inputDTO.ServiceOutputDTO"
+      - in: path
+        name: service
+        description: Output service
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Output created
+          schema:
+            $ref: "#/definitions/outputDTO.ServiceOutputDTO"
+        "400":
+          description: Bad request
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: service
+        description: Output service
+        required: true
+        type: string
+      responses:
+        "200":
+          description: List all Outputs By Service
+          schema:
+            $ref: "#/definitions/outputDTO.ServiceOutputDTO"
+        "400":
+          description: Bad request
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+  /outputs/service/{service}/{id}:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: service
+        description: Output service
+        required: true
+        type: string
+      - in: path
+        name: id
+        description: Output id
+        required: true
+        type: string
+      responses:
+        "200":
+          description:  List all Outputs By Service
+          schema:
+            $ref: "#/definitions/outputDTO.SchemaDTO"
+        "400":
+          description: Bad request
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+  /outputs/service/{service}/source/{source}:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: service
+        description: Output service
+        required: true
+        type: string
+      - in: path
+        name: source
+        description: Output source
+        required: true
+        type: string
+      responses:
+        "200":
+          description:  List all Outputs By Service and Source
+          schema:
+            $ref: "#/definitions/outputDTO.SchemaDTO"
+        "400":
+          description: Bad request
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/handlers.Error"
