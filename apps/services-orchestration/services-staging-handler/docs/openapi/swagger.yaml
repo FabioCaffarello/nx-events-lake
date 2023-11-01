@@ -1,0 +1,170 @@
+swagger: "2.0"
+host: "localhost:8001"
+basePath: "/"
+
+info:
+  description: "Staging Handler API"
+  version: "1.0.0"
+  title: "Staging Handler API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: fabio.caffarello@gmail.com
+    name: Fabio Caffarello
+
+definitions:
+
+  inputDTO.ProcessingJobDependenciesDTO:
+    properties:
+      service:
+        type: string
+      source:
+        type: string
+      context:
+        type: string
+      job_dependencies:
+        type: array
+        items:
+          type: object
+          $ref: "#/definitions/sharedDTO.ProcessingJobDependencies"
+
+  outputDTO.ProcessingJobDependenciesDTO:
+    properties:
+      id:
+        type: string
+      service:
+        type: string
+      source:
+        type: string
+      context:
+        type: string
+      job_dependencies:
+        type: array
+        items:
+          type: object
+          $ref: "#/definitions/sharedDTO.ProcessingJobDependencies"
+
+  sharedDTO.ProcessingJobDependencies:
+    properties:
+      service:
+        type: string
+      source:
+        type: string
+      processing_id:
+        type: string
+      processing_timestamp:
+        type: string
+      status_code:
+        type: integer
+
+  handlers.Error:
+    properties:
+      message:
+        type: string
+    type: object
+
+
+paths:
+  /jobs-dependencies:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: job dependencies to be created
+        required: true
+        schema:
+          $ref: "#/definitions/inputDTO.ProcessingJobDependenciesDTO"
+      responses:
+        "200":
+          description: Job dependencies created
+          schema:
+            $ref: "#/definitions/outputDTO.ProcessingJobDependenciesDTO"
+        "400":
+          description: Bad request
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+  /jobs-dependencies/{id}:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: Job dependencies id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: List job dependencies by id
+          schema:
+            $ref: "#/definitions/outputDTO.ProcessingJobDependenciesDTO"
+        "400":
+          description: Bad request
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: Job dependencies id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Job dependencies deleted
+          schema:
+            $ref: "#/definitions/outputDTO.ProcessingJobDependenciesDTO"
+        "400":
+          description: Bad request
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: job dependencies to be created
+        required: true
+        schema:
+          $ref: "#/definitions/inputDTO.ProcessingJobDependenciesDTO"
+      responses:
+        "200":
+          description: Job dependencies created
+          schema:
+            $ref: "#/definitions/outputDTO.ProcessingJobDependenciesDTO"
+        "400":
+          description: Bad request
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
