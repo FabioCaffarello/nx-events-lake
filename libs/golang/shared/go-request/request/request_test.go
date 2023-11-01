@@ -31,8 +31,8 @@ func (suite *RequestTestSuite) TestCreateRequest() {
 	assert.Equal(suite.T(), url, req.URL.String())
 
 	assert.Equal(suite.T(), "application/json", req.Header.Get("Content-Type"))
-  assert.Equal(suite.T(), "value", body["key"])
-  
+	assert.Equal(suite.T(), "value", body["key"])
+
 }
 
 func (suite *RequestTestSuite) TestSendRequest() {
@@ -60,6 +60,6 @@ func (suite *RequestTestSuite) TestSendRequest() {
 	expectedResponse := map[string]string{"response": "success"}
 	assert.Equal(suite.T(), expectedResponse, result)
 
-  assert.Equal(suite.T(), method, req.Method)
-  assert.Equal(suite.T(), url, req.URL.String())
+	assert.Equal(suite.T(), method, req.Method)
+	assert.Equal(suite.T(), url, req.URL.String())
 }
