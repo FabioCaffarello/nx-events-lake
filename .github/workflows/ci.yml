@@ -50,4 +50,4 @@ jobs:
       - run: npm ci
 
       - run: npx nx graph --file=docs/dependency-graph/index.html
-      - run: poetry run mkdocs gh-deploy
+      - run: poetry run mkdocs gh-deploy --strict --force
