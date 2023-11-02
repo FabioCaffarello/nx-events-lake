@@ -70,10 +70,10 @@ service_context_configs = await config_handler_client.list_all_configs_by_servic
 
 ## Service Discovery
 
-The library also provides a convenient function `async_pycontroller_client` to create a client using service discovery. This function automatically retrieves the base URL from your environment using `new_from_env()`.
+The library also provides a convenient function `async_py_config_handler_client` to create a client using service discovery. This function automatically retrieves the base URL from your environment using `new_from_env()`.
 
 ```python
-config_handler_client = async_pycontroller_client()
+config_handler_client = async_py_config_handler_client()
 ```
 
 Make sure to set up your service discovery environment variables before using this function.
