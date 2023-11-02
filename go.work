@@ -9,6 +9,7 @@ use (
 	libs/golang/resources/go-minio
 	libs/golang/resources/go-mongo
 	libs/golang/resources/go-rabbitmq
+	libs/golang/services/api-clients/services-config-handler
 	libs/golang/services/dtos/services-config-handler
 	libs/golang/services/dtos/services-input-handler
 	libs/golang/services/dtos/services-output-handler
