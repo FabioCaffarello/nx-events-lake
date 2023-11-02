@@ -18,7 +18,7 @@ from dto_schema_handler.output import SchemaDTO
 
 You can use the DTOs in your code to represent and work with data structures related to the `services-schema-handler` service.
 
-Here's an example of how to use the `SchemaDTO` from the schema package:
+Here's an example of how to use the `SchemaDTO` from the output package:
 
 ```python
 from dto_schema_handler.output import SchemaDTO
