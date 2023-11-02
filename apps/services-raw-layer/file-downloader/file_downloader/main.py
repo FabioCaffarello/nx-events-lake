@@ -14,6 +14,18 @@ QUEUE_ACTIVE_JOBS = asyncio.Queue()
 ENVIRONMENT = os.getenv("ENVIRONMENT")
 
 async def create_consumers_channel(sd: ServiceDiscovery, service_name: str, context_env: str) -> List[asyncio.Task]:
+    """
+    Create consumers for processing data from various configurations.
+
+    Args:
+        sd (ServiceDiscovery): An instance of the ServiceDiscovery class.
+        service_name (str): The name of the service.
+        context_env (str): The context environment.
+
+    Returns:
+        List[asyncio.Task]: A list of asyncio tasks for processing data.
+
+    """
     configs = await fetch_configs(service_name, context_env)
     rabbitmq_service = RabbitMQConsumer(url=sd.rabbitmq_endpoint())
     await rabbitmq_service.connect()
@@ -31,6 +43,12 @@ async def create_consumers_channel(sd: ServiceDiscovery, service_name: str, cont
 
 
 async def main():
+    """
+    The main entry point of the service.
+
+    This function initializes the necessary configurations, creates consumers for data processing, and runs the asyncio tasks.
+
+    """
     envs = DotEnvLoader(environment=ENVIRONMENT)
     service_name = envs.get_variable("SERVICE_NAME")
     context_env = envs.get_variable("CONTEXT_ENV")

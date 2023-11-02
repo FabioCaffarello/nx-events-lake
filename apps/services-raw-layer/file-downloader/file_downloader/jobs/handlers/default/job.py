@@ -1,15 +1,50 @@
 from datetime import datetime
-
 import requests
 from dto_config_handler.output import ConfigDTO
-from dto_events.shared import StatusDTO
+from dto_events_handler.shared import StatusDTO
 from pylog.log import setup_logging
 from pyminio.client import minio_client
 
 logger = setup_logging(__name__)
 
-
 class Job:
+    """
+    Represents a job that makes HTTP requests and handles the response.
+
+    Args:
+        config (ConfigDTO): The configuration data for the job.
+        input_data: The input data for the job.
+
+    Attributes:
+        _config (ConfigDTO): The configuration data for the job.
+        _source: The source information from the configuration.
+        _context: The context information from the configuration.
+        _input_data: The input data for the job.
+        _job_url (str): The URL for the job.
+        _patition (str): The partition based on input data reference.
+        _target_endpoint (str): The final endpoint URL.
+
+    Methods:
+        _get_reference(self, reference):
+            Extracts and formats the reference data.
+
+        _get_endpoint(self):
+            Generates the target endpoint URL.
+
+        _get_bucket_name(self):
+            Generates the bucket name for Minio storage.
+
+        _get_status(self, response) -> StatusDTO:
+            Extracts the status information from an HTTP response.
+
+        make_request(self):
+            Makes an HTTP GET request to the target endpoint.
+
+        run(self):
+            Runs the job, making the HTTP request and handling the response.
+
+    """
+
     def __init__(self, config: ConfigDTO, input_data):
         self._config = config
         self._source = config.source
@@ -20,34 +55,65 @@ class Job:
         self._target_endpoint = self._get_endpoint()
 
     def _get_reference(self, reference):
+        """
+        Extracts and formats the reference data.
+
+        Args:
+            reference: The reference data.
+
+        Returns:
+            str: The formatted reference string.
+        """
         logger.info(f"Reference: {reference}")
         ref = datetime(reference["year"], reference["month"], reference["day"])
         return ref.strftime("%Y%m%d")
 
     def _get_endpoint(self):
+        """
+        Generates the target endpoint URL.
+
+        Returns:
+            str: The target endpoint URL.
+        """
         return self._job_url.format(self._patition)
 
     def _get_bucket_name(self):
+        """
+        Generates the bucket name for Minio storage.
+
+        Returns:
+            str: The bucket name.
+        """
         return "landing-{context}-source-{source}".format(
             context=self._context,
             source=self._source,
         )
 
     def _get_status(self, response) -> StatusDTO:
+        """
+        Extracts the status information from an HTTP response.
+
+        Args:
+            response: The HTTP response.
+
+        Returns:
+            StatusDTO: The status information.
+        """
         return StatusDTO(
             code=response.status_code,
             detail=response.reason,
         )
 
     def make_request(self):
+        """
+        Makes an HTTP GET request to the target endpoint.
+
+        Returns:
+            requests.Response: The HTTP response.
+        """
         logger.info(f"endpoint: {self._target_endpoint}")
         headers = {
-            "Sec-Fetch-Site": "same-origin",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:92.0) Gecko/20100101 Firefox/92.0",
-            "Cookie": "NSC_JOibrajdb4h3qgcckulqmuceplvn5eb=ffffffff09e9012945525d5f4f58455e445a4a4229a0; sede=ffffffff09e9012245525d5f4f58455e445a4a4229a0; JSESSIONID=Ny2VOX2CrK9rbUSCh-f72i2l5nSVN4tLObFvoLuh.dzp-jboss1-01"
+            # Add your headers here
         }
         return requests.get(
             self._target_endpoint,
@@ -57,6 +123,12 @@ class Job:
         )
 
     def run(self):
+        """
+        Runs the job, making the HTTP request and handling the response.
+
+        Returns:
+            tuple: A tuple containing result data, status information, and the target endpoint.
+        """
         logger.info(f"Job triggered with input: {self._input_data}")
         response = self.make_request()
         minio = minio_client()

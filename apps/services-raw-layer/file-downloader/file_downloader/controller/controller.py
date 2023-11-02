@@ -16,11 +16,17 @@ from pyserializer.serializer import serialize_to_json, serialize_to_dataclass
 
 logger = setup_logging(__name__)
 
-
 _REPOSITORY_SCHEMA_TYPE = "service-input"
 
-
 class Controller:
+    """
+    Base class for handling event data processing.
+
+    Args:
+        config (ConfigDTO): The configuration data.
+        queue_active_jobs (asyncio.Queue): An asyncio queue for active jobs.
+
+    """
     def __init__(self, config: ConfigDTO, queue_active_jobs: asyncio.Queue):
         self._config = config
         self._config_id = config.id
@@ -34,11 +40,25 @@ class Controller:
         self._input_body_dto = None
 
     def _should_cotroller_active(self):
-        if self._active :
+        """
+        Check if the controller should be active based on the configuration.
+
+        Returns:
+            bool: True if the controller is active, False otherwise.
+
+        """
+        if self._active:
             return True
         return False
 
     async def _get_event_parser(self):
+        """
+        Get the event parser JSON schema for data processing.
+
+        Returns:
+            str: The JSON schema for data processing.
+
+        """
         self.schema_input = await self._schema_handler_client.list_one_schema_by_service_n_source_n_context_n_schema_type(
             context=self._context_env,
             service_name=self._service_name,
@@ -49,6 +69,19 @@ class Controller:
         return json_schema
 
     async def _parse_event(self, message: str):
+        """
+        Parse the incoming event message and transform it into the appropriate data format.
+
+        Args:
+            message (str): The incoming event message.
+
+        Returns:
+            object: The parsed event data in the required data format.
+
+        Raises:
+            ValueError: If the message body cannot be parsed.
+
+        """
         message_body = message.body.decode()
         event_parser_class = await self._get_event_parser()
         try:
@@ -63,6 +96,16 @@ class Controller:
             raise ValueError("Invalid message body")
 
     def _get_metadata(self, target_endpoint: str):
+        """
+        Generate metadata information for the processed event data.
+
+        Args:
+            target_endpoint (str): The target endpoint for the event data.
+
+        Returns:
+            MetadataDTO: Metadata information for the event data.
+
+        """
         return MetadataDTO(
             input=MetadataInputDTO(
                 id=self._input_body_dto.id,
@@ -80,6 +123,16 @@ class Controller:
         )
 
     async def job_dispatcher(self, event_input) -> ServiceFeedbackDTO:
+        """
+        Dispatch a job to process the event input data and collect the results.
+
+        Args:
+            event_input: The input data for the job.
+
+        Returns:
+            ServiceFeedbackDTO: Feedback and result information from the job processing.
+
+        """
         await self._queue_active_jobs.put(1)
         job_data, status_data, target_endpoint = JobHandler(self._config).run(event_input)
         return ServiceFeedbackDTO(
@@ -89,11 +142,29 @@ class Controller:
         )
 
 class EventController(Controller):
+    """
+    EventController class for processing event data.
+
+    Args:
+        config (ConfigDTO): The configuration data.
+        rabbitmq_service (RabbitMQConsumer): An instance of the RabbitMQConsumer class.
+        queue_active_jobs (asyncio.Queue): An asyncio queue for active jobs.
+
+    """
     def __init__(self, config: ConfigDTO, rabbitmq_service: RabbitMQConsumer, queue_active_jobs: asyncio.Queue):
         self._rabbitmq_service = rabbitmq_service
         super().__init__(config, queue_active_jobs)
 
     async def run(self, message):
+        """
+        Run the EventController to process event data.
+
+        This method initiates the processing of incoming event data using the specified controller logic.
+
+        Args:
+            message: The incoming event message.
+
+        """
         if not self._should_cotroller_active():
             logger.info(f"Controller for config_id {self._config_id} is not active")
             return
@@ -102,7 +173,7 @@ class EventController(Controller):
         job_result = await self.job_dispatcher(event_input)
         await self._queue_active_jobs.get()
         output = serialize_to_json(job_result)
-        logger.info(f"sleeping for 20 seconds...")
+        logger.info(f"sleeping for 5 seconds...")
         time.sleep(5)
         logger.info(f"Output: {output}")
         await self._rabbitmq_service.publish_message(
