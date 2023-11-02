@@ -9,7 +9,7 @@ The `services-config-handler` API Client is a Go library that allows you to inte
 To create a new instance of the `services-config-handler` API Client, use the `NewClient` function. It initializes the client with default configuration:
 
 ```go
-client := gocontroller.NewClient()
+client := configClient.NewClient()
 ```
 
 You can also customize the client's configuration by setting a custom base URL or providing a context.
@@ -19,11 +19,11 @@ You can also customize the client's configuration by setting a custom base URL o
 You can create a new configuration using the `CreateConfig` method. It takes a `ConfigDTO` as input and sends a POST request to the API to create a new configuration.
 
 ```go
-configInput := inputDTO.ConfigDTO{
+configData := inputDTO.ConfigDTO{
     // Set your configuration details here
 }
 
-config, err := client.CreateConfig(configInput)
+config, err := client.CreateConfig(configData)
 if err != nil {
     // Handle the error
 }
