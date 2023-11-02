@@ -5,7 +5,7 @@ import (
 )
 
 
-type InputOutputDTO struct {
+type InputDTO struct {
 	ID       string                 `json:"id"`
 	Data     map[string]interface{} `json:"data"`
 	Metadata sharedDTO.Metadata               `json:"metadata"`
