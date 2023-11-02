@@ -44,6 +44,10 @@ readme = "README.md"
     path = "libs/python/services/dtos/services-schema-handler"
     develop = true
 
+    [tool.poetry.dependencies.services-config-handler-dto]
+    path = "libs/python/services/dtos/services-config-handler"
+    develop = true
+
 [tool.poetry.group.dev.dependencies]
 flake8 = "6.0.0"
 autopep8 = "2.0.2"
