@@ -4,6 +4,7 @@ import os
 from pylog.log import setup_logging
 from pydotenv.loader import DotEnvLoader
 from config_loader.loader import fetch_configs
+from file_downloader.consumer.consumer import EventConsumer
 from pyrabbitmq.consumer import RabbitMQConsumer
 from pysd.service_discovery import ServiceDiscovery, new_from_env
 
@@ -36,7 +37,7 @@ async def main():
     logger.info(f"Service name: {service_name}")
 
     sd = new_from_env()
-    tasks = await ...
+    tasks = await create_consumers_channel(sd, service_name, context_env)
 
     await asyncio.gather(*tasks)
 

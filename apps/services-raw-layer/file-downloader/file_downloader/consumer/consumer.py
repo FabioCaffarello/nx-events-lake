@@ -1,6 +1,6 @@
 import asyncio
 
-from controller.controller import EventController
+from file_downloader.controller.controller import EventController
 from dto_config_handler.output import ConfigDTO
 from pylog.log import setup_logging
 from pyrabbitmq.consumer import RabbitMQConsumer
@@ -50,4 +50,3 @@ class EventConsumer(Consumer):
 
     async def run(self):
         await self._run(EventController)
-
