@@ -2,6 +2,7 @@ go 1.20
 
 use (
 	apps/services-orchestration/services-config-handler
+	apps/services-orchestration/services-input-handler
 	apps/services-orchestration/services-output-handler
 	apps/services-orchestration/services-schema-handler
 	apps/services-orchestration/services-staging-handler

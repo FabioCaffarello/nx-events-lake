@@ -1,0 +1,285 @@
+swagger: "2.0"
+host: "localhost:8001"
+basePath: "/"
+
+info:
+  description: "Input Handler API"
+  version: "1.0.0"
+  title: "Input Handler API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: fabio.caffarello@gmail.com
+    name: Fabio Caffarello
+
+definitions:
+
+  inputDTO.InputDTO:
+    properties:
+      data:
+        type: object
+
+  outputDTO.InputDTO:
+    properties:
+      id:
+        type: string
+      data:
+        type: object
+      metadata:
+        $ref: "#/definitions/sharedDTO.Metadata"
+      status:
+        $ref: "#/definitions/sharedDTO.Status"
+
+  sharedDTO.Metadata:
+    properties:
+      service:
+        type: string
+      source:
+        type: string
+      context:
+        type: string
+      processing_id:
+        type: string
+      processing_timestamp:
+        type: string
+
+  sharedDTO.Status:
+    properties:
+      code:
+        type: integer
+      detail:
+        type: string
+
+  handlers.Error:
+    properties:
+      message:
+        type: string
+    type: object
+
+
+paths:
+  /inputs/context/{context}/service/{service}/source/{source}:
+    post:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "context"
+          description: "Context of the input"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "service"
+          description: "Service of the input"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "source"
+          description: "Source of the input"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Input object that needs to be added"
+          required: true
+          schema:
+            $ref: "#/definitions/inputDTO.InputDTO"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/outputDTO.InputDTO"
+        "400":
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+
+  /inputs/context/{context}/service/{service}/source/{source}/{id}:
+    get:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "context"
+          description: "Context of the input"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "service"
+          description: "Service of the input"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "source"
+          description: "Source of the input"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "id"
+          description: "ID of the input"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Status object that needs to be updated"
+          required: true
+          schema:
+            $ref: "#/definitions/sharedDTO.Status"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/outputDTO.InputDTO"
+        "400":
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "404":
+          description: "Input not found"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+  /inputs/service/{service}/source/{source}:
+    get:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "service"
+          description: "Service of the input"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "source"
+          description: "Source of the input"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/outputDTO.InputDTO"
+        "400":
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+  /inputs/service/{service}/source/{source}/status/{status}:
+    get:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "service"
+          description: "Service of the input"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "source"
+          description: "Source of the input"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "status"
+          description: "Status of the input"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/outputDTO.InputDTO"
+        "400":
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+  /inputs/service/{service}:
+    get:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "service"
+          description: "Service of the input"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/outputDTO.InputDTO"
+        "400":
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+  /inputs/service/{service}/source/{source}/{id}:
+    get:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "service"
+          description: "Service of the input"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "source"
+          description: "Source of the input"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "id"
+          description: "ID of the input"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/outputDTO.InputDTO"
+        "400":
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "404":
+          description: "Input not found"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/handlers.Error"
