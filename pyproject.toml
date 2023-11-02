@@ -52,6 +52,10 @@ readme = "README.md"
     path = "libs/python/services/api-clients/services-config-handler"
     develop = true
 
+    [tool.poetry.dependencies.services-schema-handler-client]
+    path = "libs/python/services/api-clients/services-schema-handler"
+    develop = true
+
 [tool.poetry.group.dev.dependencies]
 flake8 = "6.0.0"
 autopep8 = "2.0.2"
