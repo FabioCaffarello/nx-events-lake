@@ -5,6 +5,7 @@ reports
 data
 temp
 notes
+site
 .env
 .vscode
 .cache
