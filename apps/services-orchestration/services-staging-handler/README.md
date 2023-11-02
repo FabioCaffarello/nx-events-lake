@@ -22,7 +22,7 @@ This project is designed to provide a scalable and maintainable architecture for
 
 1. **Setup Configuration**:
 
-   - Create a `.env.{ENVIRONMENT}` file based on the example provided in the `envs` folder.
+  - Create a `.env.{ENVIRONMENT}` file based on the example provided in the `envs` folder.
 
 2. **Build The Application**:
 
