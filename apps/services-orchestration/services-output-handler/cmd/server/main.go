@@ -29,7 +29,7 @@ func main() {
 	webServiceOutputHandler := NewWebServiceOutputHandler(client, configs.DBName)
 
 	webserver.AddHandler("/outputs", "POST", "/outputs/service/{service}", webServiceOutputHandler.CreateServiceOutput)
-	webserver.AddHandler("/outputs", "GET", "/outputs/service/{service}/{id}", webServiceOutputHandler.ListAllServiceOutputsByServiceAndId)
+	webserver.AddHandler("/outputs", "GET", "/outputs/service/{service}/{id}", webServiceOutputHandler.ListOneServiceOutputsByServiceAndId)
 	webserver.AddHandler("/outputs", "GET", "/outputs/service/{service}", webServiceOutputHandler.ListAllServiceOutputsByService)
 	webserver.AddHandler("/outputs", "GET", "/outputs/service/{service}/source/{source}", webServiceOutputHandler.ListAllServiceOutputsByServiceAndSource)
 

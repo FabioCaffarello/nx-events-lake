@@ -47,7 +47,7 @@ func (h *WebServiceOutputHandler) CreateServiceOutput(w http.ResponseWriter, r *
 	}
 }
 
-func (h *WebServiceOutputHandler) ListAllServiceOutputsByServiceAndId(w http.ResponseWriter, r *http.Request) {
+func (h *WebServiceOutputHandler) ListOneServiceOutputsByServiceAndId(w http.ResponseWriter, r *http.Request) {
 	service := chi.URLParam(r, "service")
 	id := chi.URLParam(r, "id")
 
