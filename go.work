@@ -2,9 +2,17 @@ go 1.20
 
 use (
 	apps/services-orchestration/services-config-handler
+	apps/services-orchestration/services-output-handler
+	apps/services-orchestration/services-schema-handler
+	apps/services-orchestration/services-staging-handler
 	libs/golang/resources/go-minio
 	libs/golang/resources/go-mongo
 	libs/golang/resources/go-rabbitmq
+	libs/golang/services/dtos/services-config-handler
+	libs/golang/services/dtos/services-input-handler
+	libs/golang/services/dtos/services-output-handler
+	libs/golang/services/dtos/services-schema-handler
+	libs/golang/services/dtos/services-staging-handler
 	libs/golang/shared/go-events
 	libs/golang/shared/go-id
 	libs/golang/shared/go-request

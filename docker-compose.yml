@@ -37,11 +37,34 @@ services:
     networks:
       - nx-events-lake-network
 
+  rockmongo:
+    image: mongo-express
+    container_name: rockmongo
+    ports:
+      - 8082:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_PORT: 27017
+    depends_on:
+      - mongodb
+    networks:
+      - nx-events-lake-network
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/mongodb:/data/db
+    networks:
+      - nx-events-lake-network
+
   minio1:
     <<: *minio-common
     hostname: minio1
     volumes:
-      - common-data:/common-data
+      # - common-data:/common-data
       - data1-1:/data1
       - data1-2:/data2
 
@@ -49,7 +72,7 @@ services:
     <<: *minio-common
     hostname: minio2
     volumes:
-      - common-data:/common-data
+      # - common-data:/common-data
       - data2-1:/data1
       - data2-2:/data2
 
@@ -57,7 +80,7 @@ services:
     <<: *minio-common
     hostname: minio3
     volumes:
-      - common-data:/common-data
+      # - common-data:/common-data
       - data3-1:/data1
       - data3-2:/data2
 
@@ -65,7 +88,7 @@ services:
     <<: *minio-common
     hostname: minio4
     volumes:
-      - common-data:/common-data
+      # - common-data:/common-data
       - data4-1:/data1
       - data4-2:/data2
 
@@ -87,12 +110,12 @@ services:
 
 
 volumes:
-  common-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./data/minio/common-data
+  # common-data:
+  #   driver: local
+  #   driver_opts:
+  #     type: none
+  #     o: bind
+  #     device: ./data/minio/common-data
 
   data1-1:
     driver: local
