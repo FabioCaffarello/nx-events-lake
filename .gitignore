@@ -9,6 +9,7 @@ site
 .env
 .vscode
 .cache
+.configs
 __pycache__
 
 # compiled output

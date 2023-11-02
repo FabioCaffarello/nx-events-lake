@@ -48,7 +48,6 @@ jobs:
 
       - uses: nrwl/nx-set-shas@v2
       - run: npm ci
-      - run: source ./.venv/bin/activate
 
       - run: |
           npx nx graph --file=docs/dependency-graph/index.html
