@@ -71,8 +71,6 @@ This DTO includes metadata information, such as processing ID, processing timest
 
 The `StatusDTO` DTO contains information about the status of the input, including a status code and a detail message.
 
-Please refer to the Go code and documentation for further details on the structure and usage of these DTOs.
-
 ## Contributions
 
 Contributions to this library are welcome. If you find issues, have suggestions for improvements, or want to add new features, feel free to create an issue or submit a pull request. Your contributions will help improve the library for all users.
