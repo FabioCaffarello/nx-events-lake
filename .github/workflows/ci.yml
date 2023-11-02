@@ -49,6 +49,5 @@ jobs:
       - uses: nrwl/nx-set-shas@v2
       - run: npm ci
 
-      - run: |
-          npx nx graph --file=docs/dependency-graph/index.html
-          poetry run mkdocs gh-deploy
+      - run: npx nx graph --file=docs/dependency-graph/index.html
+      - run: poetry run mkdocs gh-deploy
