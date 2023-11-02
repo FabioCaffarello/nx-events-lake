@@ -19,7 +19,7 @@ from dto_input_handler.shared import StatusDTO, MetadataDTO
 
 You can use the DTOs in your code to represent and work with data structures related to the `services-input-handler` service.
 
-Here's an example of how to use the `InputDTO` from the input package:
+Here's an example of how to use the `InputDTO` from the output package:
 
 ```python
 from dto_input_handler.output import InputDTO
