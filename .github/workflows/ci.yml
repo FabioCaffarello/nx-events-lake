@@ -39,12 +39,16 @@ jobs:
           path: .venv
           key: venv-${% raw %}{{ hashFiles('**/poetry.lock') }}{% endraw %}
 
+      - name: Poetry Install Dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --without docs
+
       - name: Poetry Install Docs Dependencies
         run: poetry install --only docs
 
       - uses: nrwl/nx-set-shas@v2
       - run: npm ci
-      - run: poetry shell
+      - run: source ./.venv/bin/activate
 
       - run: |
           npx nx graph --file=docs/dependency-graph/index.html
