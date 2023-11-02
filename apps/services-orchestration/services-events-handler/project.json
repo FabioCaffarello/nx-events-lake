@@ -1,0 +1,31 @@
+{
+  "name": "services-orchestration-services-events-handler",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/services-orchestration/services-events-handler",
+  "targets": {
+    "build": {
+      "executor": "@nx-go/nx-go:build",
+      "options": {
+        "outputPath": "dist/apps/services-orchestration/services-events-handler",
+        "main": "apps/services-orchestration/services-events-handler/main.go"
+      }
+    },
+    "serve": {
+      "executor": "@nx-go/nx-go:serve",
+      "options": {
+        "main": "apps/services-orchestration/services-events-handler/main.go"
+      }
+    },
+    "test": {
+      "executor": "@nx-go/nx-go:test"
+    },
+    "lint": {
+      "executor": "@nx-go/nx-go:lint"
+    }
+  },
+  "tags": [
+    "lang:golang",
+    "scope:service"
+  ]
+}
