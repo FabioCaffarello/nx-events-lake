@@ -16,11 +16,11 @@ You can also customize the client's configuration by setting a custom base URL o
 
 ### Creating an Input
 
-You can create a new configuration using the `CreateInput` method. It takes a `InputDTO` as input and sends a POST request to the API to create a new configuration.
+You can create a new input using the `CreateInput` method. It takes a `InputDTO` as input and sends a POST request to the API to create a new input.
 
 ```go
 inputData := inputDTO.InputDTO{
-    // Set your configuration details here
+    // Set your input details here
 }
 
 input, err := client.CreateConfig(inputData)
