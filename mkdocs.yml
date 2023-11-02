@@ -29,12 +29,9 @@ plugins:
       handlers:
         python:
           import:
-            - ./docs/imports/docs-py.inv
-            - ./docs/imports/readthedocs.inv
-            - ./docs/imports/mkdocstrings.inv
-            # - https://docs.python.org/3/objects.inv
-            # - https://installer.readthedocs.io/en/stable/objects.inv # demonstration purpose in the docs
-            # - https://mkdocstrings.github.io/autorefs/objects.inv
+            - https://docs.python.org/3/objects.inv
+            - https://installer.readthedocs.io/en/stable/objects.inv # demonstration purpose in the docs
+            - https://mkdocstrings.github.io/autorefs/objects.inv
           options:
             docstring_style: google
             members_order: source
