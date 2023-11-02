@@ -1,13 +1,14 @@
 import asyncio
-from file_downloader.controller.controller import EventController
+
 from dto_config_handler.output import ConfigDTO
+from file_downloader.controller.controller import EventController
 from pylog.log import setup_logging
 from pyrabbitmq.consumer import RabbitMQConsumer
 from pysd.service_discovery import ServiceDiscovery
 
 logger = setup_logging(__name__)
 
-def _get_queue_name(config: ConfigDTO):
+def _get_queue_name(config: ConfigDTO) -> str:
     """
     Get the queue name for a specific configuration.
 
@@ -23,7 +24,7 @@ def _get_queue_name(config: ConfigDTO):
         source=config.source,
     )
 
-def _get_routing_key(config: ConfigDTO):
+def _get_routing_key(config: ConfigDTO) -> str:
     """
     Get the routing key for a specific configuration.
 
@@ -57,12 +58,12 @@ class Consumer:
         self._queue_name = _get_queue_name(config)
         self._routing_key = _get_routing_key(config)
 
-    async def _run(self, controller):
+    async def _run(self, controller: callable) -> None:
         """
         Run the consumer with the specified controller.
 
         Args:
-            controller: The controller class responsible for processing data.
+            controller (callable): The controller class responsible for processing data.
 
         """
         channel = await self._rabbitmq_service.create_channel()
@@ -88,7 +89,7 @@ class EventConsumer(Consumer):
     def __init__(self, sd: ServiceDiscovery, rabbitmq_service: RabbitMQConsumer, config: ConfigDTO, queue_active_jobs: asyncio.Queue):
         super().__init__(sd, rabbitmq_service, config, queue_active_jobs)
 
-    async def run(self):
+    async def run(self) -> None:
         """
         Run the EventConsumer to process event data.
 

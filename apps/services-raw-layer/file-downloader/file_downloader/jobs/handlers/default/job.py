@@ -1,5 +1,8 @@
 from datetime import datetime
+from typing import Tuple
+
 import requests
+import warlock
 from dto_config_handler.output import ConfigDTO
 from dto_events_handler.shared import StatusDTO
 from pylog.log import setup_logging
@@ -17,9 +20,9 @@ class Job:
 
     Attributes:
         _config (ConfigDTO): The configuration data for the job.
-        _source: The source information from the configuration.
-        _context: The context information from the configuration.
-        _input_data: The input data for the job.
+        _source  (str): The source information from the configuration.
+        _context (str): The context information from the configuration.
+        _input_data (type[warlock.model.Model]): The input data for the job.
         _job_url (str): The URL for the job.
         _patition (str): The partition based on input data reference.
         _target_endpoint (str): The final endpoint URL.
@@ -45,7 +48,7 @@ class Job:
 
     """
 
-    def __init__(self, config: ConfigDTO, input_data):
+    def __init__(self, config: ConfigDTO, input_data: type[warlock.model.Model]) -> None:
         self._config = config
         self._source = config.source
         self._context = config.context
@@ -54,7 +57,7 @@ class Job:
         self._patition = self._get_reference(input_data.reference)
         self._target_endpoint = self._get_endpoint()
 
-    def _get_reference(self, reference):
+    def _get_reference(self, reference) -> str:
         """
         Extracts and formats the reference data.
 
@@ -68,7 +71,7 @@ class Job:
         ref = datetime(reference["year"], reference["month"], reference["day"])
         return ref.strftime("%Y%m%d")
 
-    def _get_endpoint(self):
+    def _get_endpoint(self) -> str:
         """
         Generates the target endpoint URL.
 
@@ -77,7 +80,7 @@ class Job:
         """
         return self._job_url.format(self._patition)
 
-    def _get_bucket_name(self):
+    def _get_bucket_name(self) -> str:
         """
         Generates the bucket name for Minio storage.
 
@@ -104,7 +107,7 @@ class Job:
             detail=response.reason,
         )
 
-    def make_request(self):
+    def make_request(self) -> requests.Response:
         """
         Makes an HTTP GET request to the target endpoint.
 
@@ -122,7 +125,7 @@ class Job:
             timeout=10*60,
         )
 
-    def run(self):
+    def run(self) -> Tuple[dict, StatusDTO, str]:
         """
         Runs the job, making the HTTP request and handling the response.
 

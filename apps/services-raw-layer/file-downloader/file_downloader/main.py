@@ -1,10 +1,11 @@
-from typing import List
 import asyncio
 import os
-from pylog.log import setup_logging
-from pydotenv.loader import DotEnvLoader
+from typing import List
+
 from config_loader.loader import fetch_configs
 from file_downloader.consumer.consumer import EventConsumer
+from pydotenv.loader import DotEnvLoader
+from pylog.log import setup_logging
 from pyrabbitmq.consumer import RabbitMQConsumer
 from pysd.service_discovery import ServiceDiscovery, new_from_env
 

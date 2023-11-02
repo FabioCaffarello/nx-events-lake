@@ -1,5 +1,9 @@
 import importlib
+from typing import Tuple
+
+import warlock
 from dto_config_handler.output import ConfigDTO
+from dto_events_handler.shared import StatusDTO
 from pylog.log import setup_logging
 
 logger = setup_logging(__name__)
@@ -32,13 +36,13 @@ class JobHandler:
 
     """
 
-    def __init__(self, config: ConfigDTO):
+    def __init__(self, config: ConfigDTO) -> None:
         self._config = config
         self._job_handler = config.service_parameters["job_handler"]
         self._config_id = config.id
         self._module = self._import_job_handler_as_module()
 
-    def _import_job_handler_as_module(self):
+    def _import_job_handler_as_module(self) -> importlib.ModuleType:
         """
         Import the job handler module based on the specified job handler name.
 
@@ -47,7 +51,7 @@ class JobHandler:
         """
         return importlib.import_module(f"jobs.handlers.{self._job_handler}.job")
 
-    def run(self, source_input):
+    def run(self, source_input: type[warlock.model.Model]) -> Tuple[dict, StatusDTO, str]:
         """
         Run the job associated with the configuration.
 

@@ -2,8 +2,10 @@ import asyncio
 import json
 import time
 from datetime import datetime
+from typing import Dict
 
 import warlock
+from cli_schema_handler.client import async_py_schema_handler_client
 from dto_config_handler.output import ConfigDTO
 from dto_events_handler.input import ServiceFeedbackDTO
 from dto_events_handler.shared import MetadataDTO, MetadataInputDTO
@@ -11,8 +13,7 @@ from dto_input_handler.output import InputDTO
 from file_downloader.jobs.job_handler import JobHandler
 from pylog.log import setup_logging
 from pyrabbitmq.consumer import RabbitMQConsumer
-from cli_schema_handler.client import async_py_schema_handler_client
-from pyserializer.serializer import serialize_to_json, serialize_to_dataclass
+from pyserializer.serializer import serialize_to_dataclass, serialize_to_json
 
 logger = setup_logging(__name__)
 
@@ -39,7 +40,7 @@ class Controller:
         self._schema_handler_client = async_py_schema_handler_client()
         self._input_body_dto = None
 
-    def _should_cotroller_active(self):
+    def _should_cotroller_active(self) -> bool:
         """
         Check if the controller should be active based on the configuration.
 
@@ -51,12 +52,12 @@ class Controller:
             return True
         return False
 
-    async def _get_event_parser(self):
+    async def _get_event_parser(self) -> Dict[str, any]:
         """
         Get the event parser JSON schema for data processing.
 
         Returns:
-            str: The JSON schema for data processing.
+            Dict[str, any]: The JSON schema for data processing.
 
         """
         self.schema_input = await self._schema_handler_client.list_one_schema_by_service_n_source_n_context_n_schema_type(
@@ -68,7 +69,7 @@ class Controller:
         json_schema = self.schema_input.json_schema
         return json_schema
 
-    async def _parse_event(self, message: str):
+    async def _parse_event(self, message: str) -> type[warlock.model.Model]:
         """
         Parse the incoming event message and transform it into the appropriate data format.
 
@@ -95,7 +96,7 @@ class Controller:
             logger.error(f"Failed to parse message body: {e}")
             raise ValueError("Invalid message body")
 
-    def _get_metadata(self, target_endpoint: str):
+    def _get_metadata(self, target_endpoint: str) -> MetadataDTO:
         """
         Generate metadata information for the processed event data.
 
@@ -151,11 +152,11 @@ class EventController(Controller):
         queue_active_jobs (asyncio.Queue): An asyncio queue for active jobs.
 
     """
-    def __init__(self, config: ConfigDTO, rabbitmq_service: RabbitMQConsumer, queue_active_jobs: asyncio.Queue):
+    def __init__(self, config: ConfigDTO, rabbitmq_service: RabbitMQConsumer, queue_active_jobs: asyncio.Queue) -> None:
         self._rabbitmq_service = rabbitmq_service
         super().__init__(config, queue_active_jobs)
 
-    async def run(self, message):
+    async def run(self, message) -> None:
         """
         Run the EventController to process event data.
 
