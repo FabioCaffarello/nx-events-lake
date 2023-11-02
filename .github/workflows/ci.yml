@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10
+
+      - run: git fetch origin develop
+
+      - name: Install Poetry
+        uses: Gr1N/setup-poetry@v7
+        with:
+          poetry-version: 1.2.0b3
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${% raw %}{{ hashFiles('**/poetry.lock') }}{% endraw %}
+
+      - name: Poetry Install Docs Dependencies
+        run: poetry install --only docs
+
+      - uses: nrwl/nx-set-shas@v2
+      - run: npm ci
+      - run: source ./.venv/bin/activate
+
+      - run: |
+          npx nx graph --file=docs/dependency-graph/index.html
+          poetry run mkdocs gh-deploy
