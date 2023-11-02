@@ -1,5 +1,6 @@
 # file-downloader
 
+`file-downloader` is a Python-based service that performs the following tasks:
 
 - Downloads data from a specific source in a event approach
 - Store the file downloaded in a bucket (raw layer).
@@ -16,10 +17,24 @@ The service consists of multiple Python modules and classes, each serving a spec
   - Creates consumers for specific configurations and starts processing data.
   - Each config has it owns queue consumption.
 
-### File Downloader Module
+### Consumer Module
 
 - `file_downloader/consumer/consumer.py`: Contains the `EventConsumer` class responsible for consume an input message and trigger the callback.
   - This class listens to a RabbitMQ queue, processes incoming data, and trigger the results to the controller.
+
+### Controller Module
+
+- `file_downloader/controller/controller.py`: This module contains the `EventController` class, which is responsible for handling the business logic related to event processing.
+
+  - The `EventController` class receives the processed data from the `EventConsumer`.
+  - It checks if the controller should be active based on the configuration.
+  - If active, it parses and processes the data using the job handler.
+  - It triggers the job dispatcher to execute the job and collect the results.
+  - It publishes the results, including the storage URI, to a message queue for further consumption.
+
+  The `EventController` class plays a crucial role in orchestrating the event-driven processing of data within the service.
+
+This class ensures that the service processes incoming data efficiently, initiates the appropriate job handler for the task, and communicates the results to the relevant channels.
 
 ### Job Handling Module
 

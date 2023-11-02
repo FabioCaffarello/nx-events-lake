@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - develop
   pull_request:
 
 jobs:
@@ -49,8 +49,8 @@ jobs:
       - uses: nrwl/nx-set-shas@v2
       - run: npm ci
 
-      - name: Build Requirements for doc deploy
-        run: make build-docs
+      # - name: Build Requirements for doc deploy
+      #   run: make build-docs
 
       # - name: Doc deployment
       #   run: poetry run mkdocs gh-deploy --strict --force
