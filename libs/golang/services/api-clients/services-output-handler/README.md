@@ -23,7 +23,7 @@ outputData := inputDTO.ServiceOutputDTO{
     // Set your output details here
 }
 
-input, err := client.CreateConfig(outputData)
+output, err := client.CreateOutput(outputData)
 if err != nil {
     // Handle the error
 }
