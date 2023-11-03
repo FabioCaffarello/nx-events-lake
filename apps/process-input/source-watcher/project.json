@@ -1,0 +1,81 @@
+{
+  "name": "process-input-source-watcher",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/process-input/source-watcher/source_watcher",
+  "targets": {
+    "lock": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry lock --no-update",
+        "cwd": "apps/process-input/source-watcher"
+      }
+    },
+    "add": {
+      "executor": "@nxlv/python:add",
+      "options": {}
+    },
+    "update": {
+      "executor": "@nxlv/python:update",
+      "options": {}
+    },
+    "remove": {
+      "executor": "@nxlv/python:remove",
+      "options": {}
+    },
+    "build": {
+      "executor": "@nxlv/python:build",
+      "outputs": [
+        "{projectRoot}/dist"
+      ],
+      "options": {
+        "outputPath": "apps/process-input/source-watcher/dist",
+        "publish": false,
+        "lockedVersions": true,
+        "bundleLocalDependencies": true
+      }
+    },
+    "install": {
+      "executor": "@nxlv/python:install",
+      "options": {
+        "silent": false,
+        "args": "",
+        "cacheDir": ".cache/pypoetry",
+        "verbose": false,
+        "debug": false
+      }
+    },
+    "lint": {
+      "executor": "@nxlv/python:flake8",
+      "outputs": [
+        "{workspaceRoot}/reports/apps/process-input/source-watcher/pylint.txt"
+      ],
+      "options": {
+        "outputFile": "reports/apps/process-input/source-watcher/pylint.txt"
+      }
+    },
+    "test": {
+      "executor": "@nxlv/python:run-commands",
+      "outputs": [
+        "{workspaceRoot}/reports/apps/process-input/source-watcher/unittests",
+        "{workspaceRoot}/coverage/apps/process-input/source-watcher"
+      ],
+      "options": {
+        "command": "poetry run pytest tests/",
+        "cwd": "apps/process-input/source-watcher"
+      }
+    },
+    "image": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "docker build -t fabiocaffarello/source-watcher:latest --build-arg ENVIRONMENT={args.env} -f ./Dockerfile .",
+        "cwd": "apps/process-input/source-watcher"
+      }
+    }
+  },
+  "tags": [
+    "lang:python",
+    "scope:service"
+  ]
+}

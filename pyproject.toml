@@ -68,6 +68,10 @@ readme = "README.md"
     path = "libs/python/services/dtos/services-events-handler"
     develop = true
 
+    [tool.poetry.dependencies.source-watcher-service]
+    path = "apps/process-input/source-watcher"
+    develop = true
+
 [tool.poetry.group.dev.dependencies]
 flake8 = "6.0.0"
 autopep8 = "2.0.2"
