@@ -19,6 +19,10 @@ for path in src_root.rglob("project.json"):
 
             # Markdowns
             f"{project_path}/*.md",
+
+            # Images
+            f"{project_path}/docs/**/*.jpg",
+            f"{project_path}/docs/**/*.png",
         ]
 
         for pattern in custom_patterns:

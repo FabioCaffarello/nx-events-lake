@@ -63,6 +63,10 @@ This class ensures that the service processes incoming data efficiently, initiat
 
 - `pysd`: Manages service discovery and RabbitMQ endpoints.
 
+## Architecture Diagram
+
+![Diagram](docs/diagram/architecture.png)
+
 
 ## How to Run the Service
 

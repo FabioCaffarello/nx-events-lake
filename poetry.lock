@@ -599,6 +599,19 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "plantuml-markdown"
+version = "3.9.2"
+description = "A PlantUML plugin for Markdown"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Markdown = "*"
+requests = "*"
+six = "*"
+
+[[package]]
 name = "platformdirs"
 version = "3.11.0"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
@@ -1216,7 +1229,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
   python-versions = "^3.10"
-content-hash = "ab5d741c8ba97f07882893a8473225d3f79027a14d0dda96c76d6c4537b67778"
+content-hash = "073294a7f8c21bda68bfb0fd6e8f65d2398cf264fba731a51b3aba9460b9d084"
 
 [metadata.files]
 aio-pika = [
@@ -1664,6 +1677,9 @@ pamqp = [
 pathspec = [
     {file = "pathspec-0.11.2-py3-none-any.whl", hash = "sha256:1d6ed233af05e679efb96b1851550ea95bbb64b7c490b0f5aa52996c11e92a20"},
     {file = "pathspec-0.11.2.tar.gz", hash = "sha256:e0d8d0ac2f12da61956eb2306b69f9469b42f4deb0f3cb6ed47b9cce9996ced3"},
+]
+plantuml-markdown = [
+    {file = "plantuml_markdown-3.9.2-py3-none-any.whl", hash = "sha256:5adbe2de83beb94e300ff026f2469b007166bccd2c1da882181ee3defc08326d"},
 ]
 platformdirs = [
     {file = "platformdirs-3.11.0-py3-none-any.whl", hash = "sha256:e9d171d00af68be50e9202731309c4e658fd8bc76f55c11c7dd760d023bda68e"},
