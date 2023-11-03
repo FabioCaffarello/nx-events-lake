@@ -59,6 +59,9 @@
         "command": "npx --yes snippet-enricher-cli@0.0.8 --input=docs/openapi/swagger.yaml > docs/openapi/openapi.json",
         "cwd": "apps/services-orchestration/services-config-handler"
       }
+    },
+    "insert-configs": {
+      "executor": "@nx-plugins/env-setup:insert-configs"
     }
   },
   "tags": [

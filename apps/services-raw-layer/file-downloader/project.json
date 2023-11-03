@@ -72,6 +72,9 @@
         "command": "docker build -t fabiocaffarello/file-downloader:latest --build-arg ENVIRONMENT={args.env} -f ./Dockerfile .",
         "cwd": "apps/services-raw-layer/file-downloader"
       }
+    },
+    "create-bucket": {
+      "executor": "@nx-plugins/env-setup:create-bucket"
     }
   },
   "tags": [

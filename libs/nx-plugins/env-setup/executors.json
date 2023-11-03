@@ -1,0 +1,19 @@
+{
+  "executors": {
+    "create-bucket": {
+      "implementation": "./src/executors/create-bucket/executor",
+      "schema": "./src/executors/create-bucket/schema.json",
+      "description": "create-bucket executor"
+    },
+    "insert-configs": {
+      "implementation": "./src/executors/insert-configs/executor",
+      "schema": "./src/executors/insert-configs/schema.json",
+      "description": "insert-configs executor"
+    },
+    "insert-schemas": {
+      "implementation": "./src/executors/insert-schemas/executor",
+      "schema": "./src/executors/insert-schemas/schema.json",
+      "description": "insert-schemas executor"
+    }
+  }
+}

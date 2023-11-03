@@ -72,6 +72,9 @@
         "command": "docker build -t fabiocaffarello/source-watcher:latest --build-arg ENVIRONMENT={args.env} -f ./Dockerfile .",
         "cwd": "apps/process-input/source-watcher"
       }
+    },
+    "create-bucket": {
+      "executor": "@nx-plugins/env-setup:create-bucket"
     }
   },
   "tags": [

@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "version": 2,
+  "title": "InsertConfigs executor",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "source": {
+      "type": "string",
+      "description": "The source of the configs to insert",
+      "title": "Source Name"
+    }
+  },
+  "required": []
+}
