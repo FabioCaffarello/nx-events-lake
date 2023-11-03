@@ -9,7 +9,7 @@
 <link href="code_reference/source_watcher/consumer/consumer/" rel="next"/>
 <link href="../../../../assets/images/favicon.png" rel="icon"/>
 <meta content="mkdocs-1.5.3, mkdocs-material-9.4.7" name="generator"/>
-<title>process-input-source-watcher - Nx Events Lake</title>
+<title>source-watcher - Nx Events Lake</title>
 <link href="../../../../assets/stylesheets/main.4b4a2bd9.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -24,7 +24,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#process-input-source-watcher">
+<a class="md-skip" href="#source-watcher">
           Skip to content
         </a>
 </div>
@@ -48,7 +48,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              process-input-source-watcher
+              source-watcher
             
           </span>
 </div>
@@ -2007,14 +2007,172 @@
 <div class="md-sidebar__scrollwrap">
 <div class="md-sidebar__inner">
 <nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#service-components">
+    Service Components
+  </a>
+<nav aria-label="Service Components" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#main-module">
+    Main Module
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#consumer-module">
+    Consumer Module
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#controller-module">
+    Controller Module
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#job-handling-module">
+    Job Handling Module
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#job-handler-module">
+    Job Handler Module
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#libraries-dependencies">
+    Libraries Dependencies:
+  </a>
+<nav aria-label="Libraries Dependencies:" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configuration-module">
+    Configuration Module
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rabbitmq-module">
+    RabbitMQ Module
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#service-discovery-module">
+    Service Discovery Module
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architecture-diagram">
+    Architecture Diagram
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-to-run-the-service">
+    How to Run the Service
+  </a>
+</li>
+</ul>
 </nav>
 </div>
 </div>
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="process-input-source-watcher">process-input-source-watcher<a class="headerlink" href="#process-input-source-watcher" title="Permanent link"></a></h1>
-<p>Project description here.</p>
+<h1 id="source-watcher">source-watcher<a class="headerlink" href="#source-watcher" title="Permanent link"></a></h1>
+<p><code>source-watcher</code> is a Python-based service that performs the following tasks:</p>
+<ul>
+<li>Search for the source input to trigger a future job.</li>
+<li>Store the file downloaded in a bucket (process-input layer).</li>
+<li>Publishes the bucket location to a message queue for further consumption.</li>
+</ul>
+<h2 id="service-components">Service Components<a class="headerlink" href="#service-components" title="Permanent link"></a></h2>
+<p>The service consists of multiple Python modules and classes, each serving a specific purpose. Here's an overview of these components:</p>
+<h3 id="main-module">Main Module<a class="headerlink" href="#main-module" title="Permanent link"></a></h3>
+<ul>
+<li><code>main.py</code>: The entry point of the service.</li>
+<li>It initializes various configurations, including the service name and context environment.</li>
+<li>Creates consumers for specific configurations and starts processing data.</li>
+<li>Each config has it owns queue consumption.</li>
+</ul>
+<h3 id="consumer-module">Consumer Module<a class="headerlink" href="#consumer-module" title="Permanent link"></a></h3>
+<ul>
+<li><code>source_watcher/consumer/consumer.py</code>: Contains the <code>EventConsumer</code> class responsible for consume an input message and trigger the callback.</li>
+<li>This class listens to a RabbitMQ queue, processes incoming data, and trigger the results to the controller.</li>
+</ul>
+<h3 id="controller-module">Controller Module<a class="headerlink" href="#controller-module" title="Permanent link"></a></h3>
+<ul>
+<li>
+<p><code>source_watcher/controller/controller.py</code>: This module contains the <code>EventController</code> class, which is responsible for handling the business logic related to event processing.</p>
+</li>
+<li>
+<p>The <code>EventController</code> class receives the processed data from the <code>EventConsumer</code>.</p>
+</li>
+<li>It checks if the controller should be active based on the configuration.</li>
+<li>If active, it parses and processes the data using the job handler.</li>
+<li>It triggers the job dispatcher to execute the job and collect the results.</li>
+<li>It publishes the results, including the storage URI, to a message queue for further consumption.</li>
+</ul>
+<p>The <code>EventController</code> class plays a crucial role in orchestrating the event-driven processing of data within the service.</p>
+<p>This class ensures that the service processes incoming data efficiently, initiates the appropriate job handler for the task, and communicates the results to the relevant channels.</p>
+<h3 id="job-handling-module">Job Handling Module<a class="headerlink" href="#job-handling-module" title="Permanent link"></a></h3>
+<ul>
+<li><code>source_watcher/jobs/job_handler.py</code>: Handles the execution of jobs related to downloading and storing the file in a bucket.</li>
+<li>It uses a specific job handler module based on the configuration.</li>
+</ul>
+<h3 id="job-handler-module">Job Handler Module<a class="headerlink" href="#job-handler-module" title="Permanent link"></a></h3>
+<ul>
+<li><code>source_watcher/jobs/handlers/default/job.py</code>: An example job handler module.</li>
+<li>It defines the logic for making HTTP requests to download data from a specific URL.</li>
+<li>It search the input in the source to trigger future jobs.</li>
+<li>It uploads the downloaded data to a Minio storage bucket.</li>
+<li>It returns the job result, including the storage URI and status.</li>
+</ul>
+<h3 id="libraries-dependencies">Libraries Dependencies:<a class="headerlink" href="#libraries-dependencies" title="Permanent link"></a></h3>
+<h4 id="configuration-module">Configuration Module<a class="headerlink" href="#configuration-module" title="Permanent link"></a></h4>
+<ul>
+<li><code>config_loader</code>: Loads configurations for the service, such as the source, job handler, service parameters and job parameters also.</li>
+</ul>
+<h4 id="rabbitmq-module">RabbitMQ Module<a class="headerlink" href="#rabbitmq-module" title="Permanent link"></a></h4>
+<ul>
+<li><code>pyrabbitmq</code>: Handles the interaction with RabbitMQ, including creating channels, queues, and publishing messages.</li>
+</ul>
+<h4 id="service-discovery-module">Service Discovery Module<a class="headerlink" href="#service-discovery-module" title="Permanent link"></a></h4>
+<ul>
+<li><code>pysd</code>: Manages service discovery and RabbitMQ endpoints.</li>
+</ul>
+<h2 id="architecture-diagram">Architecture Diagram<a class="headerlink" href="#architecture-diagram" title="Permanent link"></a></h2>
+<p><img alt="Diagram" src="docs/diagram/architecture.png"/></p>
+<h2 id="how-to-run-the-service">How to Run the Service<a class="headerlink" href="#how-to-run-the-service" title="Permanent link"></a></h2>
+<p>To run your service, follow these steps:</p>
+<ol>
+<li>
+<p><strong>Setup Configuration</strong>:</p>
+<ul>
+<li>Create a <code>.env.{ENVIRONMENT}</code> file based on the example provided in the <code>envs</code> folder.</li>
+</ul>
+</li>
+<li>
+<p><strong>Build The Service</strong>:</p>
+</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>npx<span class="w"> </span>nx<span class="w"> </span>image<span class="w"> </span>process-input-source-watcher<span class="w"> </span>--env<span class="o">=</span>&lt;ENVIRONMENT&gt;
+</code></pre></div>
+<ol>
+<li><strong>Run the Application</strong>:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>docker-compose<span class="w"> </span>up<span class="w"> </span>-d
+</code></pre></div>
+<p>Please note that this README provides a high-level overview of your service's structure and components. To run the service effectively, make sure to provide the required configurations and customize the job handler logic according to your specific use case.</p>
+<p>If you have any questions or need further assistance, feel free to ask.</p>
 </article>
 </div>
 </div>
