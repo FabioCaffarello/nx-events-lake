@@ -117,6 +117,11 @@ class Job:
         logger.info(f"endpoint: {self._target_endpoint}")
         headers = {
             # Add your headers here
+            "Sec-Fetch-Site": "same-origin",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:92.0) Gecko/20100101 Firefox/92.0",
         }
         return requests.get(
             self._target_endpoint,

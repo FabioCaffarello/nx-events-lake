@@ -34,7 +34,8 @@ def _get_routing_key(config: ConfigDTO) -> str:
     Returns:
         str: The generated routing key.
     """
-    return "{service}.inputs.{source}".format(
+    return "{context}.{service}.inputs.{source}".format(
+        context=config.context,
         service=config.service,
         source=config.source,
     )
