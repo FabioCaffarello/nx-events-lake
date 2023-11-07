@@ -36,10 +36,7 @@ start-service-setup:
 	docker-compose up -d rabbitmq minio mongodb config-handler schema-handler
 
 setup-env: guard-context guard-source start-service-setup
-	make create-bucket-process-input context=$(context) source=$(source)
-	make create-bucket-landing context=$(context) source=$(source)
-	make create-bucket-raw context=$(context) source=$(source)
-	make inser-configs source=$(source)
+	make insert-configs source=$(source)
 	make insert-schemas source=$(source)
 
 image: guard-env
