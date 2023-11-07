@@ -20,9 +20,9 @@ func NewCreateSchemaVersionUseCase(
 func (ccu *CreateSchemaVersionUseCase) Execute(schema outputDTO.SchemaDTO) (outputDTO.SchemaVersionDTO, error) {
 	schemaVersionEntity, err := entity.NewSchemaVersion(
 		schema.SchemaType,
+		schema.Context,
 		schema.Service,
 		schema.Source,
-		schema.Context,
 		schema.JsonSchema,
 		schema.SchemaID,
 		schema.CreatedAt,

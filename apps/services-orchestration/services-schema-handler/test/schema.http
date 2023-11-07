@@ -1,0 +1,105 @@
+
+POST http://localhost:8003/schemas HTTP/1.1
+Content-Type: application/json
+
+{
+    "schema_type": "service-input",
+    "service": "source-watcher",
+    "source": "ceaf",
+    "context": "br",
+    "json_schema": {
+        "type": "object",
+        "properties": {
+            "reference": {
+                "type": "object",
+                "properties": {
+                    "year": {
+                        "type": "integer"
+                    },
+                    "month": {
+                        "type": "integer"
+                    },
+                    "day": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "year",
+                    "month",
+                    "day"
+                ]
+            }
+        },
+        "required": [
+            "reference"
+        ]
+    }
+}
+
+###
+
+POST http://localhost:8003/schemas/update HTTP/1.1
+Content-Type: application/json
+
+{
+    "schema_type": "service-input",
+    "service": "file-downloader",
+    "source": "ceaf",
+    "context": "br",
+    "json_schema": {
+        "type": "object",
+        "properties": {
+            "reference": {
+                "type": "object",
+                "properties": {
+                    "year": {
+                        "type": "integer"
+                    },
+                    "month": {
+                        "type": "integer"
+                    },
+                    "day": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "year",
+                    "month",
+                    "day"
+                ]
+            }
+        },
+        "required": [
+            "reference"
+        ]
+    }
+}
+
+
+###
+
+GET http://localhost:8003/schemas HTTP/1.1
+
+###
+
+GET http://localhost:8003/schemas/versions HTTP/1.1
+
+###
+
+
+GET http://localhost:8003/schemas/service/file-downloader HTTP/1.1
+
+###
+
+GET http://localhost:8003/schemas/service/file-downloader/context/br HTTP/1.1
+
+
+###
+
+GET http://localhost:8003/schemas/service/file-downloader/source/ceaf/context/br/schema-type/service-input HTTP/1.1
+
+
+###
+
+
+GET http://localhost:8003/schemas/service/file-downloader/source/ceaf/schema-type/service-input HTTP/1.1

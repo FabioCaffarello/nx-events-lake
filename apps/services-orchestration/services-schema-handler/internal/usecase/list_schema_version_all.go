@@ -18,6 +18,7 @@ func NewListAllSchemasVersionUseCase(
 }
 
 func (la *ListAllSchemasVersionUseCase) Execute() ([]outputDTO.SchemaVersionDTO, error) {
+	// FIXME:
 	items, err := la.SchemaVersionRepository.FindAll()
 	if err != nil {
 		return []outputDTO.SchemaVersionDTO{}, err

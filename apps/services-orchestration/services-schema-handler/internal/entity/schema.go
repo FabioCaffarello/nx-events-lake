@@ -13,18 +13,18 @@ import (
 )
 
 var (
-    ErrSchemaTypeEmpty = errors.New("schema type is empty")
-    ErrServiceEmpty = errors.New("service is empty")
-    ErrSourceEmpty = errors.New("source is empty")
-    ErrContextEmpty = errors.New("context is empty")
-    ErrJsonSchemaEmpty = errors.New("json schema is empty")
-    ErrJsonSchemaInvalid = errors.New("json schema is invalid")
+	ErrSchemaTypeEmpty   = errors.New("schema type is empty")
+	ErrServiceEmpty      = errors.New("service is empty")
+	ErrSourceEmpty       = errors.New("source is empty")
+	ErrContextEmpty      = errors.New("context is empty")
+	ErrJsonSchemaEmpty   = errors.New("json schema is empty")
+	ErrJsonSchemaInvalid = errors.New("json schema is invalid")
 )
 
 const metaschemaURL = "http://json-schema.org/draft-07/schema#"
 
 type Schema struct {
-	ID         schemaId.ID         `json:"id"`
+	ID         schemaId.ID            `json:"id"`
 	SchemaType string                 `bson:"schema_type"`
 	JsonSchema map[string]interface{} `bson:"json_schema"`
 	SchemaID   uuid.ID                `bson:"schema_id"`
@@ -47,7 +47,7 @@ func NewSchema(schemaType string, context string, service string, source string,
 		JsonSchema: jsonSchema,
 		Service:    service,
 		Source:     source,
-        Context:    context,
+		Context:    context,
 		SchemaID:   schemauuId,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		UpdatedAt:  time.Now().Format(time.RFC3339),
@@ -98,9 +98,9 @@ func (schema *Schema) IsSchemaValid() error {
 	if schema.Source == "" {
 		return ErrSourceEmpty
 	}
-    if schema.Context == "" {
-        return ErrContextEmpty
-    }
+	if schema.Context == "" {
+		return ErrContextEmpty
+	}
 	if schema.JsonSchema == nil {
 		return ErrJsonSchemaEmpty
 	}

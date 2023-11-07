@@ -29,9 +29,9 @@ func NewCreateSchemaUseCase(
 func (ccu *CreateSchemaUseCase) Execute(schema inputDTO.SchemaDTO) (outputDTO.SchemaDTO, error) {
 	schemaEntity, err := entity.NewSchema(
 		schema.SchemaType,
+		schema.Context,
 		schema.Service,
 		schema.Source,
-		schema.Context,
 		schema.JsonSchema,
 	)
 	if err != nil {

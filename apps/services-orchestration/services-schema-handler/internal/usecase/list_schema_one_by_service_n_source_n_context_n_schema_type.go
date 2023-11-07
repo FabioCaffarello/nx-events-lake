@@ -18,7 +18,7 @@ func NewListOneSchemaByServiceSourceAndContextAndSchemaTypeUseCase(
 }
 
 func (la *ListOneSchemaByServiceSourceAndContextAndSchemaTypeUseCase) Execute(service string, source string, context string, schemaType string) (outputDTO.SchemaDTO, error) {
-	item, err := la.SchemaRepository.FindOneByServiceAndSourceAndContextAndSchemaType(service, source, schemaType)
+	item, err := la.SchemaRepository.FindOneByServiceAndSourceAndContextAndSchemaType(service, source, context, schemaType)
 	if err != nil {
 		return outputDTO.SchemaDTO{}, err
 	}

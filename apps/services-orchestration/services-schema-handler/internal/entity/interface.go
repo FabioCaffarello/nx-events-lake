@@ -7,7 +7,7 @@ type SchemaInterface interface {
      FindAllByService(service string) ([]*Schema, error)
      FindOneByServiceSourceAndSchemaType(service string, source string, schemaType string) (*Schema, error)
      FindAllByServiceAndContext(service string, contextEnv string) ([]*Schema, error)
-     FindOneByServiceAndSourceAndContextAndSchemaType(service string, source string, contextEnv string) (*Schema, error)
+     FindOneByServiceAndSourceAndContextAndSchemaType(service string, source string, contextEnv string, schemaType string) (*Schema, error)
 }
 
 type SchemaVersionInterface interface {

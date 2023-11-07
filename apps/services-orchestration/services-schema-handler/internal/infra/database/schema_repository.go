@@ -55,7 +55,7 @@ func (sr *SchemaRepository) Save(schema *entity.Schema) error {
 			"json_schema": schema.JsonSchema,
 			"source":      schema.Source,
 			"service":     schema.Service,
-            "context":     schema.Context,
+			"context":     schema.Context,
 			"schema_id":   schema.SchemaID,
 			"created_at":  schema.CreatedAt,
 			"updated_at":  schema.UpdatedAt,
@@ -72,7 +72,7 @@ func (sr *SchemaRepository) Save(schema *entity.Schema) error {
 				"json_schema": schema.JsonSchema,
 				"service":     schema.Service,
 				"source":      schema.Source,
-                "context":     schema.Context,
+				"context":     schema.Context,
 				"schema_id":   schema.SchemaID,
 				"created_at":  existingSchema.CreatedAt,
 				"updated_at":  schema.UpdatedAt,
@@ -154,40 +154,39 @@ func (sr *SchemaRepository) FindOneByServiceSourceAndSchemaType(service string, 
 }
 
 func (sr *SchemaRepository) FindAllByServiceAndContext(service string, contextEnv string) ([]*entity.Schema, error) {
-    filter := bson.M{"service": service, "context": contextEnv}
-    cursor, err := sr.Collection.Find(context.Background(), filter)
-    if err != nil {
-        return nil, err
-    }
-    defer cursor.Close(context.Background())
+	filter := bson.M{"service": service, "context": contextEnv}
+	cursor, err := sr.Collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
 
-    var results []*entity.Schema
-    for cursor.Next(context.Background()) {
-        var result entity.Schema
-        if err := cursor.Decode(&result); err != nil {
-            return nil, err
-        }
-        results = append(results, &result)
-    }
-    if err := cursor.Err(); err != nil {
-        return nil, err
-    }
-    return results, nil
+	var results []*entity.Schema
+	for cursor.Next(context.Background()) {
+		var result entity.Schema
+		if err := cursor.Decode(&result); err != nil {
+			return nil, err
+		}
+		results = append(results, &result)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+	return results, nil
 }
 
+func (sr *SchemaRepository) FindOneByServiceAndSourceAndContextAndSchemaType(service string, source string, contextEnv string, schemaType string) (*entity.Schema, error) {
+	filter := bson.M{"service": service, "source": source, "context": contextEnv, "schema_type": schemaType}
+	existingDoc := sr.Collection.FindOne(context.Background(), filter)
+	// Check if the document does not exist
+	if existingDoc.Err() != nil {
+		return nil, existingDoc.Err()
+	}
 
-func (sr *SchemaRepository) FindOneByServiceAndSourceAndContextAndSchemaType(service string, source string, contextEnv string) (*entity.Schema, error) {
-    filter := bson.M{"service": service, "source": source, "context": contextEnv}
-    existingDoc := sr.Collection.FindOne(context.Background(), filter)
-    // Check if the document does not exist
-    if existingDoc.Err() != nil {
-        return nil, existingDoc.Err()
-    }
+	var result entity.Schema
+	if err := existingDoc.Decode(&result); err != nil {
+		return nil, err
+	}
 
-    var result entity.Schema
-    if err := existingDoc.Decode(&result); err != nil {
-        return nil, err
-    }
-
-    return &result, nil
+	return &result, nil
 }

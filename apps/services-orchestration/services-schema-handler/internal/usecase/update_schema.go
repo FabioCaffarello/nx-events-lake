@@ -27,18 +27,22 @@ func NewUpdateSchemaUseCase(
 }
 
 func (ccu *UpdateSchemaUseCase) Execute(schema inputDTO.SchemaDTO) (outputDTO.SchemaDTO, error) {
-	// FIXME:
-
-	schemaEntity, err := entity.NewSchema(
-		schema.SchemaType,
-		schema.Service,
-		schema.Source,
-		schema.Context,
-		schema.JsonSchema,
-	)
+	item, err := ccu.SchemaRepository.FindOneByServiceAndSourceAndContextAndSchemaType(schema.Service, schema.Source, schema.Context, schema.SchemaType)
 	if err != nil {
 		return outputDTO.SchemaDTO{}, err
 	}
+
+    schemaEntity, err := entity.NewSchema(
+        schema.SchemaType,
+        schema.Context,
+        schema.Service,
+        schema.Source,
+        schema.JsonSchema,
+    )
+
+    if err != nil {
+        return outputDTO.SchemaDTO{}, err
+    }
 
 	err = ccu.SchemaRepository.Save(schemaEntity)
 	if err != nil {
@@ -53,7 +57,7 @@ func (ccu *UpdateSchemaUseCase) Execute(schema inputDTO.SchemaDTO) (outputDTO.Sc
 		Context:    schemaEntity.Context,
 		JsonSchema: schemaEntity.JsonSchema,
 		SchemaID:   string(schemaEntity.SchemaID),
-		CreatedAt:  schemaEntity.CreatedAt,
+		CreatedAt:  item.CreatedAt,
 		UpdatedAt:  schemaEntity.UpdatedAt,
 	}
 
