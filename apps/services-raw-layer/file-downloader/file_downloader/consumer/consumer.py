@@ -74,6 +74,7 @@ class Consumer:
             self._exchange_name,
             self._routing_key
         )
+        logger.info(f"Listening to queue: {self._queue_name}")
         await self._rabbitmq_service.listen(queue, controller(self._config, self._rabbitmq_service, self._queue_active_jobs).run)
 
 class EventConsumer(Consumer):

@@ -23,6 +23,7 @@ readme = "README.md"
   [tool.poetry.dependencies]
   python = ">=3.9,<4.0"
   warlock = "^2.0.1"
+  requests = "^2.31.0"
 
     [tool.poetry.dependencies.shared-py-dotenv]
     path = "../../../libs/python/shared/py-dotenv"
@@ -62,6 +63,10 @@ readme = "README.md"
 
     [tool.poetry.dependencies.services-events-handler-dto]
     path = "../../../libs/python/services/dtos/services-events-handler"
+    develop = true
+
+    [tool.poetry.dependencies.resources-py-minio]
+    path = "../../../libs/python/resources/py-minio"
     develop = true
 
 [build-system]

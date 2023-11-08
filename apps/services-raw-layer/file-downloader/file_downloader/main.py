@@ -28,7 +28,7 @@ async def create_consumers_channel(sd: ServiceDiscovery, service_name: str, cont
 
     """
     configs = await fetch_configs(service_name, context_env)
-    rabbitmq_service = RabbitMQConsumer(url=sd.rabbitmq_endpoint())
+    rabbitmq_service = RabbitMQConsumer()
     await rabbitmq_service.connect()
     tasks = list()
 

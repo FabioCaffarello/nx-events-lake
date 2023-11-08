@@ -166,13 +166,13 @@ class EventController(Controller):
             message: The incoming event message.
 
         """
+        logger.info(f"Processing message: {message}")
         if not self._should_cotroller_active():
-            logger.info(f"Controller for config_id {self._config_id} is not active")
+            logger.warning(f"Controller for config_id {self._config_id} is not active")
             return
 
         event_input = await self._parse_event(message)
         job_result = await self.job_dispatcher(event_input)
-        await self._queue_active_jobs.get()
         output = serialize_to_json(job_result)
         logger.info(f"sleeping for 5 seconds...")
         time.sleep(5)
@@ -183,4 +183,5 @@ class EventController(Controller):
                 output
             )
         await message.ack()
+        await self._queue_active_jobs.get()
         logger.info("Published message to service")

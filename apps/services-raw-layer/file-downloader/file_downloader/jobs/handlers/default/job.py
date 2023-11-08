@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Tuple
 
 import requests
@@ -8,7 +7,9 @@ from dto_events_handler.shared import StatusDTO
 from pylog.log import setup_logging
 from pyminio.client import minio_client
 
+
 logger = setup_logging(__name__)
+
 
 class Job:
     """
@@ -24,12 +25,10 @@ class Job:
         _context (str): The context information from the configuration.
         _input_data (type[warlock.model.Model]): The input data for the job.
         _job_url (str): The URL for the job.
-        _patition (str): The partition based on input data reference.
+        _partition (str): The partition based on input data reference.
         _target_endpoint (str): The final endpoint URL.
 
     Methods:
-        _get_reference(self, reference):
-            Extracts and formats the reference data.
 
         _get_endpoint(self):
             Generates the target endpoint URL.
@@ -54,22 +53,8 @@ class Job:
         self._context = config.context
         self._input_data = input_data
         self._job_url = config.job_parameters["url"]
-        self._patition = self._get_reference(input_data.reference)
+        self._partition = input_data.partition
         self._target_endpoint = self._get_endpoint()
-
-    def _get_reference(self, reference) -> str:
-        """
-        Extracts and formats the reference data.
-
-        Args:
-            reference: The reference data.
-
-        Returns:
-            str: The formatted reference string.
-        """
-        logger.info(f"Reference: {reference}")
-        ref = datetime(reference["year"], reference["month"], reference["day"])
-        return ref.strftime("%Y%m%d")
 
     def _get_endpoint(self) -> str:
         """
@@ -78,7 +63,7 @@ class Job:
         Returns:
             str: The target endpoint URL.
         """
-        return self._job_url.format(self._patition)
+        return self._job_url.format(self._partition)
 
     def _get_bucket_name(self) -> str:
         """
@@ -140,8 +125,8 @@ class Job:
         logger.info(f"Job triggered with input: {self._input_data}")
         response = self.make_request()
         minio = minio_client()
-        uri = minio.upload_bytes(self._get_bucket_name(), f"{self._patition}/{self._source}.zip", response.content)
+        uri = minio.upload_bytes(self._get_bucket_name(), f"{self._partition}/{self._source}.zip", response.content)
         logger.info(f"File storage uri: {uri}")
-        result = {"documentUri": uri, "partition": self._patition}
+        result = {"documentUri": uri, "partition": self._partition}
         logger.info(f"Job result: {result}")
         return result, self._get_status(response), self._target_endpoint
