@@ -1,0 +1,14 @@
+{
+  "name": "ceaf-config",
+  "active": true,
+  "frequency": "daily",
+  "service": "file-unzip",
+  "source": "ceaf",
+  "context": "br",
+  "depends_on": [{
+    "service": "file-downloader",
+    "source": "ceaf"
+  }],
+  "service_parameters": {},
+  "job_parameters": {}
+}

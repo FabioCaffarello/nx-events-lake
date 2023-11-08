@@ -50,3 +50,6 @@ cleanup:
 
 run: image cleanup
 	docker-compose up -d
+
+reload:
+	docker-compose up -d
