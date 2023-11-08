@@ -17,7 +17,7 @@ definitions:
       data:
         type: object
       metadata:
-        $ref: "#/definitions/inputDTO.MetadataInputDTO"
+        $ref: "#/definitions/sharedDTO.Metadata"
       context:
         type: string
 
@@ -28,7 +28,7 @@ definitions:
       data:
         type: object
       metadata:
-        $ref: "#/definitions/outputDTO.MetadataDTO"
+        $ref: "#/definitions/sharedDTO.Metadata"
       context:
         type: string
       created_at:
@@ -41,7 +41,7 @@ definitions:
       input_id:
         type: string
       input:
-        $ref: "#/definitions/inputDTO.MetadataInput"
+        $ref: "#/definitions/sharedDTO.MetadataInput"
       service:
         type: string
       source:
@@ -144,7 +144,7 @@ paths:
         "200":
           description:  List all Outputs By Service
           schema:
-            $ref: "#/definitions/outputDTO.SchemaDTO"
+            $ref: "#/definitions/outputDTO.ServiceOutputDTO"
         "400":
           description: Bad request
           schema:
@@ -175,7 +175,7 @@ paths:
         "200":
           description:  List all Outputs By Service and Source
           schema:
-            $ref: "#/definitions/outputDTO.SchemaDTO"
+            $ref: "#/definitions/outputDTO.ServiceOutputDTO"
         "400":
           description: Bad request
           schema:
