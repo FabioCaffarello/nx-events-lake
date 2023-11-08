@@ -1,7 +1,7 @@
 from pyrequest.factory import RateLimitedAsyncHttpClient
 from pysd.service_discovery import new_from_env
 from dto_schema_handler.output import SchemaDTO
-from pyserializer.serializer import from_data_to_dataclass
+from pyserializer.serializer import serialize_to_dataclass
 
 
 class AsyncPySchemaHandlerClient:
@@ -41,7 +41,7 @@ class AsyncPySchemaHandlerClient:
             schema_type=schema_type
         )
         result = await self.client.make_request("GET", endpoint)
-        return from_data_to_dataclass(result, SchemaDTO)
+        return serialize_to_dataclass(result, SchemaDTO)
 
     async def list_one_schema_by_service_n_source_n_context_n_schema_type(self, context: str, service_name: str, source_name: str, schema_type: str) -> SchemaDTO:
         """
@@ -64,7 +64,7 @@ class AsyncPySchemaHandlerClient:
             schema_type=schema_type
         )
         result = await self.client.make_request("GET", endpoint)
-        return from_data_to_dataclass(result, SchemaDTO)
+        return serialize_to_dataclass(result, SchemaDTO)
 
 
 

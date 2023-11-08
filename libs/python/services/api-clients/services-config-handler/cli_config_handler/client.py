@@ -2,7 +2,7 @@ from typing import List
 from pyrequest.factory import RateLimitedAsyncHttpClient
 from pysd.service_discovery import new_from_env
 from dto_config_handler.output import ConfigDTO
-from pyserializer.serializer import from_data_to_dataclass
+from pyserializer.serializer import serialize_to_dataclass
 
 class AsyncPyConfigHandlerClient:
     """
@@ -36,7 +36,7 @@ class AsyncPyConfigHandlerClient:
         """
         endpoint = "/configs"
         config = await self.client.make_request("POST", endpoint, data=data)
-        return from_data_to_dataclass(config, ConfigDTO)
+        return serialize_to_dataclass(config, ConfigDTO)
 
     async def list_all_configs(self) -> List[ConfigDTO]:
         """
@@ -48,7 +48,7 @@ class AsyncPyConfigHandlerClient:
         """
         endpoint = "/configs"
         configs = await self.client.make_request("GET", endpoint)
-        return [from_data_to_dataclass(config, ConfigDTO) for config in configs]
+        return [serialize_to_dataclass(config, ConfigDTO) for config in configs]
 
     async def list_one_config_by_id(self, config_id: str)  -> ConfigDTO:
         """
@@ -63,7 +63,7 @@ class AsyncPyConfigHandlerClient:
         """
         endpoint = f"/configs/{config_id}"
         config = await self.client.make_request("GET", endpoint)
-        return from_data_to_dataclass(config, ConfigDTO)
+        return serialize_to_dataclass(config, ConfigDTO)
 
     async def list_all_configs_by_service(self, service_name: str) -> List[ConfigDTO]:
         """
@@ -78,7 +78,7 @@ class AsyncPyConfigHandlerClient:
         """
         endpoint = f"/configs/service/{service_name}"
         configs = await self.client.make_request("GET", endpoint)
-        return [from_data_to_dataclass(config, ConfigDTO) for config in configs]
+        return [serialize_to_dataclass(config, ConfigDTO) for config in configs]
 
     async def list_all_configs_by_service_and_context(self, service_name: str, context: str) -> list[ConfigDTO]:
         """
@@ -94,7 +94,7 @@ class AsyncPyConfigHandlerClient:
         """
         endpoint = f"/configs/service/{service_name}/context/{context}"
         configs = await self.client.make_request("GET", endpoint)
-        return [from_data_to_dataclass(config, ConfigDTO) for config in configs]
+        return [serialize_to_dataclass(config, ConfigDTO) for config in configs]
 
 def async_py_config_handler_client():
     """
