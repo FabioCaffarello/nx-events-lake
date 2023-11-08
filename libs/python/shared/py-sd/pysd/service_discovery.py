@@ -27,9 +27,9 @@ class ServiceUnavailableError(Exception):
 @dataclass
 class ServiceVars:
     rabbitmq: str = "RABBITMQ"
-    configHandler: str = "SERVICES_CONFIG_HANDLER"
-    fileCatalogHandler: str = "SERVICES_FILE_CATALOG_HANDLER"
-    schemasHandler: str = "SERVICES_SCHEMAS_HANDLER"
+    configHandler: str = "CONFIG_HANDLER"
+    fileCatalogHandler: str = "FILE_CATALOG_HANDLER"
+    schemasHandler: str = "SCHEMA_HANDLER"
     minio: str = "MINIO"
     services_rabbitmq_exchange: str = "services"
 
@@ -116,7 +116,7 @@ class ServiceDiscovery:
             str: The services config handler endpoint.
         """
         service_name = self._service_vars.configHandler
-        endpoint = self._get_endpoint("SERVICES_CONFIG_HANDLER_PORT_8000_TCP", service_name)
+        endpoint = self._get_endpoint("CONFIG_HANDLER_PORT_8000_TCP", service_name)
         if "localhost" in endpoint:
             endpoint = endpoint.replace("8000", "8002")
         return endpoint
@@ -129,7 +129,7 @@ class ServiceDiscovery:
             str: The services schemas handler endpoint.
         """
         service_name = self._service_vars.schemasHandler
-        endpoint = self._get_endpoint("SERVICES_SCHEMAS_HANDLER_PORT_8000_TCP", service_name)
+        endpoint = self._get_endpoint("SCHEMA_HANDLER_PORT_8000_TCP", service_name)
         if "localhost" in endpoint:
             endpoint = endpoint.replace("8000", "8003")
         return endpoint
@@ -142,9 +142,9 @@ class ServiceDiscovery:
             str: The services file catalog handler endpoint.
         """
         service_name = self._service_vars.fileCatalogHandler
-        endpoint = self._get_endpoint("SERVICES_FILE_CATALOG_HANDLER", service_name)
+        endpoint = self._get_endpoint("FILE_CATALOG_HANDLER_PORT_8000_TCP", service_name)
         if "localhost" in endpoint:
-            endpoint = endpoint.replace("8000", "8004")
+            endpoint = endpoint.replace("8000", "8006")
         return endpoint
 
     def minio_endpoint(self):
