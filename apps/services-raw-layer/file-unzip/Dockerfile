@@ -1,0 +1,11 @@
+FROM scratch
+
+WORKDIR /app
+
+ARG ENVIRONMENT
+ENV ENVIRONMENT=$ENVIRONMENT
+
+COPY dist/server .
+COPY envs/.env.$ENVIRONMENT .
+
+CMD ["./server"]
