@@ -49,28 +49,15 @@ Content-Type: application/json
     "json_schema": {
         "type": "object",
         "properties": {
-            "reference": {
-                "type": "object",
-                "properties": {
-                    "year": {
-                        "type": "integer"
-                    },
-                    "month": {
-                        "type": "integer"
-                    },
-                    "day": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "year",
-                    "month",
-                    "day"
-                ]
+            "documentUri": {
+                "type": "string"
+            },
+            "partition": {
+                "type": "string"
             }
         },
         "required": [
-            "reference"
+            "partition"
         ]
     }
 }
