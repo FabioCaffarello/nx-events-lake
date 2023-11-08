@@ -155,10 +155,7 @@ class MinioClient:
             Exception: If there is an error uploading the bytes data.
         """
         try:
-            if not isinstance(bytes_data, bytes):
-                data_stream = BytesIO(bytes_data)
-            else:
-                data_stream = bytes_data
+            data_stream = BytesIO(bytes_data)
             data_size = len(bytes_data)
             self.client.put_object(bucket_name, object_name, data_stream, data_size)
         except S3Error as err:
