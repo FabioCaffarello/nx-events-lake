@@ -1,80 +1,15 @@
 version: '3'
 
 services:
-  config-handler:
-    image: fabiocaffarello/config-handler:latest
-    container_name: config-handler
-    ports:
-      - 8002:8000
+
+  file-unzip:
+    image: fabiocaffarello/file-unzip:latest
+    container_name: file-unzip
     depends_on:
       rabbitmq:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://config-handler:8000/healthz"]
-      interval: 10s
-      timeout: 1s
-      retries: 3
-    networks:
-      - nx-events-lake-network
-
-  schema-handler:
-    image: fabiocaffarello/schema-handler:latest
-    container_name: schema-handler
-    ports:
-      - 8003:8000
-    depends_on:
-      rabbitmq:
+      minio:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://schema-handler:8000/healthz"]
-      interval: 10s
-      timeout: 1s
-      retries: 3
-    networks:
-      - nx-events-lake-network
-
-  input-handler:
-    image: fabiocaffarello/input-handler:latest
-    container_name: input-handler
-    ports:
-      - 8001:8000
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://input-handler:8000/healthz"]
-      interval: 10s
-      timeout: 1s
-      retries: 3
-    networks:
-      - nx-events-lake-network
-
-  output-handler:
-    image: fabiocaffarello/output-handler:latest
-    container_name: output-handler
-    ports:
-      - 8004:8000
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://output-handler:8000/healthz"]
-      interval: 10s
-      timeout: 1s
-      retries: 3
-    networks:
-      - nx-events-lake-network
-
-  staging-handler:
-    image: fabiocaffarello/staging-handler:latest
-    container_name: staging-handler
-    ports:
-      - 8005:8000
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://staging-handler:8000/healthz"]
-      interval: 10s
-      timeout: 1s
-      retries: 3
     networks:
       - nx-events-lake-network
 
@@ -105,6 +40,96 @@ services:
         condition: service_healthy
       schema-handler:
         condition: service_healthy
+    networks:
+      - nx-events-lake-network
+
+  events-handler:
+    image: fabiocaffarello/events-handler:latest
+    container_name: events-handler
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      config-handler:
+        condition: service_healthy
+      schema-handler:
+        condition: service_healthy
+    networks:
+      - nx-events-lake-network
+
+  config-handler:
+    image: fabiocaffarello/config-handler:latest
+    container_name: config-handler
+    ports:
+      - 8002:8000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://config-handler:8000/healthz"]
+      interval: 10s
+      timeout: 1s
+      retries: 4
+    networks:
+      - nx-events-lake-network
+
+  schema-handler:
+    image: fabiocaffarello/schema-handler:latest
+    container_name: schema-handler
+    ports:
+      - 8003:8000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://schema-handler:8000/healthz"]
+      interval: 10s
+      timeout: 1s
+      retries: 4
+    networks:
+      - nx-events-lake-network
+
+  input-handler:
+    image: fabiocaffarello/input-handler:latest
+    container_name: input-handler
+    ports:
+      - 8001:8000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://input-handler:8000/healthz"]
+      interval: 10s
+      timeout: 1s
+      retries: 4
+    networks:
+      - nx-events-lake-network
+
+  output-handler:
+    image: fabiocaffarello/output-handler:latest
+    container_name: output-handler
+    ports:
+      - 8004:8000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://output-handler:8000/healthz"]
+      interval: 10s
+      timeout: 1s
+      retries: 4
+    networks:
+      - nx-events-lake-network
+
+  staging-handler:
+    image: fabiocaffarello/staging-handler:latest
+    container_name: staging-handler
+    ports:
+      - 8005:8000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://staging-handler:8000/healthz"]
+      interval: 10s
+      timeout: 1s
+      retries: 4
     networks:
       - nx-events-lake-network
 

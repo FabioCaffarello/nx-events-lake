@@ -7,6 +7,7 @@ use (
 	apps/services-orchestration/services-output-handler
 	apps/services-orchestration/services-schema-handler
 	apps/services-orchestration/services-staging-handler
+	apps/services-raw-layer/file-unzip
 	libs/golang/resources/go-minio
 	libs/golang/resources/go-mongo
 	libs/golang/resources/go-rabbitmq
