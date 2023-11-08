@@ -65,7 +65,13 @@ This class ensures that the service processes incoming data efficiently, initiat
 
 ## Architecture Diagram
 
-![Diagram](docs/diagram/architecture.png)
+### C4 Diagram
+
+![Architecture](docs/diagram/Architecture.png)
+
+### Service Diagram
+
+![Diagram](docs/diagram/diagram.png)
 
 
 ## How to Run the Service

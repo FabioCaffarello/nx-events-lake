@@ -55,6 +55,13 @@ npx nx image services-raw-layer-file-unzip --env=<ENVIRONMENT>
 docker-compose up -d
 ```
 
+## Architecture Diagram
+
+### C4 Diagram
+
+![Architecture](docs/diagram/Architecture.png)
+
+
 Please note that this README provides a high-level overview of your service's structure and components. To run the service effectively, make sure to provide the required configurations and customize the job handler logic according to your specific use case.
 
 If you have any questions or need further assistance, feel free to ask.

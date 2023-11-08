@@ -10,6 +10,7 @@ site
 .vscode
 .cache
 __pycache__
+out
 
 # compiled output
 dist

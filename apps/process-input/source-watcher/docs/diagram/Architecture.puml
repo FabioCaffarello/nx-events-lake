@@ -1,0 +1,47 @@
+@startuml Architecture
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+AddRelTag("async", $lineStyle = DashedLine())
+SHOW_PERSON_PORTRAIT()
+
+title "Nx Events Lake: Architecture with microsservices and event-driven architecture"
+
+System_Boundary(gateway, "Source Watcher") {
+
+    Container(schema_handler_api,"API: Services Schema Handler","Golang","API for managing all schemas type and versions of all services")
+    Container(config_handler_api,"API: Services Config Handler","Golang","API for managing configs and versions of all services")
+    Container(input_handler_api,"API: Services Input Handler","Golang","API for managing inputs of all services and sources")
+    Container(output_handler_api,"API: Services Output Handler","Golang","API for managing outputs of all services and sources")
+    Container(staging_handler_api,"API: Services Staging Handler","Golang","API for managing with job processing staging metadata of all services and sources")
+    Container(events_handler_service,"Consumer: Services Events Handler","Golang","Service to orchestrate all the architecture events of all services and sources")
+    Container(source_watcher_service,"Consumer: Source Watcher","Python","Service to find new source inputs")
+
+    Container(inputs_database,"Inputs Database","MongoBD","Store inputs data")
+    Rel(input_handler_api,inputs_database,"Interact witthroughh","HTTPS/JSON")
+
+    Container(outputs_database,"Outputs Database","MongoBD","Store outputs data")
+    Rel(output_handler_api,outputs_database,"Interact through","HTTPS/JSON")
+
+    Container(configs_database,"Configs Database","MongoBD","Store configs data")
+    Rel(config_handler_api,configs_database,"Interact through","HTTPS/JSON")
+
+    Container(schemas_database,"Schemas Database","MongoBD","Store schemas data")
+    Rel(schema_handler_api,schemas_database,"Interact through","HTTPS/JSON")
+
+    Container(staging_database,"Staging Database","MongoBD","Store staging data")
+    Rel(staging_handler_api,staging_database,"Interact through","HTTPS/JSON")
+
+    Container(minio_storage_landing,"Minio Storage: Process Inputs","Minio","Store files")
+    Rel(source_watcher_service,minio_storage_landing,"Interact through","HTTPS/JSON")
+
+    Rel(source_watcher_service,config_handler_api,"Load Configs","HTTPS/JSON")
+    Rel(source_watcher_service,schema_handler_api,"Get the input schema","HTTPS/JSON")
+    Rel(input_handler_api,source_watcher_service,"Consome inputs","RabbitMQ Routing key context.file-downloader.inputs.*",$tags = "async")
+
+    Rel(source_watcher_service,events_handler_service,"Consome Service FeedBack","RabbitMQ Routing key feedback",$tags = "async")
+    Rel(events_handler_service,input_handler_api,"Update Input Status","HTTPS/JSON")
+    Rel(events_handler_service,output_handler_api,"Save Service Output","HTTPS/JSON")
+    Rel(events_handler_service,staging_handler_api,"Create the job dependencies mapping","HTTPS/JSON")
+
+
+}
+@enduml

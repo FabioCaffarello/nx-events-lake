@@ -1,4 +1,4 @@
-- [Getting Started](getting-started.md)
+<!-- - [Getting Started](getting-started.md) -->
 - [Architecture](index.md)
 - [Applications](reference/apps/)
 - [Libraries](reference/libs/)
