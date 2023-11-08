@@ -35,7 +35,7 @@ for path in src_root.rglob("project.json"):
                     mkdocs_gen_files.set_edit_path(doc_path, f"../{path}")
 
         for path in src_root.glob(f"{project_path}/**/*[!__init__].py"):
-            if "tests" in path.parts:
+            if "tests" in path.parts or ".venv" in path.parts:
                 continue
             doc_path = Path("reference", path.relative_to(src_root)).with_suffix(".md")
             doc_normalized_path = str(doc_path).replace(project_path, f"{project_path}/code_reference")
