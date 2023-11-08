@@ -42,7 +42,7 @@ class JobHandler:
         self._config_id = config.id
         self._module = self._import_job_handler_as_module()
 
-    def _import_job_handler_as_module(self) -> importlib.ModuleType:
+    def _import_job_handler_as_module(self):
         """
         Import the job handler module based on the specified job handler name.
 

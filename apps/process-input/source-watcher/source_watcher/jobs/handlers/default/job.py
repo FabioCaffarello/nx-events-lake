@@ -25,7 +25,6 @@ class Job:
         _context (str): The context information from the configuration.
         _input_data (type[warlock.model.Model]): The input data for the job.
         _job_url (str): The URL for the job.
-        _patition (str): The partition based on input data reference.
         _target_endpoint (str): The final endpoint URL.
 
     Methods:
@@ -55,7 +54,6 @@ class Job:
         self._context = config.context
         self._input_data = input_data
         self._job_url = config.job_parameters["url"]
-        # self._patition = self._get_reference(input_data.reference)
         self._target_endpoint = self._get_endpoint()
 
     def _get_reference(self, reference) -> str:
@@ -79,7 +77,7 @@ class Job:
         Returns:
             str: The target endpoint URL.
         """
-        return self._job_url.format(self._patition)
+        return self._job_url
 
     def _get_bucket_name(self) -> str:
         """
