@@ -1,0 +1,86 @@
+{
+  "name": "services-bronze-layer-spark-batch",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/services-bronze-layer/spark-batch/spark_batch_bronze",
+  "targets": {
+    "lock": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry lock --no-update",
+        "cwd": "apps/services-bronze-layer/spark-batch"
+      }
+    },
+    "add": {
+      "executor": "@nxlv/python:add",
+      "options": {}
+    },
+    "update": {
+      "executor": "@nxlv/python:update",
+      "options": {}
+    },
+    "remove": {
+      "executor": "@nxlv/python:remove",
+      "options": {}
+    },
+    "build": {
+      "executor": "@nxlv/python:build",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "outputPath": "apps/services-bronze-layer/spark-batch/dist",
+        "publish": false,
+        "lockedVersions": true,
+        "bundleLocalDependencies": true
+      }
+    },
+    "install": {
+      "executor": "@nxlv/python:install",
+      "options": {
+        "silent": false,
+        "args": "",
+        "cacheDir": ".cache/pypoetry",
+        "verbose": false,
+        "debug": false
+      }
+    },
+    "lint": {
+      "executor": "@nxlv/python:flake8",
+      "outputs": [
+        "{workspaceRoot}/reports/apps/services-bronze-layer/spark-batch/pylint.txt"
+      ],
+      "options": {
+        "outputFile": "reports/apps/services-bronze-layer/spark-batch/pylint.txt"
+      }
+    },
+    "test": {
+      "executor": "@nxlv/python:run-commands",
+      "outputs": [
+        "{workspaceRoot}/reports/apps/services-bronze-layer/spark-batch/unittests",
+        "{workspaceRoot}/coverage/apps/services-bronze-layer/spark-batch"
+      ],
+      "options": {
+        "command": "poetry run pytest tests/",
+        "cwd": "apps/services-bronze-layer/spark-batch"
+      }
+    },
+    "run-local": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "poetry run python spark_batch_bronze/main.py",
+        "cwd": "apps/services-bronze-layer/spark-batch"
+      }
+    },
+    "image": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "docker build -t fabiocaffarello/spark-batch-bronze:latest --build-arg ENVIRONMENT={args.env} -f ./Dockerfile .",
+        "cwd": "apps/services-bronze-layer/spark-batch"
+      }
+    },
+    "create-bucket": {
+      "executor": "@nx-plugins/env-setup:create-bucket"
+    }
+  },
+  "tags": ["lang:python", "scope:service"]
+}

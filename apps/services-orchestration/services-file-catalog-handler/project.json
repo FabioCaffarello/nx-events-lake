@@ -61,7 +61,7 @@
       }
     },
     "insert-file-catalogs": {
-      "executor": "@nx-plugins/env-setup:file-catalogs"
+      "executor": "@nx-plugins/env-setup:insert-file-catalogs"
     }
   },
   "tags": ["lang:golang", "scope:service"]

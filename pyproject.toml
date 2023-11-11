@@ -72,6 +72,26 @@ readme = "README.md"
     path = "apps/process-input/source-watcher"
     develop = true
 
+    [tool.poetry.dependencies.shared-py-youtube]
+    path = "libs/python/shared/py-youtube"
+    develop = true
+
+    [tool.poetry.dependencies.media-transcoder-service]
+    path = "apps/services-raw-layer/media-transcoder"
+    develop = true
+
+    [tool.poetry.dependencies.speech-transcriber-service]
+    path = "apps/services-bronze-layer/speech-transcriber"
+    develop = true
+
+    [tool.poetry.dependencies.services-file-catalog-handler-dto]
+    path = "libs/python/services/dtos/services-file-catalog-handler"
+    develop = true
+
+    [tool.poetry.dependencies.services-file-catalog-handler-client]
+    path = "libs/python/services/api-clients/services-file-catalog-handler"
+    develop = true
+
 [tool.poetry.group.dev.dependencies]
 flake8 = "6.0.0"
 autopep8 = "2.0.2"
@@ -92,7 +112,6 @@ mkdocs-literate-nav = "^0.6.1"
 mkdocs-include-markdown-plugin = "^6.0.1"
 mkdocs-swagger-ui-tag = "^0.6.5"
 plantuml-markdown = "^3.9.2"
-
 
 [build-system]
 requires = [ "poetry-core" ]

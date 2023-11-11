@@ -1,0 +1,56 @@
+
+POST http://localhost:8006/file-catalog HTTP/1.1
+Content-Type: application/json
+
+{
+  "service": "spark-batch-bronze",
+  "source": "ceaf",
+  "context": "br",
+  "lake_layer": "bronze",
+  "schema_type": "file-source",
+  "catalog": {
+    "file_encoding": "UTF-8",
+    "file_format": "csv",
+    "file_delimiter": ";",
+    "file_quotes": "\"",
+    "properties": [{
+      "job_name": "cadastro",
+      "file_names": ["cadastro"]
+    },{
+      "job_name": "codigoSansao",
+      "file_names": ["codigoDaSansao"]
+    },{
+      "job_name": "tipoPessoa",
+      "file_names": ["tipoDaPessoa"]
+    },{
+      "job_name": "cpfCnpjSancionado",
+      "file_names": ["cpfOuCnpjDoSancionado"]
+    },{
+      "job_name": "nomeSancionado",
+      "file_names": ["nomeDoSancionado"]
+    },{
+      "job_name": "categoriaSancao",
+      "file_names": ["categoriaDaSancao"]
+    },{
+      "job_name": "numeroDocumento",
+      "file_names": ["numeroDoDocumento"]
+    },{
+      "job_name": "numeroProcesso",
+      "file_names": ["numeroDoProcesso"]
+    },{
+      "job_name": "dataInicioSancao",
+      "file_names": ["dataInicioSancao"]
+    },{
+      "job_name": "dataFinalSancao",
+      "file_names": ["dataFinalSancao"]
+    },{
+      "job_name": "dataPublicacao",
+      "file_names": ["dataPublicacao"]
+    },{
+      "job_name": "publicacao",
+      "file_names": ["publicacao"]
+    }]
+  }
+}
+
+###

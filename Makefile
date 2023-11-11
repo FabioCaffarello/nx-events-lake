@@ -23,6 +23,9 @@ create-bucket-landing: guard-context guard-source
 create-bucket-raw: guard-context guard-source
 	npx nx create-bucket services-raw-layer-file-unzip --name=raw-$(context)-source-$(source)
 
+create-bucket-bronze: guard-context guard-source
+	npx nx create-bucket services-bronze-layer-speech-transcriber --name=bronze-$(context)-source-$(source)
+
 create-bucket-process-input: guard-context guard-source
 	npx nx create-bucket process-input-source-watcher --name=process-input-$(context)-source-$(source)
 
@@ -32,14 +35,21 @@ insert-configs: guard-source
 insert-schemas: guard-source
 	npx nx insert-schemas services-orchestration-services-schema-handler --source=$(source)
 
+insert-file-catalogs: guard-source
+	npx nx insert-file-catalogs services-orchestration-services-file-catalog-handler --source=$(source)
+
 start-service-setup:
-	docker-compose up -d rabbitmq minio mongodb config-handler schema-handler
+	docker-compose up -d rabbitmq minio mongodb config-handler schema-handler file-catalog-handler
 
 setup-env: guard-context guard-source start-service-setup
 	make create-bucket-process-input context=$(context) source=$(source)
 	make create-bucket-landing context=$(context) source=$(source)
 	make create-bucket-raw context=$(context) source=$(source)
-	make inser-configs source=$(source)
+	make insert-configs source=$(source)
+	make insert-schemas source=$(source)
+
+setup-env-temp: guard-context guard-source start-service-setup
+	make insert-configs source=$(source)
 	make insert-schemas source=$(source)
 
 image: guard-env

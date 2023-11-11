@@ -2,6 +2,23 @@ version: '3'
 
 services:
 
+  spark-batch-bronze:
+    image: fabiocaffarello/spark-batch-bronze:latest
+    container_name: spark-batch-bronze
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      config-handler:
+        condition: service_healthy
+      schema-handler:
+        condition: service_healthy
+      file-catalog-handler:
+        condition: service_healthy
+    networks:
+      - nx-events-lake-network
+
   file-unzip:
     image: fabiocaffarello/file-unzip:latest
     container_name: file-unzip
@@ -9,6 +26,36 @@ services:
       rabbitmq:
         condition: service_healthy
       minio:
+        condition: service_healthy
+    networks:
+      - nx-events-lake-network
+
+  speech-transcriber:
+    image: fabiocaffarello/speech-transcriber:latest
+    container_name: speech-transcriber
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      config-handler:
+        condition: service_healthy
+      schema-handler:
+        condition: service_healthy
+    networks:
+      - nx-events-lake-network
+
+  media-transcoder:
+    image: fabiocaffarello/media-transcoder:latest
+    container_name: media-transcoder
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      config-handler:
+        condition: service_healthy
+      schema-handler:
         condition: service_healthy
     networks:
       - nx-events-lake-network
@@ -130,6 +177,43 @@ services:
       interval: 10s
       timeout: 1s
       retries: 4
+    networks:
+      - nx-events-lake-network
+
+  file-catalog-handler:
+    image: fabiocaffarello/file-catalog-handler:latest
+    container_name: file-catalog-handler
+    ports:
+      - 8006:8000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://file-catalog-handler:8000/healthz"]
+      interval: 10s
+      timeout: 1s
+      retries: 4
+    networks:
+      - nx-events-lake-network
+
+  spark:
+    image: "apache/spark:3.5.0-scala2.12-java11-ubuntu"
+    container_name: spark
+    command:
+      - "/opt/spark/sbin/start-connect-server.sh"
+      - "--conf"
+      - "spark.driver.extraJavaOptions=-Divy.cache.dir=/tmp -Divy.home=/tmp"
+      - "--packages"
+      - "org.apache.spark:spark-connect_2.12:3.5.0"
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    ports:
+      - "4040:4040"
+      - "15002:15002"
     networks:
       - nx-events-lake-network
 

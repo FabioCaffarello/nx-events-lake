@@ -1,0 +1,16 @@
+{
+  "name": "ceaf-config",
+  "active": true,
+  "frequency": "daily",
+  "service": "spark-batch-bronze",
+  "source": "ceaf",
+  "context": "br",
+  "depends_on": [{
+    "service": "file-unzip",
+    "source": "ceaf"
+  }],
+  "service_parameters": {
+    "job_handler": "default"
+  },
+  "job_parameters": {}
+}
