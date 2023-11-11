@@ -52,19 +52,24 @@ class BaseRabbitMQ:
             port=parsed_url.port,
             login=parsed_url.username,
             password=parsed_url.password,
+            timeout=100,
+            heartbeat=60,
         )
 
-    async def connect(self) -> None:
+    async def connect(self, max_retries: int = 5) -> None:
         """Retry connecting to RabbitMQ until successful.
 
         Args:
-            None
+            max_retries (int): The maximum number of connection retries.
+
+        Raises:
+            RuntimeError: If failed to connect to RabbitMQ after multiple retries.
 
         Returns:
             None
-
         """
-        while True:
+        retries = 0
+        while retries < max_retries:
             try:
                 await self._connect()
                 break
@@ -72,6 +77,11 @@ class BaseRabbitMQ:
                 logger.error('[CONNECTION] - Could not connect to RabbitMQ, retrying in 2 seconds...')
                 self.on_connection_error(err)
                 await asyncio.sleep(2)
+                retries += 1
+        else:
+            raise RuntimeError("Failed to connect to RabbitMQ after multiple retries")
+
+
 
     def on_connection_error(self, error: Exception) -> None:
         """Handle connection errors.
