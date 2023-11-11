@@ -65,16 +65,15 @@ class TestMinio(unittest.TestCase):
 
         bucket_name = "test-bucket"
         object_name = "test-object"
-        bytes_data = b"sample bytes data"
+        bytes_data = io.BytesIO(b"sample bytes data")
         obtained_uri = self.client.upload_bytes(bucket_name, object_name, bytes_data)
 
-        self.client.client.put_object.assert_called_with(bucket_name, object_name, bytes_data, len(bytes_data))
+        self.client.client.put_object.assert_called_with(bucket_name, object_name, bytes_data, bytes_data.getbuffer().nbytes)
         self.assertEqual(obtained_uri, "http://localhost:9000/test-bucket/test-object")
-
 
     def test_download_file_content(self):
         # Mock the fget_object method to return sample content
-        self.client.client.fget_object = Mock(return_value=b"sample content")
+        self.client.client.fget_object = Mock(return_value=io.BytesIO(b"sample content"))
 
         bucket_name = "test-bucket"
         object_name = "test-object"
@@ -114,11 +113,11 @@ class TestMinio(unittest.TestCase):
 
         bucket_name = "test-bucket"
         object_name = "large-object"
-        large_data = b"0" * (10 * 1024 * 1024)  # 10 MB
+        large_data = io.BytesIO(b"0" * (10 * 1024 * 1024))  # 10 MB
 
         self.client.upload_bytes(bucket_name, object_name, large_data)
 
-        self.client.client.put_object.assert_called_with(bucket_name, object_name, large_data, len(large_data))
+        self.client.client.put_object.assert_called_with(bucket_name, object_name, large_data,  large_data.getbuffer().nbytes)
 
     def test_list_buckets_error(self):
         error = CustomS3Error("Error listing buckets", "resource", "request_id", "host_id", "response")
@@ -158,6 +157,19 @@ class TestMinio(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             self.client.list_objects(bucket_name)
         self.assertTrue("Error listing objects" in str(context.exception))
+
+    def test_download_file_as_bytes(self):
+        # Mock the get_object method to return sample content
+        self.client.client.get_object = Mock()
+        self.client.client.get_object.return_value.read.return_value = b"sample content"
+
+        bucket_name = ""
+        object_name = "test-object"
+        downloaded_content = self.client.download_file_as_bytes(bucket_name, object_name)
+
+        self.client.client.get_object.assert_called_with(bucket_name, object_name)
+        self.assertEqual(downloaded_content, b"sample content")
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -9,7 +9,8 @@
 - List all available buckets on the Minio server.
 - Upload files to a specified bucket.
 - Upload bytes data to a specified bucket.
-- Download files from a specified bucket.
+- Download files from a specified bucket and save locally.
+- Download files from a specified bucket as bytes.
 - List objects in a specified bucket.
 - Generate URIs for accessing objects on the Minio server.
 
@@ -49,11 +50,13 @@ Before using the `py-minio` library, make sure to configure the Minio server con
 
 
 ## API Reference
+
 `create_bucket(bucket_name)`: Create a new bucket on the Minio server.
 `list_buckets()`: List all buckets available on the Minio server.
 `upload_file(bucket_name, object_name, file_path)`: Upload a file to a specified bucket on the Minio server.
 `upload_bytes(bucket_name, object_name, bytes_data)`: Upload bytes data to a specified bucket on the Minio server.
 `download_file(bucket_name, object_name, file_path)`: Download a file from a specified bucket on the Minio server and save it locally.
+`download_file_as_bytes(bucket_name, object_name)`: Download a file from a specified bucket on the Minio server as bytes.
 `list_objects(bucket_name)`: List objects in a specified bucket on the Minio server.
 
 

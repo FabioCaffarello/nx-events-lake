@@ -1,5 +1,6 @@
 from io import BytesIO
-from typing import List
+import io
+from typing import Any, List
 
 from minio import Minio
 from minio.error import S3Error
@@ -28,6 +29,7 @@ class MinioClient:
         - upload_file(bucket_name: str, object_name: str, file_path: str) -> str
         - upload_bytes(bucket_name: str, object_name: str, bytes_data: bytes) -> str
         - download_file(bucket_name: str, object_name: str, file_path: str) -> None
+        - download_file_as_bytes(bucket_name: str, object_name: str) -> bytes
         - list_objects(bucket_name: str) -> List[str]
         - _get_uri(bucket_name: str, object_name: str) -> str
 
@@ -155,8 +157,12 @@ class MinioClient:
             Exception: If there is an error uploading the bytes data.
         """
         try:
-            data_stream = BytesIO(bytes_data)
-            data_size = len(bytes_data)
+            if isinstance(bytes_data, io.BytesIO):
+                data_stream = bytes_data
+                data_size = bytes_data.getbuffer().nbytes
+            else:
+                data_stream = BytesIO(bytes_data)
+                data_size = len(bytes_data)
             self.client.put_object(bucket_name, object_name, data_stream, data_size)
         except S3Error as err:
             raise Exception(f"Error uploading bytes: {err}")
@@ -176,6 +182,27 @@ class MinioClient:
         """
         try:
             self.client.fget_object(bucket_name, object_name, file_path)
+        except S3Error as err:
+            raise Exception(f"Error downloading file: {err}")
+
+    def download_file_as_bytes(self, bucket_name: str, object_name: str) -> bytes:
+        """
+        Download a file from a specified bucket on the Minio server and return it as bytes.
+
+        Args:
+            bucket_name (str): The name of the source bucket.
+            object_name (str): The name of the object to be downloaded.
+
+        Returns:
+            bytes: The content of the downloaded file as bytes.
+
+        Raises:
+            Exception: If there is an error downloading the file.
+        """
+        try:
+            response = self.client.get_object(bucket_name, object_name)
+            data = response.read()
+            return data
         except S3Error as err:
             raise Exception(f"Error downloading file: {err}")
 
