@@ -1,8 +1,8 @@
-import { InsertConfigsExecutorSchema } from './schema';
+import { InsertFileCatalogsExecutorSchema } from './schema';
 import executor from './executor';
 import { ExecutorContext } from "@nrwl/devkit";
 
-const options: InsertConfigsExecutorSchema = {
+const options: InsertFileCatalogsExecutorSchema = {
   source: 'ceaf',
 };
 
@@ -35,3 +35,4 @@ describe('InsertConfigs Executor', () => {
     expect(output.success).toBe(true);
   });
 });
+

@@ -14,6 +14,11 @@
       "implementation": "./src/executors/insert-schemas/executor",
       "schema": "./src/executors/insert-schemas/schema.json",
       "description": "insert-schemas executor"
+    },
+    "insert-file-catalogs": {
+      "implementation": "./src/executors/insert-file-catalogs/executor",
+      "schema": "./src/executors/insert-file-catalogs/schema.json",
+      "description": "insert-file-catalogs executor"
     }
   }
 }
