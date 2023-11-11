@@ -1,0 +1,14 @@
+{
+  "name": "john-watson-rooney-config",
+  "active": true,
+  "frequency": "daily",
+  "service": "file-downloader",
+  "source": "john-watson-rooney",
+  "context": "br",
+  "service_parameters": {
+    "job_handler": "youtube"
+  },
+  "job_parameters": {
+    "url": "https://www.youtube.com/watch?v={}"
+  }
+}

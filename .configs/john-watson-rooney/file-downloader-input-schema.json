@@ -1,0 +1,17 @@
+{
+    "schema_type": "service-input",
+    "service": "file-downloader",
+    "source": "john-watson-rooney",
+    "context": "br",
+    "json_schema": {
+        "type": "object",
+        "properties": {
+            "videoId": {
+                "type": "string"
+            }
+        },
+        "required": [
+            "videoId"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "name": "john-watson-rooney-config",
+    "active": true,
+    "frequency": "daily",
+    "service": "speech-transcriber",
+    "source": "john-watson-rooney",
+    "context": "br",
+    "depends_on": [{
+      "service": "media-transcoder",
+      "source": "john-watson-rooney"
+    }],
+    "service_parameters": {
+      "job_handler": "audio_to_text"
+    },
+    "job_parameters": {
+      "url": "https://www.youtube.com/watch?v={}"
+    }
+  }
+  
