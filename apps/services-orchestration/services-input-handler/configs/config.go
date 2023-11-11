@@ -30,7 +30,7 @@ type Config *conf
 
 func LoadConfig(path string, env string) (*conf, error) {
 	var cfg *conf
-	viper.SetConfigName("services-config-handler")
+	viper.SetConfigName("services-input-handler")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(path)
 	viper.SetConfigFile(fmt.Sprintf(".env.%s", env))

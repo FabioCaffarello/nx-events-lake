@@ -1,6 +1,6 @@
 ```mermaid
 flowchart TB
- A([Start]) --> Service[File Downloader]
+ A([Start]) --> Service[Source Watcher]
  Service --> Config_Loader[Config Loader]
 
  subgraph Consumer_1[Consumer 1]

@@ -44,20 +44,17 @@ Content-Type: application/json
 {
     "schema_type": "service-input",
     "service": "file-downloader",
-    "source": "ceaf",
+    "source": "john-watson-rooney",
     "context": "br",
     "json_schema": {
         "type": "object",
         "properties": {
-            "documentUri": {
-                "type": "string"
-            },
-            "partition": {
+            "videoId": {
                 "type": "string"
             }
         },
         "required": [
-            "partition"
+            "videoId"
         ]
     }
 }
