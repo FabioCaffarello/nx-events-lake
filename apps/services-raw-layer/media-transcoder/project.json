@@ -1,0 +1,79 @@
+{
+  "name": "services-raw-layer-media-transcoder",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/services-raw-layer/media-transcoder/media_transcoder",
+  "targets": {
+    "lock": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry lock --no-update",
+        "cwd": "apps/services-raw-layer/media-transcoder"
+      }
+    },
+    "add": {
+      "executor": "@nxlv/python:add",
+      "options": {}
+    },
+    "update": {
+      "executor": "@nxlv/python:update",
+      "options": {}
+    },
+    "remove": {
+      "executor": "@nxlv/python:remove",
+      "options": {}
+    },
+    "build": {
+      "executor": "@nxlv/python:build",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "outputPath": "apps/services-raw-layer/media-transcoder/dist",
+        "publish": false,
+        "lockedVersions": true,
+        "bundleLocalDependencies": true
+      }
+    },
+    "install": {
+      "executor": "@nxlv/python:install",
+      "options": {
+        "silent": false,
+        "args": "",
+        "cacheDir": ".cache/pypoetry",
+        "verbose": false,
+        "debug": false
+      }
+    },
+    "lint": {
+      "executor": "@nxlv/python:flake8",
+      "outputs": [
+        "{workspaceRoot}/reports/apps/services-raw-layer/media-transcoder/pylint.txt"
+      ],
+      "options": {
+        "outputFile": "reports/apps/services-raw-layer/media-transcoder/pylint.txt"
+      }
+    },
+    "test": {
+      "executor": "@nxlv/python:run-commands",
+      "outputs": [
+        "{workspaceRoot}/reports/apps/services-raw-layer/media-transcoder/unittests",
+        "{workspaceRoot}/coverage/apps/services-raw-layer/media-transcoder"
+      ],
+      "options": {
+        "command": "poetry run pytest tests/",
+        "cwd": "apps/services-raw-layer/media-transcoder"
+      }
+    },
+    "image": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "docker build -t fabiocaffarello/media-transcoder:latest --build-arg ENVIRONMENT={args.env} -f ./Dockerfile .",
+        "cwd": "apps/services-raw-layer/media-transcoder"
+      }
+    },
+    "create-bucket": {
+      "executor": "@nx-plugins/env-setup:create-bucket"
+    }
+  },
+  "tags": ["lang:python", "scope:service"]
+}
