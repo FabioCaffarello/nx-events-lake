@@ -9,57 +9,63 @@ from dto_events_handler.shared import StatusDTO
 from pylog.log import setup_logging
 from pyminio.client import minio_client
 
-
 logger = setup_logging(__name__)
 
 
 @dataclass
 class FieldsDTO:
+    """
+    Data class representing fields for a DTO.
+
+    Attributes:
+        file_names (List[str]): List of file names.
+        job_name (str): Name of the job.
+    """
     file_names: List[str] = field(metadata={"json_name": "file_names"})
     job_name: str = field(metadata={"json_name": "job_name"})
 
+
 @dataclass
 class MappingHeaderDTO:
+    """
+    Data class representing mapping headers for a DTO.
+
+    Attributes:
+        properties (List[FieldsDTO]): List of FieldsDTO representing properties.
+    """
     properties: List[FieldsDTO] = field(metadata={"json_name": "properties"})
 
 
 class Job:
     """
-    Represents a job that makes HTTP requests and handles the response.
-
-    Args:
-        config (ConfigDTO): The configuration data for the job.
-        input_data: The input data for the job.
+    Class representing a job.
 
     Attributes:
-        _config (ConfigDTO): The configuration data for the job.
-        _source  (str): The source information from the configuration.
-        _context (str): The context information from the configuration.
-        _input_data (type[warlock.model.Model]): The input data for the job.
-        _job_url (str): The URL for the job.
-        _partition (str): The partition based on input data reference.
-        _target_endpoint (str): The final endpoint URL.
+        _config (ConfigDTO): Configuration data transfer object.
+        _service (str): Service name.
+        _source (str): Source name.
+        _context (str): Context information.
+        _input_data (warlock.model.Model): Input data model.
+        _partition (str): Data partition.
+        _file_catalog_handler_client: File catalog handler client.
 
     Methods:
-
-        _get_endpoint(self):
-            Generates the target endpoint URL.
-
-        _get_bucket_name(self):
-            Generates the bucket name for Minio storage.
-
-        _get_status(self, response) -> StatusDTO:
-            Extracts the status information from an HTTP response.
-
-        make_request(self):
-            Makes an HTTP GET request to the target endpoint.
-
-        run(self):
-            Runs the job, making the HTTP request and handling the response.
+        __init__: Initializes the Job instance.
+        _get_mapping_headers_from_catalog_metadata: Retrieves mapping headers from catalog metadata.
+        _get_bucket_name: Generates the bucket name for Minio storage.
+        _get_status: Gets the status data transfer object.
+        run: Executes the job and returns results.
 
     """
 
     def __init__(self, config: ConfigDTO, input_data: type[warlock.model.Model]) -> None:
+        """
+        Initializes the Job instance.
+
+        Args:
+            config (ConfigDTO): Configuration data transfer object.
+            input_data (type[warlock.model.Model]): Input data model.
+        """
         self._config = config
         self._service = config.service
         self._source = config.source
@@ -69,6 +75,12 @@ class Job:
         self._file_catalog_handler_client = async_py_file_catalog_handler_client()
 
     async def _get_mapping_headers_from_catalog_metadata(self):
+        """
+        Retrieves mapping headers from catalog metadata.
+
+        Returns:
+            MappingHeaderDTO: Mapping headers data transfer object.
+        """
         job_catalog = await self._file_catalog_handler_client.list_one_file_catalog_by_service_source(
             service_name=self._service,
             source_name=self._source
@@ -89,12 +101,24 @@ class Job:
         )
 
     def _get_status(self) -> StatusDTO:
+        """
+        Gets the status data transfer object.
+
+        Returns:
+            StatusDTO: Status data transfer object.
+        """
         return StatusDTO(
             code=200,
             detail="Success",
         )
 
     async def run(self) -> Tuple[dict, StatusDTO, str]:
+        """
+        Executes the job and returns results.
+
+        Returns:
+            Tuple[dict, StatusDTO, str]: Tuple containing results, status, and URI.
+        """
         mapping_headers = await self._get_mapping_headers_from_catalog_metadata()
         logger.info(f"Mapping headers: {mapping_headers}")
         uri = self._input_data.documentUri
