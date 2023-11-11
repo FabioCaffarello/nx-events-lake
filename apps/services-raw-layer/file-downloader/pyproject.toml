@@ -69,6 +69,10 @@ readme = "README.md"
     path = "../../../libs/python/resources/py-minio"
     develop = true
 
+    [tool.poetry.dependencies.shared-py-youtube]
+    path = "../../../libs/python/shared/py-youtube"
+    develop = true
+
 [build-system]
 requires = [ "poetry-core" ]
 build-backend = "poetry.core.masonry.api"

@@ -43,11 +43,19 @@ This class ensures that the service processes incoming data efficiently, initiat
 
 ### Job Handler Module
 
+#### Default Handler
+
 - `jobs/handlers/default/job.py`: An example job handler module.
   - It defines the logic for making HTTP requests to download data from a specific URL.
   - It uploads the downloaded data to a Minio storage bucket.
   - It returns the job result, including the storage URI and status.
 
+#### Youtube Handler
+
+- `jobs/handlers/youtube/job.py`: An example job handler module.
+  - It defines the logic for making HTTP requests to download videos from Youtube.
+  - It uploads the downloaded video to a Minio storage bucket.
+  - It returns the job result, including the storage URI and status.
 
 ### Libraries Dependencies:
 

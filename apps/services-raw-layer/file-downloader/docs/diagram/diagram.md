@@ -37,7 +37,7 @@ Controller_Events_2 --> Should_Listening{Should Listening?}
 Controller_Events_N --> Should_Listening{Should Listening?}
 
 Should_Listening --> |No|Stop_Controller(Stop Controller)
-Should_Listening --> |Yes|Run_Job(Downlod File)
+Should_Listening --> |Yes|Run_Job(Download File)
 
 Run_Job --> Store(Save in a Bucket)
 
