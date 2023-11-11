@@ -1,0 +1,195 @@
+swagger: "2.0"
+host: "localhost:8006"
+basePath: "/"
+
+info:
+  description: "File Catalog Handler API"
+  version: "1.0.0"
+  title: "File Catalog Handler API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: fabio.caffarello@gmail.com
+    name: Fabio Caffarello
+
+definitions:
+
+  inputDTO.FileCatalogDTO:
+    properties:
+      service:
+        type: string
+      source:
+        type: string
+      context:
+        type: string
+      lake_layer:
+        type: string
+      schema_type:
+        type: string
+      catalog:
+        type: object
+
+  outputDTO.FileCatalogDTO:
+    properties:
+      id:
+        type: string
+      service:
+        type: string
+      source:
+        type: string
+      context:
+        type: string
+      lake_layer:
+        type: string
+      schema_type:
+        type: string
+      catalog:
+        type: object
+      created_at:
+        type: string
+      updated_at:
+        type: string
+
+  handlers.Error:
+    properties:
+      message:
+        type: string
+    type: object
+
+
+paths:
+  /file-catalog:
+    post:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "File Catalog object that needs to be added"
+          required: true
+          schema:
+            $ref: "#/definitions/inputDTO.FileCatalogDTO"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/outputDTO.FileCatalogDTO"
+        "400":
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+    get:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/outputDTO.FileCatalogDTO"
+        "400":
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "404":
+          description: "Input not found"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+  /file-catalog/service/{service}/source/{source}:
+    get:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "service"
+          description: "Service of the input"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "source"
+          description: "Source of the input"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/outputDTO.FileCatalogDTO"
+        "400":
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+  /file-catalog/service/{service}:
+    get:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "service"
+          description: "Service of the input"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/outputDTO.FileCatalogDTO"
+        "400":
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+
+  /file-catalog/{id}:
+    get:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "ID of the input"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/outputDTO.FileCatalogDTO"
+        "400":
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "404":
+          description: "Input not found"
+          schema:
+            $ref: "#/definitions/handlers.Error"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/handlers.Error"
