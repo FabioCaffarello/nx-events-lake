@@ -1,0 +1,79 @@
+{
+  "name": "services-bronze-layer-speech-transcriber",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/services-bronze-layer/speech-transcriber/speech_transcriber",
+  "targets": {
+    "lock": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry lock --no-update",
+        "cwd": "apps/services-bronze-layer/speech-transcriber"
+      }
+    },
+    "add": {
+      "executor": "@nxlv/python:add",
+      "options": {}
+    },
+    "update": {
+      "executor": "@nxlv/python:update",
+      "options": {}
+    },
+    "remove": {
+      "executor": "@nxlv/python:remove",
+      "options": {}
+    },
+    "build": {
+      "executor": "@nxlv/python:build",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "outputPath": "apps/services-bronze-layer/speech-transcriber/dist",
+        "publish": false,
+        "lockedVersions": true,
+        "bundleLocalDependencies": true
+      }
+    },
+    "install": {
+      "executor": "@nxlv/python:install",
+      "options": {
+        "silent": false,
+        "args": "",
+        "cacheDir": ".cache/pypoetry",
+        "verbose": false,
+        "debug": false
+      }
+    },
+    "lint": {
+      "executor": "@nxlv/python:flake8",
+      "outputs": [
+        "{workspaceRoot}/reports/apps/services-bronze-layer/speech-transcriber/pylint.txt"
+      ],
+      "options": {
+        "outputFile": "reports/apps/services-bronze-layer/speech-transcriber/pylint.txt"
+      }
+    },
+    "test": {
+      "executor": "@nxlv/python:run-commands",
+      "outputs": [
+        "{workspaceRoot}/reports/apps/services-bronze-layer/speech-transcriber/unittests",
+        "{workspaceRoot}/coverage/apps/services-bronze-layer/speech-transcriber"
+      ],
+      "options": {
+        "command": "poetry run pytest tests/",
+        "cwd": "apps/services-bronze-layer/speech-transcriber"
+      }
+    },
+    "image": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "docker build -t fabiocaffarello/speech-transcriber:latest --build-arg ENVIRONMENT={args.env} -f ./Dockerfile .",
+        "cwd": "apps/services-bronze-layer/speech-transcriber"
+      }
+    },
+    "create-bucket": {
+      "executor": "@nx-plugins/env-setup:create-bucket"
+    }
+  },
+  "tags": ["lang:python", "scope:service"]
+}
