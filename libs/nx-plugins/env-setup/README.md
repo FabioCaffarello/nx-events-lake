@@ -54,7 +54,7 @@ Add a target in `targets` of the project `project.json`:
 Run the Insert Configurations Executor using the following command:
 
 ```bash
-npx nx insert-configs your-project-name --source=your-bucket-name
+npx nx insert-configs your-project-name --source=your-source-name
 ```
 
 ## Insert Schemas Executor
@@ -79,9 +79,33 @@ Add a target in `targets` of the project `project.json`:
 Run the Insert Schemas Executor using the following command:
 
 ```bash
-npx nx insert-schemas your-project-name --source=your-bucket-name
+npx nx insert-schemas your-project-name --source=your-source-name
 ```
 
+## Insert File Catalogs Executor
+
+The Insert File Catalogs Executor allows you to insert file catalog files into a specified endpoint. To use this executor, follow these steps:
+
+### Executor Configuration
+
+Add a target in `targets` of the project `project.json`:
+
+```json
+...
+"insert-file-catalogs": {
+      "executor": "@nx-plugins/env-setup:insert-file-catalogs"
+    }
+...
+
+```
+
+### Executor Usage
+
+Run the Insert Schemas Executor using the following command:
+
+```bash
+npx nx insert-file-catalogs your-project-name --source=your-source-name
+```
 
 ---
 
