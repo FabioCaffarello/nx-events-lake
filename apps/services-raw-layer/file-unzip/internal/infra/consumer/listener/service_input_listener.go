@@ -50,6 +50,14 @@ func (l *ServiceInputListener) Handle(rabbitMQ *queue.RabbitMQ, exchange string,
 	if err != nil {
 		return ErrorInvalidServiceInputDTO
 	}
+
+    err = DispatchInput(rabbitMQ, exchange, msg.Body)
+    if err != nil {
+        return ErrorCouldNotNotifyServiceFeedback
+    }
+
+    time.Sleep(5 * time.Second)
+
 	source := serviceInputDTO.Metadata.Source
 	uri := serviceInputDTO.Data["documentUri"].(string)
 	partition := serviceInputDTO.Data["partition"].(string)
@@ -83,6 +91,19 @@ func (l *ServiceInputListener) Handle(rabbitMQ *queue.RabbitMQ, exchange string,
 		}
 	}
 
+	return nil
+}
+
+func DispatchInput(rabbitMQ *queue.RabbitMQ, exchange string, jsonOutput []byte) error {
+	err := rabbitMQ.Notify(
+		jsonOutput,
+		"application/json",
+		exchange,
+		"input-processing",
+	)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

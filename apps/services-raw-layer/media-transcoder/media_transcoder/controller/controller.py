@@ -171,6 +171,12 @@ class EventController(Controller):
             logger.warning(f"Controller for config_id {self._config_id} is not active")
             return
 
+        await self._rabbitmq_service.publish_message(
+            "services",
+            "input-processing",
+            json.dumps(json.loads(message.body.decode()))
+        )
+
         event_input = await self._parse_event(message)
         job_result = await self.job_dispatcher(event_input)
         output = serialize_to_json(job_result)

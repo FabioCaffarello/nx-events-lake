@@ -115,7 +115,7 @@ services:
       test: ["CMD", "curl", "-f", "http://config-handler:8000/healthz"]
       interval: 10s
       timeout: 1s
-      retries: 4
+      retries: 5
     networks:
       - nx-events-lake-network
 
@@ -131,7 +131,7 @@ services:
       test: ["CMD", "curl", "-f", "http://schema-handler:8000/healthz"]
       interval: 10s
       timeout: 1s
-      retries: 4
+      retries: 5
     networks:
       - nx-events-lake-network
 

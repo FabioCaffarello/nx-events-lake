@@ -137,7 +137,7 @@ class Controller:
 
         """
         await self._queue_active_jobs.put(1)
-        job_data, status_data, target_endpoint = JobHandler(self._config).run(event_input)
+        job_data, status_data, target_endpoint = await JobHandler(self._config).run(event_input)
         return ServiceFeedbackDTO(
             data=job_data,
             metadata=self._get_metadata(target_endpoint),
@@ -173,6 +173,12 @@ class EventController(Controller):
         if not self._should_cotroller_active():
             logger.info(f"Controller for config_id {self._config_id} is not active")
             return
+
+        await self._rabbitmq_service.publish_message(
+            "services",
+            "input-processing",
+            json.dumps(json.loads(message.body.decode()))
+        )
 
         event_input = await self._parse_event(message)
         job_result = await self.job_dispatcher(event_input)

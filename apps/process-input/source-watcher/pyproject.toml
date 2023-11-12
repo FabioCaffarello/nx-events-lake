@@ -24,6 +24,8 @@ readme = "README.md"
   python = ">=3.9,<4.0"
   warlock = "^2.0.1"
   requests = "^2.31.0"
+  beautifulsoup4 = "^4.12.2"
+  grequests = "^0.7.0"
 
     [tool.poetry.dependencies.shared-py-dotenv]
     path = "../../../libs/python/shared/py-dotenv"

@@ -51,7 +51,7 @@ class JobHandler:
         """
         return importlib.import_module(f"jobs.handlers.{self._job_handler}.job")
 
-    def run(self, source_input: type[warlock.model.Model]) -> Tuple[dict, StatusDTO, str]:
+    async def run(self, source_input: type[warlock.model.Model]) -> Tuple[dict, StatusDTO, str]:
         """
         Run the job associated with the configuration.
 
@@ -62,5 +62,5 @@ class JobHandler:
             tuple: A tuple containing job_data, job_status, and target_endpoint.
         """
         logger.info(f"[RUNNING JOB] - Config ID: {self._config_id} - handler: {self._job_handler}")
-        job_data, job_status, target_endpoint = self._module.Job(self._config, source_input).run()
+        job_data, job_status, target_endpoint = await self._module.Job(self._config, source_input).run()
         return job_data, job_status, target_endpoint

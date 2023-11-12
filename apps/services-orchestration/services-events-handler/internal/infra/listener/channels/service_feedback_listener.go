@@ -3,7 +3,7 @@ package channels
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
+	"log"
 
 	"apps/services-orchestration/services-events-handler/internal/usecase"
 	eventsHandlerInputDTO "libs/golang/services/dtos/services-events-handler/input"
@@ -59,7 +59,7 @@ func (l *ServiceFeedbackListener) Handle(msg amqp.Delivery) error {
 
 	_, err = updateInputUseCase.Execute(statusDTO, contextEnv, service, source, id)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	switch statusCodeRange {
@@ -75,12 +75,24 @@ func (l *ServiceFeedbackListener) Handle(msg amqp.Delivery) error {
 	return nil
 }
 
+func floatToInt(value float64) int {
+	return int(value)
+}
+
+func InterfaceArrayToStringArray(interfaceArray []interface{}) []string {
+	stringArray := make([]string, len(interfaceArray))
+	for i, v := range interfaceArray {
+		stringArray[i] = v.(string)
+	}
+	return stringArray
+}
+
 func (l *ServiceFeedbackListener) HandleFeedback200(msg eventsHandlerInputDTO.ServiceFeedbackDTO, service string, source string) {
 	outputData := getServiceOutputDTO(msg)
 	createOutputUseCase := usecase.NewCreateOutputUseCase()
 	_, err := createOutputUseCase.Execute(service, outputData)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	findAllDependentJobUseCase := usecase.NewListAllConfigsByDependentJobUseCase()
@@ -92,36 +104,80 @@ func (l *ServiceFeedbackListener) HandleFeedback200(msg eventsHandlerInputDTO.Se
 
 	dependentJobs, err := findAllDependentJobUseCase.Execute(service, source)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
-	inputDTO := inputHandlerInputDTO.InputDTO{
-		Data: map[string]interface{}{
-			"documentUri": msg.Data["documentUri"],
-			"partition":   msg.Data["partition"],
-		},
+	var inputQuantity int
+	if val, ok := msg.Data["totalDocuments"]; ok {
+
+		documentsQuantity, ok := val.(float64)
+		if !ok {
+			log.Println(err)
+		} else {
+			log.Println("Total Documents:", documentsQuantity)
+			inputQuantity = floatToInt(documentsQuantity)
+		}
+
+	} else {
+		// Handle the case where "totalDocuments" key does not exist
+		log.Println("totalDocuments key not found in msg.Data")
+		inputQuantity = 1
+	}
+
+	log.Println("inputQuantity: ", inputQuantity)
+
+	inputDTOs := make([]inputHandlerInputDTO.InputDTO, inputQuantity)
+	if inputQuantity == 1 {
+		for i := 0; i < inputQuantity; i++ {
+			log.Println("inputQuantity == 1")
+			inputDTOs[i] = inputHandlerInputDTO.InputDTO{
+				Data: map[string]interface{}{
+					"documentUri": msg.Data["documentUri"],
+					"partition":   msg.Data["partition"],
+				},
+			}
+		}
+	} else {
+		for i := 0; i < inputQuantity; i++ {
+			log.Println("inputQuantity > 1")
+			inputDTOs[i] = inputHandlerInputDTO.InputDTO{
+				Data: map[string]interface{}{
+					"documentUri":    InterfaceArrayToStringArray(msg.Data["documentUri"].([]interface{}))[i],
+					"partition":      InterfaceArrayToStringArray(msg.Data["partition"].([]interface{}))[i],
+					"targetDocument": InterfaceArrayToStringArray(msg.Data["targetDocuments"].([]interface{}))[i],
+				},
+			}
+			log.Println("inputDTOs[i]: ", inputDTOs[i])
+		}
 	}
 
 	jobDep := getProcessingJobDependencies(msg)
 
-	for _, dependentJob := range dependentJobs {
-		processingJobDepId := configID.NewID(dependentJob.Service, dependentJob.Source)
+	log.Println("jobDep: ", jobDep)
 
-		updateProcessingJobDependenciesUseCase.Execute(processingJobDepId, jobDep)
-		shouldRun, err := checkAllJobDependenciesStatus200UseCase.Execute(processingJobDepId)
-		if err != nil {
-			fmt.Println(err)
-		}
-		if shouldRun {
-			_, err := createInputUseCase.Execute(dependentJob.Service, dependentJob.Source, dependentJob.Context, inputDTO)
+	if len(dependentJobs) > 0 {
+		for _, dependentJob := range dependentJobs {
+			processingJobDepId := configID.NewID(dependentJob.Service, dependentJob.Source)
+
+			log.Println("processingJobDepId: ", processingJobDepId)
+
+			updateProcessingJobDependenciesUseCase.Execute(processingJobDepId, jobDep)
+			shouldRun, err := checkAllJobDependenciesStatus200UseCase.Execute(processingJobDepId)
+			log.Println("shouldRun: ", shouldRun)
 			if err != nil {
-				fmt.Println(err)
+				log.Println(err)
 			}
-			removeProcessingJobDependenciesUseCase.Execute(processingJobDepId)
+			if shouldRun {
+				for _, inputDTO := range inputDTOs {
+					_, err := createInputUseCase.Execute(dependentJob.Service, dependentJob.Source, dependentJob.Context, inputDTO)
+					if err != nil {
+						log.Println(err)
+					}
+				}
+				removeProcessingJobDependenciesUseCase.Execute(processingJobDepId)
+			}
 		}
-
 	}
-
 }
 
 func (l *ServiceFeedbackListener) HandleFeedback400(msg eventsHandlerInputDTO.ServiceFeedbackDTO, service string, source string) {
@@ -166,3 +222,7 @@ func getProcessingJobDependencies(msg eventsHandlerInputDTO.ServiceFeedbackDTO) 
 		StatusCode:          msg.Status.Code,
 	}
 }
+
+
+// https://www.annualreports.com/HostedData/AnnualReports/PDF/NYSE_ETN_2022.pdf
+// https://www.annualreports.com/HostedData/AnnualReports/PDF/_m_2022.pdf

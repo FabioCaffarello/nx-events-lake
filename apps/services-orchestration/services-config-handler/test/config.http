@@ -62,3 +62,7 @@ GET http://localhost:8002/configs/service/file-downloader/source/john-watson-roo
 
 ###
 
+GET http://localhost:8002/configs/service/source-watcher/source/annual-reports HTTP/1.1
+
+###
+

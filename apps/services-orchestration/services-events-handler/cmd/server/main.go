@@ -11,7 +11,7 @@ const (
 	feedbackQueueName = "service-feedback"
 	inputQueueName    = "input-process"
 
-	inputRountingKey   = "*.*.inputs.*"
+	inputRountingKey   = "input-processing"
 	feedbackRoutingKey = "feedback"
 )
 

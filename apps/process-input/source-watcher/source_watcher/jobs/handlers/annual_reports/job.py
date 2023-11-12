@@ -1,13 +1,14 @@
+import asyncio
 from datetime import datetime
-from typing import Tuple
-
+from typing import List, Tuple
+import grequests
 import requests
 import warlock
 from dto_config_handler.output import ConfigDTO
 from dto_events_handler.shared import StatusDTO
-from source_watcher.jobs.handlers.default.html_utils import get_target_input_data_by_regex_pattern
+from source_watcher.jobs.handlers.annual_reports.html_utils import get_href_data_from_html, get_document_download_target
 from pylog.log import setup_logging
-from pyminio.client import minio_client
+from pyminio.client import minio_client, MinioClient
 
 logger = setup_logging(__name__)
 
@@ -54,7 +55,13 @@ class Job:
         self._context = config.context
         self._input_data = input_data
         self._job_url = config.job_parameters["url"]
+        self._domain_url = config.job_parameters["domain_url"]
         self._target_endpoint = self._get_endpoint()
+        self._partition = self._get_reference(input_data.reference)
+        self.downloads_exceptions = []
+        self.target_documents = []
+        self.document_uris = []
+        self.companies_partition = []
 
     def _get_reference(self, reference) -> str:
         """
@@ -114,36 +121,64 @@ class Job:
             requests.Response: The HTTP response.
         """
         logger.info(f"endpoint: {self._target_endpoint}")
+        return requests.get(
+            url=self._target_endpoint,
+            verify=False,
+            timeout=10*60,
+        )
+
+    async def make_request_company(self, minio: MinioClient, company_url: str, company_name: str) -> ...:
         headers = {
             "Sec-Fetch-Site": "same-origin",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
             "Accept-Encoding": "gzip, deflate, br",
             "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Referer": f"https://www.annualreports.com/Company/{company_name}",
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:92.0) Gecko/20100101 Firefox/92.0",
         }
-        return requests.get(
-            self._target_endpoint,
+        response = requests.get(
+            url=company_url,
             verify=False,
             headers=headers,
             timeout=10*60,
         )
+        if response.status_code >= 400:
+            self.downloads_exceptions.append(company_url)
+        else:
+            document_target = get_document_download_target(response.content)
+            if document_target is None:
+                self.downloads_exceptions.append(company_url)
+            else:
+                page_template = f"{document_target.split('.')[0]}.html"
+                file_path =  "{company}/{partition}/{document_target}".format(
+                    company=company_name,
+                    partition=self._partition,
+                    document_target=page_template
+                )
+                uri = minio.upload_bytes(self._get_bucket_name(), file_path, response.content)
+                self.companies_partition.append(company_name)
+                self.target_documents.append(document_target)
+                self.document_uris.append(uri)
 
-    def parse_response_body(self, response: requests.Response) -> str:
+
+
+    async def parse_response_body(self, response: requests.Response, minio: MinioClient) -> List[str]:
         """
-        Parses the response body.
+        Parses the response body to extract the document URLs.
 
         Returns:
-            str: The response body.
+            List[str]: The list of document URLs.
         """
-        pattern_search = {
-            "year": b'"ano" : "([0-9]{4})"',
-            "month": b'"mes" : "([0][0-9]|[1][012])"',
-            "day": b'"dia" : "([0-9]{2})"',
-        }
-        input_search = get_target_input_data_by_regex_pattern(response.content, pattern_search)
-        if input_search is None:
+        hrefs = get_href_data_from_html(response.content)
+        if hrefs is None or len(hrefs) == 0:
             raise Exception("No data found")
-        return "{year}{month}{day}".format(**input_search)
+        companies_data = [(f"{self._domain_url}{href}", href.split("/")[-1]) for href in hrefs][:10]
+        tasks = [asyncio.create_task(self.make_request_company(minio, company_url, company_name)) for company_url, company_name in companies_data]
+
+        await asyncio.gather(*tasks)
+
+        # if len(self.downloads_exceptions) > 0:
+        #     raise Exception(f"Failed to download documents for: {self.downloads_exceptions}")
 
 
     async def run(self) -> Tuple[dict, StatusDTO, str]:
@@ -155,10 +190,11 @@ class Job:
         """
         logger.info(f"Job triggered with input: {self._input_data}")
         response = self.make_request()
-        input_data = self.parse_response_body(response)
         minio = minio_client()
-        uri = minio.upload_bytes(self._get_bucket_name(), f"{input_data}/{self._source}.html", response.content)
-        logger.info(f"File storage uri: {uri}")
-        result = {"documentUri": uri, "partition": input_data}
+        await self.parse_response_body(response, minio)
+        logger.info(f"File storage uris: {self.document_uris}")
+        result = {"documentUri": self.document_uris, "partition": self.companies_partition, "totalDocuments": len(self.document_uris), "targetDocuments": self.target_documents}
         logger.info(f"Job result: {result}")
         return result, self._get_status(response), self._target_endpoint
+
+

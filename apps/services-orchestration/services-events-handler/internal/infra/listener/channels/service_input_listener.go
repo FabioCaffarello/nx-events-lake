@@ -3,12 +3,11 @@ package channels
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
+	"log"
 
 	"apps/services-orchestration/services-events-handler/internal/usecase"
 	inputHandlerOutputDTO "libs/golang/services/dtos/services-input-handler/output"
 	inputHandlerSharedDTO "libs/golang/services/dtos/services-input-handler/shared"
-	inputHandlersharedDTO "libs/golang/services/dtos/services-input-handler/shared"
 	statingHandlerInputDTO "libs/golang/services/dtos/services-staging-handler/input"
 	statingHandlerSharedDTO "libs/golang/services/dtos/services-staging-handler/shared"
 
@@ -42,17 +41,26 @@ func (l *ServiceInputListener) Handle(msg amqp.Delivery) error {
 	findAllDependentJobUseCase := usecase.NewListAllConfigsByDependentJobUseCase()
 	createProcessingJobDependenciesUseCase := usecase.NewCreateProcessingJobDependenciesUseCase()
 
+	log.Println("input Id: ", id)
+	log.Println("inputStatus: ", statusInputDTO)
+
 	_, err = updateInputUseCase.Execute(statusInputDTO, contextEnv, service, source, id)
 	if err != nil {
 		return err
 	}
 
 	dependentJobs, err := findAllDependentJobUseCase.Execute(service, source)
+	println("dependentJobs", dependentJobs)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
+    log.Println("dependentJobs", dependentJobs)
+    log.Println("err dependent", err)
+    log.Println("len dependentJobs", len(dependentJobs))
+
 	for _, dependentJob := range dependentJobs {
+        log.Println("dependentJob", dependentJob)
 		jobDeps := make([]statingHandlerSharedDTO.ProcessingJobDependencies, len(dependentJob.DependsOn))
 		for i, dep := range dependentJob.DependsOn {
 			jobDeps[i] = statingHandlerSharedDTO.ProcessingJobDependencies{
@@ -60,6 +68,7 @@ func (l *ServiceInputListener) Handle(msg amqp.Delivery) error {
 				Source:  dep.Source,
 			}
 		}
+        log.Println("jobDeps", jobDeps)
 
 		processingJobDependency := statingHandlerInputDTO.ProcessingJobDependenciesDTO{
 			Service:         dependentJob.Service,
@@ -67,10 +76,14 @@ func (l *ServiceInputListener) Handle(msg amqp.Delivery) error {
 			JobDependencies: jobDeps,
 		}
 
+        log.Println("processingJobDependency", processingJobDependency)
+
 		_, err = createProcessingJobDependenciesUseCase.Execute(processingJobDependency)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
+
+        log.Println("err createProcessingJobDependenciesUseCase", err)
 
 	}
 
@@ -78,7 +91,7 @@ func (l *ServiceInputListener) Handle(msg amqp.Delivery) error {
 }
 
 func setStatusFlagToProcessing() inputHandlerSharedDTO.Status {
-	return inputHandlersharedDTO.Status{
+	return inputHandlerSharedDTO.Status{
 		Code:   1,
 		Detail: "Processing",
 	}

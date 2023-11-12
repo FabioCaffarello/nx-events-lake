@@ -1,15 +1,15 @@
-from datetime import datetime
 from typing import Tuple
 
 import requests
 import warlock
 from dto_config_handler.output import ConfigDTO
 from dto_events_handler.shared import StatusDTO
-from source_watcher.jobs.handlers.default.html_utils import get_target_input_data_by_regex_pattern
 from pylog.log import setup_logging
 from pyminio.client import minio_client
 
+
 logger = setup_logging(__name__)
+
 
 class Job:
     """
@@ -25,11 +25,10 @@ class Job:
         _context (str): The context information from the configuration.
         _input_data (type[warlock.model.Model]): The input data for the job.
         _job_url (str): The URL for the job.
+        _partition (str): The partition based on input data reference.
         _target_endpoint (str): The final endpoint URL.
 
     Methods:
-        _get_reference(self, reference):
-            Extracts and formats the reference data.
 
         _get_endpoint(self):
             Generates the target endpoint URL.
@@ -54,21 +53,9 @@ class Job:
         self._context = config.context
         self._input_data = input_data
         self._job_url = config.job_parameters["url"]
+        self._partition = input_data.partition
+        self._target_document = input_data.targetDocument
         self._target_endpoint = self._get_endpoint()
-
-    def _get_reference(self, reference) -> str:
-        """
-        Extracts and formats the reference data.
-
-        Args:
-            reference: The reference data.
-
-        Returns:
-            str: The formatted reference string.
-        """
-        logger.info(f"Reference: {reference}")
-        ref = datetime(reference["year"], reference["month"], reference["day"])
-        return ref.strftime("%Y%m%d")
 
     def _get_endpoint(self) -> str:
         """
@@ -77,7 +64,7 @@ class Job:
         Returns:
             str: The target endpoint URL.
         """
-        return self._job_url
+        return self._job_url.format(self._target_document)
 
     def _get_bucket_name(self) -> str:
         """
@@ -86,7 +73,7 @@ class Job:
         Returns:
             str: The bucket name.
         """
-        return "process-input-{context}-source-{source}".format(
+        return "landing-{context}-source-{source}".format(
             context=self._context,
             source=self._source,
         )
@@ -119,6 +106,7 @@ class Job:
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
             "Accept-Encoding": "gzip, deflate, br",
             "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Referer": f"https://www.annualreports.com/Company/{self._partition}",
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:92.0) Gecko/20100101 Firefox/92.0",
         }
         return requests.get(
@@ -128,25 +116,7 @@ class Job:
             timeout=10*60,
         )
 
-    def parse_response_body(self, response: requests.Response) -> str:
-        """
-        Parses the response body.
-
-        Returns:
-            str: The response body.
-        """
-        pattern_search = {
-            "year": b'"ano" : "([0-9]{4})"',
-            "month": b'"mes" : "([0][0-9]|[1][012])"',
-            "day": b'"dia" : "([0-9]{2})"',
-        }
-        input_search = get_target_input_data_by_regex_pattern(response.content, pattern_search)
-        if input_search is None:
-            raise Exception("No data found")
-        return "{year}{month}{day}".format(**input_search)
-
-
-    async def run(self) -> Tuple[dict, StatusDTO, str]:
+    def run(self) -> Tuple[dict, StatusDTO, str]:
         """
         Runs the job, making the HTTP request and handling the response.
 
@@ -155,10 +125,9 @@ class Job:
         """
         logger.info(f"Job triggered with input: {self._input_data}")
         response = self.make_request()
-        input_data = self.parse_response_body(response)
         minio = minio_client()
-        uri = minio.upload_bytes(self._get_bucket_name(), f"{input_data}/{self._source}.html", response.content)
+        uri = minio.upload_bytes(self._get_bucket_name(), f"{self._partition}/{self._target_document}", response.content)
         logger.info(f"File storage uri: {uri}")
-        result = {"documentUri": uri, "partition": input_data}
+        result = {"documentUri": uri, "partition": self._partition}
         logger.info(f"Job result: {result}")
         return result, self._get_status(response), self._target_endpoint
