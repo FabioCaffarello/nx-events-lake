@@ -1,6 +1,7 @@
 go 1.20
 
 use (
+	apps/services-orchestration/services-batch-handler
 	apps/services-orchestration/services-config-handler
 	apps/services-orchestration/services-events-handler
 	apps/services-orchestration/services-file-catalog-handler

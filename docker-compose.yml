@@ -2,52 +2,67 @@ version: '3'
 
 services:
 
-  spark-batch-bronze:
-    image: fabiocaffarello/spark-batch-bronze:latest
-    container_name: spark-batch-bronze
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-      config-handler:
-        condition: service_healthy
-      schema-handler:
-        condition: service_healthy
-      file-catalog-handler:
-        condition: service_healthy
-    networks:
-      - nx-events-lake-network
+  # spark-batch-bronze:
+  #   image: fabiocaffarello/spark-batch-bronze:latest
+  #   container_name: spark-batch-bronze
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #     minio:
+  #       condition: service_healthy
+  #     config-handler:
+  #       condition: service_healthy
+  #     schema-handler:
+  #       condition: service_healthy
+  #     file-catalog-handler:
+  #       condition: service_healthy
+  #   networks:
+  #     - nx-events-lake-network
 
-  file-unzip:
-    image: fabiocaffarello/file-unzip:latest
-    container_name: file-unzip
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-    networks:
-      - nx-events-lake-network
+  # file-unzip:
+  #   image: fabiocaffarello/file-unzip:latest
+  #   container_name: file-unzip
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #     minio:
+  #       condition: service_healthy
+  #   networks:
+  #     - nx-events-lake-network
 
-  speech-transcriber:
-    image: fabiocaffarello/speech-transcriber:latest
-    container_name: speech-transcriber
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-      config-handler:
-        condition: service_healthy
-      schema-handler:
-        condition: service_healthy
-    networks:
-      - nx-events-lake-network
+  # speech-transcriber:
+  #   image: fabiocaffarello/speech-transcriber:latest
+  #   container_name: speech-transcriber
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #     minio:
+  #       condition: service_healthy
+  #     config-handler:
+  #       condition: service_healthy
+  #     schema-handler:
+  #       condition: service_healthy
+  #   networks:
+  #     - nx-events-lake-network
 
-  media-transcoder:
-    image: fabiocaffarello/media-transcoder:latest
-    container_name: media-transcoder
+  # media-transcoder:
+  #   image: fabiocaffarello/media-transcoder:latest
+  #   container_name: media-transcoder
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #     minio:
+  #       condition: service_healthy
+  #     config-handler:
+  #       condition: service_healthy
+  #     schema-handler:
+  #       condition: service_healthy
+  #   networks:
+  #     - nx-events-lake-network
+
+  document-vectorizer:
+    image: fabiocaffarello/document-vectorizer:latest
+    container_name: document-vectorizer
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -115,7 +130,7 @@ services:
       test: ["CMD", "curl", "-f", "http://config-handler:8000/healthz"]
       interval: 10s
       timeout: 1s
-      retries: 5
+      retries: 6
     networks:
       - nx-events-lake-network
 
@@ -131,7 +146,7 @@ services:
       test: ["CMD", "curl", "-f", "http://schema-handler:8000/healthz"]
       interval: 10s
       timeout: 1s
-      retries: 5
+      retries: 6
     networks:
       - nx-events-lake-network
 
@@ -196,26 +211,26 @@ services:
     networks:
       - nx-events-lake-network
 
-  spark:
-    image: "apache/spark:3.5.0-scala2.12-java11-ubuntu"
-    container_name: spark
-    command:
-      - "/opt/spark/sbin/start-connect-server.sh"
-      - "--conf"
-      - "spark.driver.extraJavaOptions=-Divy.cache.dir=/tmp -Divy.home=/tmp"
-      - "--packages"
-      - "org.apache.spark:spark-connect_2.12:3.5.0"
-    environment:
-      - SPARK_NO_DAEMONIZE=true
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-    ports:
-      - "4040:4040"
-      - "15002:15002"
-    networks:
-      - nx-events-lake-network
+  # spark:
+  #   image: "apache/spark:3.5.0-scala2.12-java11-ubuntu"
+  #   container_name: spark
+  #   command:
+  #     - "/opt/spark/sbin/start-connect-server.sh"
+  #     - "--conf"
+  #     - "spark.driver.extraJavaOptions=-Divy.cache.dir=/tmp -Divy.home=/tmp"
+  #     - "--packages"
+  #     - "org.apache.spark:spark-connect_2.12:3.5.0"
+  #   environment:
+  #     - SPARK_NO_DAEMONIZE=true
+  #     - SPARK_RPC_AUTHENTICATION_ENABLED=no
+  #     - SPARK_RPC_ENCRYPTION_ENABLED=no
+  #     - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+  #     - SPARK_SSL_ENABLED=no
+  #   ports:
+  #     - "4040:4040"
+  #     - "15002:15002"
+  #   networks:
+  #     - nx-events-lake-network
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -278,6 +293,55 @@ services:
       - ./data/minio:/data
     networks:
       - nx-events-lake-network
+
+  llm: &llm
+    image: ollama/ollama:latest
+    profiles: ["linux"]
+    networks:
+      - nx-events-lake-network
+
+  llm-gpu:
+    <<: *llm
+    profiles: ["linux-gpu"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  pull-model:
+    container_name: pull-model
+    image: genai-stack/pull-model:latest
+    build:
+      dockerfile: pull_model.Dockerfile
+    environment:
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL-http://host.docker.internal:11434}
+      - LLM=${LLM-llama2}
+    networks:
+      -  nx-events-lake-network
+
+  neo4j:
+    image: neo4j:5.11
+    container_name: neo4j
+    ports:
+      - 7687:7687
+      - 7474:7474
+    volumes:
+      - $PWD/data:/data
+    environment:
+      - NEO4J_AUTH=${NEO4J_USERNAME-neo4j}/${NEO4J_PASSWORD-password}
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_db_tx__log_rotation_retention__policy=false
+    healthcheck:
+        test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider localhost:7474 || exit 1"]
+        interval: 5s
+        timeout: 3s
+        retries: 5
+    networks:
+      - nx-events-lake-network
+
 
 volumes:
   minio_data:
