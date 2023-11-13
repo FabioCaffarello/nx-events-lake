@@ -60,7 +60,7 @@ class JobHandler:
         """
         return importlib.import_module(f"jobs.handlers.{self._job_handler}.job")
 
-    def run(self, source_input: type[warlock.model.Model]) -> Tuple[dict, StatusDTO, str]:
+    def run(self, source_input: type[warlock.model.Model]) -> Tuple[dict, StatusDTO]:
         """
         Run the job associated with the configuration.
 
@@ -68,8 +68,8 @@ class JobHandler:
             source_input (type[warlock.model.Model]): The input data for the job.
 
         Returns:
-            Tuple[dict, StatusDTO, str]: A tuple containing job_data, job_status, and target_endpoint.
+            Tuple[dict, StatusDTO]: A tuple containing job_data and job_status.
         """
         logger.info(f"[RUNNING JOB] - Config ID: {self._config_id} - handler: {self._job_handler}")
-        job_data, job_status, target_endpoint = self._module.Job(self._config, source_input, self._transcription_pipeline).run()
-        return job_data, job_status, target_endpoint
+        job_data, job_status = self._module.Job(self._config, source_input, self._transcription_pipeline).run()
+        return job_data, job_status

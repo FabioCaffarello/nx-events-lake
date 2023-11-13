@@ -54,9 +54,36 @@ class Consumer:
         config (ConfigDTO): The configuration data.
         queue_active_jobs (asyncio.Queue): An asyncio queue for active jobs.
 
-    """
+    Attributes:
+        _config (ConfigDTO): The configuration data.
+        _rabbitmq_service (RabbitMQConsumer): The RabbitMQ consumer service.
+        _queue_active_jobs (asyncio.Queue): The asyncio queue for active jobs.
+        _exchange_name (str): The name of the RabbitMQ exchange.
+        _queue_name (str): The name of the RabbitMQ queue.
+        _routing_key (str): The routing key for the RabbitMQ queue.
 
+    Methods:
+        __init__(self, sd: ServiceDiscovery, rabbitmq_service: RabbitMQConsumer, config: ConfigDTO, queue_active_jobs: asyncio.Queue) -> None:
+            Initializes a Consumer instance with the provided parameters.
+
+        async _run(self, controller: callable) -> None:
+    """
     def __init__(self, sd: ServiceDiscovery, rabbitmq_service: RabbitMQConsumer, config: ConfigDTO, queue_active_jobs: asyncio.Queue):
+        """
+        Initializes a Consumer instance with the provided ServiceDiscovery, RabbitMQConsumer, configuration, and active jobs queue.
+
+        Args:
+            sd (ServiceDiscovery): An instance of the ServiceDiscovery class.
+            rabbitmq_service (RabbitMQConsumer): An instance of the RabbitMQConsumer class.
+            config (ConfigDTO): The configuration data.
+            queue_active_jobs (asyncio.Queue): An asyncio queue for active jobs.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         self._config = config
         self._rabbitmq_service = rabbitmq_service
         self._queue_active_jobs = queue_active_jobs

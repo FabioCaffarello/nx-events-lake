@@ -115,12 +115,12 @@ class Job:
             timeout=10*60,
         )
 
-    def run(self) -> Tuple[dict, StatusDTO, str]:
+    def run(self) -> Tuple[dict, StatusDTO]:
         """
         Runs the job, making the HTTP request and handling the response.
 
         Returns:
-            tuple: A tuple containing result data, status information, and the target endpoint.
+            tuple: A tuple containing result data and status information.
         """
         logger.info(f"Job triggered with input: {self._input_data}")
         response = self.make_request()
@@ -129,4 +129,4 @@ class Job:
         logger.info(f"File storage uri: {uri}")
         result = {"documentUri": uri, "partition": self._partition}
         logger.info(f"Job result: {result}")
-        return result, self._get_status(response), self._target_endpoint
+        return result, self._get_status(response)

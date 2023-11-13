@@ -85,9 +85,6 @@ class Job:
         """
         Extracts the status information from an HTTP response.
 
-        Args:
-            response: The HTTP response.
-
         Returns:
             StatusDTO: The status information.
         """
@@ -142,16 +139,12 @@ class Job:
             raise Exception(f"Error converting video to audio: {err}")
 
 
-    def run(self) -> Tuple[dict, StatusDTO, str]:
+    def run(self) -> Tuple[dict, StatusDTO]:
         """
         Convert video content in bytes format to audio and save it as a separate file.
 
-        Args:
-            video_bytes (bytes): The video content in bytes.
-            audio_path (str): The local path where the audio file will be saved.
-
-        Raises:
-            Exception: If there is an error converting the video to audio.
+        Returns:
+            tuple: A tuple containing result data and status information.
 
         """
         logger.info(f"Job triggered with input: {self._input_data}")
@@ -166,4 +159,4 @@ class Job:
         logger.info(f"File storage uri: {uri}")
         result = {"documentUri": uri, "partition": self._partition}
         logger.info(f"Job result: {result}")
-        return result, self._get_status(), self._target_endpoint
+        return result, self._get_status()

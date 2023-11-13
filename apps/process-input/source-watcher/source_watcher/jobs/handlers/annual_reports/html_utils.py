@@ -71,6 +71,18 @@ def get_href_data_from_html(html: str) -> Dict[str, str]:
 
 
 def _get_pdf_target_year(soup: BeautifulSoup) -> str:
+    """
+    Retrieves the target year from the PDF download link within the provided BeautifulSoup object.
+
+    Args:
+        soup (BeautifulSoup): The BeautifulSoup object representing the HTML content.
+
+    Returns:
+        str: The extracted target year as a string.
+
+    Raises:
+        None
+    """
     pdf_span = soup.find("span", text="View PDF")
 
     if pdf_span:
@@ -89,6 +101,18 @@ def _get_pdf_target_year(soup: BeautifulSoup) -> str:
 
 
 def get_document_download_target(html: str) -> str:
+    """
+    Extracts the target file name for document download from the provided HTML content.
+
+    Args:
+        html (str): The HTML content containing information about the document.
+
+    Returns:
+        str: The target file name for the document download.
+
+    Raises:
+        None
+    """
     logger.info("Getting document download target")
     soup = _get_soup(html)
     # Find the first <span> element with class "btn_archived view_annual_report"
@@ -109,36 +133,3 @@ def get_document_download_target(html: str) -> str:
     target_file = f"{match.group()}{pdf_target_year}.pdf"
     logger.info(f"target_file: {target_file}")
     return target_file
-
-# def get_document_download_target(html: str) -> str:
-#     logger.info("Getting document download target")
-#     soup = _get_soup(html)
-#     script_target = soup.find("script", type=re.compile("application/ld\+json"))
-#     if script_target is None:
-#         return None
-#     script_text = script_target.string
-#     try:
-#         script_json = json.loads(script_text)
-#     except json.JSONDecodeError as err:
-#         logger.error(f"Error parsing JSON: {err}")
-#         return None
-
-
-#     # Find the first <span> element with class "btn_archived view_annual_report"
-#     span = soup.find('span', class_='btn_archived view_annual_report')
-#     if span is None:
-#         return None
-
-#     href = span.find('a')['href']
-
-
-#     content_url = script_json["logo"]["contentUrl"].split("/")[-1].split(".")[0]
-#     logger.info(f"content_url: {content_url}")
-
-#     pdf_target_year = _get_pdf_target_year(soup)
-#     if pdf_target_year is None:
-#         return None
-
-#     target_file = f"{content_url}_{pdf_target_year}.pdf"
-#     logger.info(f"target_file: {target_file}")
-#     return target_file

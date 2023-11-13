@@ -132,6 +132,9 @@ class Job:
         """
         Parses the response body.
 
+        Args:
+            response: The HTTP response.
+
         Returns:
             str: The response body.
         """
@@ -146,7 +149,7 @@ class Job:
         return "{year}{month}{day}".format(**input_search)
 
 
-    async def run(self) -> Tuple[dict, StatusDTO, str]:
+    async def run(self) -> Tuple[dict, StatusDTO]:
         """
         Runs the job, making the HTTP request and handling the response.
 
@@ -161,4 +164,4 @@ class Job:
         logger.info(f"File storage uri: {uri}")
         result = {"documentUri": uri, "partition": input_data}
         logger.info(f"Job result: {result}")
-        return result, self._get_status(response), self._target_endpoint
+        return result, self._get_status(response)

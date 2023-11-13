@@ -81,9 +81,6 @@ class Job:
         """
         Extracts the status information from an HTTP response.
 
-        Args:
-            response: The HTTP response.
-
         Returns:
             StatusDTO: The status information.
         """
@@ -107,12 +104,12 @@ class Job:
         return file_bytes
 
 
-    def run(self) -> Tuple[dict, StatusDTO, str]:
+    def run(self) -> Tuple[dict, StatusDTO]:
         """
         Runs the job, making the HTTP request and handling the response.
 
         Returns:
-            Tuple[dict, StatusDTO, str]: A tuple containing job_data, job_status, and target_endpoint.
+            Tuple[dict, StatusDTO]: A tuple containing job_data and job_status.
         """
         logger.info(f"Job triggered with input: {self._input_data}")
         minio = minio_client()
@@ -124,4 +121,4 @@ class Job:
         logger.info(f"File storage uri: {uri}")
         result = {"documentUri": uri, "partition": self._partition}
         logger.info(f"Job result: {result}")
-        return result, self._get_status(), self._target_endpoint
+        return result, self._get_status()

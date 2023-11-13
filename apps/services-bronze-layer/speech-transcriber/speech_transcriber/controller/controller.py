@@ -29,10 +29,41 @@ class Controller:
         queue_active_jobs (asyncio.Queue): An asyncio queue for active jobs.
         transcription_pipeline (pipeline): The pipeline for automatic speech recognition.
 
+    Attributes:
+        _config (ConfigDTO): The configuration data.
+        _config_id (str): The ID associated with the configuration.
+        _service_name (str): The service name from the configuration.
+        _source_name (str): The source name from the configuration.
+        _context_env (str): The context environment from the configuration.
+        _repository_schema_type (str): The repository schema type for service input.
+        _queue_active_jobs (asyncio.Queue): An asyncio queue for active jobs.
+        _active (bool): The activation status based on the configuration.
+        _transcription_pipeline (pipeline): The pipeline for automatic speech recognition.
+        _schema_handler_client: The schema handler client for retrieving JSON schemas.
+        _input_body_dto: The input data DTO.
+
+    Methods:
+        __init__(self, config: ConfigDTO, queue_active_jobs: asyncio.Queue, transcription_pipeline: pipeline) -> None:
+            Initializes a Controller instance with the provided configuration, active jobs queue, and transcription pipeline.
+
+        _should_controller_active(self) -> bool:
+            Check if the controller should be active based on the configuration.
+
+        async _get_event_parser(self) -> Dict[str, any]:
+            Get the event parser JSON schema for data processing.
+
+        async _parse_event(self, message: str) -> type[warlock.model.Model]:
+            Parse the incoming event message and transform it into the appropriate data format.
+
+        _get_metadata(self) -> MetadataDTO:
+            Generate metadata information for the processed event data.
+
+        async job_dispatcher(self, event_input) -> ServiceFeedbackDTO:
+            Dispatch a job to process the event input data and collect the results.
     """
     def __init__(self, config: ConfigDTO, queue_active_jobs: asyncio.Queue, transcription_pipeline: pipeline):
         """
-        Initialize the Controller instance.
+        Initializes a Controller instance with the provided configuration, active jobs queue, and transcription pipeline.
 
         Args:
             config (ConfigDTO): The configuration data.
@@ -54,7 +85,7 @@ class Controller:
         self._schema_handler_client = async_py_schema_handler_client()
         self._input_body_dto = None
 
-    def _should_cotroller_active(self) -> bool:
+    def _should_controller_active(self) -> bool:
         """
         Check if the controller should be active based on the configuration.
 
@@ -146,7 +177,7 @@ class Controller:
 
         """
         await self._queue_active_jobs.put(1)
-        job_data, status_data, target_endpoint = JobHandler(self._config, self._transcription_pipeline ).run(event_input)
+        job_data, status_data = JobHandler(self._config, self._transcription_pipeline ).run(event_input)
         return ServiceFeedbackDTO(
             data=job_data,
             metadata=self._get_metadata(),
@@ -163,6 +194,17 @@ class EventController(Controller):
         queue_active_jobs (asyncio.Queue): An asyncio queue for active jobs.
         transcription_pipeline (pipeline): The pipeline for automatic speech recognition.
 
+    Methods:
+        __init__(self, config: ConfigDTO, rabbitmq_service: RabbitMQConsumer, queue_active_jobs: asyncio.Queue, transcription_pipeline: pipeline) -> None:
+            Initializes an EventController instance with the provided configuration, RabbitMQ service, active jobs queue, and transcription pipeline.
+
+        async run(self, message) -> None:
+            Run the EventController to process event data.
+
+            This method initiates the processing of incoming event data using the specified controller logic.
+
+            Args:
+                message: The incoming event message.
     """
     def __init__(self, config: ConfigDTO, rabbitmq_service: RabbitMQConsumer, queue_active_jobs: asyncio.Queue, transcription_pipeline: pipeline) -> None:
         """
@@ -193,7 +235,7 @@ class EventController(Controller):
             None
         """
         logger.info(f"Processing message: {message}")
-        if not self._should_cotroller_active():
+        if not self._should_controller_active():
             logger.warning(f"Controller for config_id {self._config_id} is not active")
             return
 

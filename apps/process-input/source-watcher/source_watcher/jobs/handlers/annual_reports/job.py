@@ -14,42 +14,58 @@ logger = setup_logging(__name__)
 
 class Job:
     """
-    Represents a job that makes HTTP requests and handles the response.
-
-    Args:
-        config (ConfigDTO): The configuration data for the job.
-        input_data: The input data for the job.
+    Represents a job that performs tasks related to data retrieval and processing.
 
     Attributes:
         _config (ConfigDTO): The configuration data for the job.
-        _source  (str): The source information from the configuration.
-        _context (str): The context information from the configuration.
+        _source (str): The source identifier for the job.
+        _context (str): The context identifier for the job.
         _input_data (type[warlock.model.Model]): The input data for the job.
-        _job_url (str): The URL for the job.
-        _target_endpoint (str): The final endpoint URL.
+        _job_url (str): The URL associated with the job.
+        _domain_url (str): The domain URL associated with the job.
+        _target_endpoint (str): The target endpoint URL for the job.
+        _partition (str): The formatted reference string for the job's partition.
+        downloads_exceptions (List[str]): List of URLs with download exceptions.
+        target_documents (List[str]): List of target document names.
+        document_uris (List[str]): List of URIs for stored documents.
+        companies_partition (List[str]): List of company names associated with the partition.
 
     Methods:
-        _get_reference(self, reference):
+        _get_reference(reference) -> str:
             Extracts and formats the reference data.
 
-        _get_endpoint(self):
+        _get_endpoint() -> str:
             Generates the target endpoint URL.
 
-        _get_bucket_name(self):
+        _get_bucket_name() -> str:
             Generates the bucket name for Minio storage.
 
-        _get_status(self, response) -> StatusDTO:
+        _get_status(response) -> StatusDTO:
             Extracts the status information from an HTTP response.
 
-        make_request(self):
+        make_request() -> requests.Response:
             Makes an HTTP GET request to the target endpoint.
 
-        run(self):
+        async make_request_company(minio: MinioClient, company_url: str, company_name: str) -> None:
+            Asynchronously makes an HTTP GET request to a company's URL.
+
+        async parse_response_body(response: requests.Response, minio: MinioClient) -> List[str]:
+            Parses the response body to extract the document URLs.
+
+        async run() -> Tuple[dict, StatusDTO, str]:
             Runs the job, making the HTTP request and handling the response.
-
     """
-
     def __init__(self, config: ConfigDTO, input_data: type[warlock.model.Model]) -> None:
+        """
+        Initializes a Job instance with the provided configuration and input data.
+
+        Args:
+            config (ConfigDTO): The configuration data.
+            input_data (type[warlock.model.Model]): The input data.
+
+        Returns:
+            None
+        """
         self._config = config
         self._source = config.source
         self._context = config.context
@@ -127,7 +143,18 @@ class Job:
             timeout=10*60,
         )
 
-    async def make_request_company(self, minio: MinioClient, company_url: str, company_name: str) -> ...:
+    async def make_request_company(self, minio: MinioClient, company_url: str, company_name: str) -> None:
+        """
+        Asynchronously makes an HTTP GET request to a company's URL.
+
+        Args:
+            minio (MinioClient): The Minio client.
+            company_url (str): The company's URL.
+            company_name (str): The company's name.
+
+        Returns:
+            None
+        """
         headers = {
             "Sec-Fetch-Site": "same-origin",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
@@ -160,8 +187,6 @@ class Job:
                 self.target_documents.append(document_target)
                 self.document_uris.append(uri)
 
-
-
     async def parse_response_body(self, response: requests.Response, minio: MinioClient) -> List[str]:
         """
         Parses the response body to extract the document URLs.
@@ -177,11 +202,7 @@ class Job:
 
         await asyncio.gather(*tasks)
 
-        # if len(self.downloads_exceptions) > 0:
-        #     raise Exception(f"Failed to download documents for: {self.downloads_exceptions}")
-
-
-    async def run(self) -> Tuple[dict, StatusDTO, str]:
+    async def run(self) -> Tuple[dict, StatusDTO]:
         """
         Runs the job, making the HTTP request and handling the response.
 
@@ -195,6 +216,6 @@ class Job:
         logger.info(f"File storage uris: {self.document_uris}")
         result = {"documentUri": self.document_uris, "partition": self.companies_partition, "totalDocuments": len(self.document_uris), "targetDocuments": self.target_documents}
         logger.info(f"Job result: {result}")
-        return result, self._get_status(response), self._target_endpoint
+        return result, self._get_status(response)
 
 

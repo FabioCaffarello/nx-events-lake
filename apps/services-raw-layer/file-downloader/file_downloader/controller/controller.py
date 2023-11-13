@@ -96,12 +96,9 @@ class Controller:
             logger.error(f"Failed to parse message body: {e}")
             raise ValueError("Invalid message body")
 
-    def _get_metadata(self, target_endpoint: str) -> MetadataDTO:
+    def _get_metadata(self) -> MetadataDTO:
         """
         Generate metadata information for the processed event data.
-
-        Args:
-            target_endpoint (str): The target endpoint for the event data.
 
         Returns:
             MetadataDTO: Metadata information for the event data.
@@ -135,10 +132,10 @@ class Controller:
 
         """
         await self._queue_active_jobs.put(1)
-        job_data, status_data, target_endpoint = JobHandler(self._config).run(event_input)
+        job_data, status_data = JobHandler(self._config).run(event_input)
         return ServiceFeedbackDTO(
             data=job_data,
-            metadata=self._get_metadata(target_endpoint),
+            metadata=self._get_metadata(),
             status=status_data,
         )
 
