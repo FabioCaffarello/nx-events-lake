@@ -6,17 +6,17 @@ import (
 )
 
 type RemoveProcessingJobDependenciesUseCase struct {
-	ConfigHandlerAPIClient apiClient.Client
+	StagingHandlerAPIClient apiClient.Client
 }
 
 func NewRemoveProcessingJobDependenciesUseCase() *RemoveProcessingJobDependenciesUseCase {
 	return &RemoveProcessingJobDependenciesUseCase{
-		ConfigHandlerAPIClient: *apiClient.NewClient(),
+		StagingHandlerAPIClient: *apiClient.NewClient(),
 	}
 }
 
 func (la *RemoveProcessingJobDependenciesUseCase) Execute(id string) (stagingHandlerOutputDTO.ProcessingJobDependenciesDTO, error) {
-	_, err := la.ConfigHandlerAPIClient.RemoveProcessingJobDependencies(id)
+	_, err := la.StagingHandlerAPIClient.RemoveProcessingJobDependencies(id)
 	if err != nil {
 		return stagingHandlerOutputDTO.ProcessingJobDependenciesDTO{}, err
 	}

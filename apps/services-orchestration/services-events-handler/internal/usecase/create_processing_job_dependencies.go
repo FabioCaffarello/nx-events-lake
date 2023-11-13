@@ -8,17 +8,17 @@ import (
 )
 
 type CreateProcessingJobDependenciesUseCase struct {
-	ConfigHandlerAPIClient apiClient.Client
+	StagingHandlerAPIClient apiClient.Client
 }
 
 func NewCreateProcessingJobDependenciesUseCase() *CreateProcessingJobDependenciesUseCase {
 	return &CreateProcessingJobDependenciesUseCase{
-		ConfigHandlerAPIClient: *apiClient.NewClient(),
+		StagingHandlerAPIClient: *apiClient.NewClient(),
 	}
 }
 
 func (la *CreateProcessingJobDependenciesUseCase) Execute(jobDependencies stagingHandlerInputDTO.ProcessingJobDependenciesDTO) (stagingHandlerOutputDTO.ProcessingJobDependenciesDTO, error) {
-	jobDependenciesCreated, err := la.ConfigHandlerAPIClient.CreateProcessingJobDependencies(jobDependencies)
+	jobDependenciesCreated, err := la.StagingHandlerAPIClient.CreateProcessingJobDependencies(jobDependencies)
 	log.Println("jobDependenciesCreated", jobDependenciesCreated)
 	log.Println("err jobDependenciesCreated", err)
 	if err != nil {

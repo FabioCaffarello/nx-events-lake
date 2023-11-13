@@ -8,17 +8,18 @@ import (
 )
 
 type UpdateProcessingJobDependenciesUseCase struct {
-	ConfigHandlerAPIClient apiClient.Client
+	StagingHandlerAPIClient apiClient.Client
 }
 
 func NewUpdateProcessingJobDependenciesUseCase() *UpdateProcessingJobDependenciesUseCase {
 	return &UpdateProcessingJobDependenciesUseCase{
-		ConfigHandlerAPIClient: *apiClient.NewClient(),
+		StagingHandlerAPIClient: *apiClient.NewClient(),
 	}
 }
 
 func (la *UpdateProcessingJobDependenciesUseCase) Execute(id string, jobDependencies stagingHandlerSharedDTO.ProcessingJobDependencies) (stagingHandlerOutputDTO.ProcessingJobDependenciesDTO, error) {
-	jobDependenciesUpdated, err := la.ConfigHandlerAPIClient.UpdateProcessingJobDependencies(id, jobDependencies)
+    // TODO: INCLUDE PROCESSINGID
+	jobDependenciesUpdated, err := la.StagingHandlerAPIClient.UpdateProcessingJobDependencies(id, jobDependencies)
     log.Println("jobDependenciesUpdated", jobDependenciesUpdated)
     log.Println("err", err)
     log.Println("len(jobDependenciesUpdated.JobDependencies)", len(jobDependenciesUpdated.JobDependencies))

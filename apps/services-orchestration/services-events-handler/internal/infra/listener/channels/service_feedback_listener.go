@@ -161,6 +161,7 @@ func (l *ServiceFeedbackListener) HandleFeedback200(msg eventsHandlerInputDTO.Se
 
 			log.Println("processingJobDepId: ", processingJobDepId)
 
+            // Should Update batch
 			updateProcessingJobDependenciesUseCase.Execute(processingJobDepId, jobDep)
 			shouldRun, err := checkAllJobDependenciesStatus200UseCase.Execute(processingJobDepId)
 			log.Println("shouldRun: ", shouldRun)
@@ -222,7 +223,3 @@ func getProcessingJobDependencies(msg eventsHandlerInputDTO.ServiceFeedbackDTO) 
 		StatusCode:          msg.Status.Code,
 	}
 }
-
-
-// https://www.annualreports.com/HostedData/AnnualReports/PDF/NYSE_ETN_2022.pdf
-// https://www.annualreports.com/HostedData/AnnualReports/PDF/_m_2022.pdf
