@@ -47,6 +47,7 @@ func main() {
 	webInputStatusHandler := NewWebInputStatusHandler(client, eventDispatcher, configs.DBName)
 
 	webserver.AddHandler("/", "POST", "/inputs/context/{context}/service/{service}/source/{source}", webInputHandler.CreateInput)
+	webserver.AddHandler("/", "POST", "/inputs/context/{context}/service/{service}/source/{source}/{processingID}", webInputHandler.CreateInputWithProcessingID)
 	webserver.AddHandler("/", "POST", "/inputs/context/{context}/service/{service}/source/{source}/{id}", webInputStatusHandler.UpdateInputStatus)
 	webserver.AddHandler("/", "GET", "/inputs/service/{service}/source/{source}", webInputHandler.ListAllByServiceAndSource)
 	webserver.AddHandler("/", "GET", "/inputs/service/{service}/source/{source}/status/{status}", webInputHandler.ListAllByServiceAndSourceAndStatus)
