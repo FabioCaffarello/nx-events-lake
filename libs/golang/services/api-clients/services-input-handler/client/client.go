@@ -38,6 +38,21 @@ func (c *Client) CreateInput(service string, source string, contextEnv string, i
 	return output, nil
 }
 
+func (c *Client) CreateInputWithProcessingID(service string, source string, contextEnv string, input inputDTO.InputDTO, processingID string) (outputDTO.InputDTO, error) {
+    url := fmt.Sprintf("%s/inputs/context/%s/service/%s/source/%s/%s", c.baseURL, contextEnv, service, source, processingID)
+    req, err := gorequest.CreateRequest(c.ctx, http.MethodPost, url, input)
+    if err != nil {
+        return outputDTO.InputDTO{}, err
+    }
+
+    var output outputDTO.InputDTO
+    if err := gorequest.SendRequest(req, gorequest.DefaultHTTPClient, &output); err != nil {
+        return outputDTO.InputDTO{}, err
+    }
+
+    return output, nil
+}
+
 func (c *Client) ListAllInputsByServiceAndSource(service, source string) ([]outputDTO.InputDTO, error) {
 	url := fmt.Sprintf("%s/inputs/service/%s/source/%s", c.baseURL, service, source)
 	req, err := gorequest.CreateRequest(c.ctx, http.MethodGet, url, nil)
