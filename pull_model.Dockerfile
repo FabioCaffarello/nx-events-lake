@@ -1,7 +1,8 @@
-#syntax = docker/dockerfile:1.4
+# Taken from https://github.com/docker/genai-stack/blob/main/pull_model.Dockerfile
 
 FROM ollama/ollama:latest AS ollama
 FROM babashka/babashka:latest
+
 
 # just using as a client - never as a server
 COPY --from=ollama /bin/ollama ./bin/ollama
@@ -16,6 +17,9 @@ COPY <<EOF pull_model.clj
         url (get (System/getenv) "OLLAMA_BASE_URL")]
     (println (format "pulling ollama model %s using %s" llm url))
     (if (and llm url (not (#{"gpt-4" "gpt-3.5" "claudev2"} llm)))
+
+      ollama pull
+
       (let [done (async/chan)]
         (async/go-loop [n 0]
           (let [[v _] (async/alts! [done (async/timeout 5000)])]

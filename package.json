@@ -2,7 +2,8 @@
   "name": "@nx-events-lake/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+  },
   "private": true,
   "devDependencies": {
     "@nx-go/nx-go": "^2.8.0",

@@ -19,9 +19,9 @@ Content-Type: application/json
 
 {
   "data": {
-    "documentUri": "http://minio:9000/process-input-br-source-annual-reports/ambac-financial-group-inc-1/20231112/NASDAQ_AMBC_2022.html",
-    "partition": "ambac-financial-group-inc-1",
-    "targetDocument": "NASDAQ_AMBC_2022.pdf"
+    "documentUri": "http://minio:9000/process-input-br-source-annual-reports/nacco-industries-inc/20231112/NYSE_NC_2022.pdf",
+    "partition": "nacco-industries-inc",
+    "targetDocument": "NYSE_NC_2022.pdf"
   }
 }
 

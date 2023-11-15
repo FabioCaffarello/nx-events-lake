@@ -61,5 +61,5 @@ cleanup:
 run: image cleanup
 	docker-compose up -d
 
-reload:
+reload: start-service-setup
 	docker-compose up -d
