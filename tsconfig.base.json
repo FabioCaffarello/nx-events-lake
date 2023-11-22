@@ -8,13 +8,50 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es2017",
     "module": "esnext",
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "esModuleInterop": true,
+    "strictNullChecks": false,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "paths": {
+      "@nodelib/services/ddd/admin-videos-catalog/category/entity": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/category/entity/src/index.ts"
+      ],
+      "@nodelib/shared/ddd-utils/entity": [
+        "libs/typescript/node/shared/ddd-utils/entity/src/index.ts"
+      ],
+      "@nodelib/shared/ddd-utils/infra/db/in-memory": [
+        "libs/typescript/node/shared/ddd-utils/infra/db/in-memory/src/index.ts"
+      ],
+      "@nodelib/shared/ddd-utils/infra/db/sequelize": [
+        "libs/typescript/node/shared/ddd-utils/infra/db/sequelize/src/index.ts"
+      ],
+      "@nodelib/shared/ddd-utils/infra/testing": [
+        "libs/typescript/node/shared/ddd-utils/infra/testing/src/index.ts"
+      ],
+      "@nodelib/shared/ddd-utils/repository": [
+        "libs/typescript/node/shared/ddd-utils/repository/src/index.ts"
+      ],
+      "@nodelib/shared/ddd-utils/use-case": [
+        "libs/typescript/node/shared/ddd-utils/use-case/src/index.ts"
+      ],
+      "@nodelib/shared/errors": [
+        "libs/typescript/node/shared/errors/src/index.ts"
+      ],
+      "@nodelib/shared/validators": [
+        "libs/typescript/node/shared/validators/src/index.ts"
+      ],
+      "@nodelib/shared/value-object": [
+        "libs/typescript/node/shared/value-object/src/index.ts"
+      ],
+      "@nodelib/shared/value-objects/uuid": [
+        "libs/typescript/node/shared/value-objects/uuid/src/index.ts"
+      ],
       "@nx-plugins/env-setup": ["libs/nx-plugins/env-setup/src/index.ts"]
     }
   },

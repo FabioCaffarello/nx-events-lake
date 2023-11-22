@@ -39,7 +39,10 @@ insert-file-catalogs: guard-source
 	npx nx insert-file-catalogs services-orchestration-services-file-catalog-handler --source=$(source)
 
 start-service-setup:
-	docker-compose up -d rabbitmq minio mongodb config-handler schema-handler file-catalog-handler
+	docker-compose up -d rabbitmq minio mongodb neo4j-database rockmongo config-handler schema-handler file-catalog-handler
+
+start-service-orchestration:
+	docker-compose up -d config-handler schema-handler file-catalog-handler input-handler events-handler output-handler staging-handler
 
 setup-env: guard-context guard-source start-service-setup
 	make create-bucket-process-input context=$(context) source=$(source)
@@ -63,3 +66,12 @@ run: image cleanup
 
 reload: start-service-setup
 	docker-compose up -d
+
+run-spark-stack: start-service-setup start-service-orchestration
+	docker-compose up -d source-watcher file-downloader file-unzip spark spark-batch-bronze nessie dremio
+
+run-llm-stack: start-service-setup start-service-orchestration
+	docker-compose up -d source-watcher file-downloader llm pull-model media-transcoder speech-transcriber document-vectorizer streamlit-genai
+
+logs:
+	docker-compose logs -f $(service)
