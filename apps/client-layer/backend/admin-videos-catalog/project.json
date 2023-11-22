@@ -1,0 +1,70 @@
+{
+  "name": "client-layer-backend-admin-videos-catalog",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/client-layer/backend/admin-videos-catalog/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/client-layer/backend/admin-videos-catalog",
+        "main": "apps/client-layer/backend/admin-videos-catalog/src/main.ts",
+        "tsConfig": "apps/client-layer/backend/admin-videos-catalog/tsconfig.app.json",
+        "assets": [
+          "apps/client-layer/backend/admin-videos-catalog/src/assets"
+        ],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/client-layer/backend/admin-videos-catalog/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "admin-videos-catalog:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "admin-videos-catalog:build:development"
+        },
+        "production": {
+          "buildTarget": "admin-videos-catalog:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "apps/client-layer/backend/admin-videos-catalog/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "apps/client-layer/backend/admin-videos-catalog/jest.config.ts"
+      }
+    }
+  },
+  "tags": [
+    "lang:typescript",
+    "scope:service"
+  ]
+}
