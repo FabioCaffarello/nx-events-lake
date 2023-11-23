@@ -149,7 +149,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://config-handler:8000/healthz"]
       interval: 10s
-      timeout: 1s
+      timeout: 3s
       retries: 6
     networks:
       - nx-events-lake-network
@@ -165,7 +165,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://schema-handler:8000/healthz"]
       interval: 10s
-      timeout: 1s
+      timeout: 3s
       retries: 6
     networks:
       - nx-events-lake-network
@@ -231,6 +231,28 @@ services:
     networks:
       - nx-events-lake-network
 
+
+  dremio:
+    platform: linux/x86_64
+    image: dremio/dremio-oss:latest
+    ports:
+      - 9047:9047
+      - 31010:31010
+      - 32010:32010
+    container_name: dremio
+    networks:
+      - nx-events-lake-network
+
+  nessie:
+    image: projectnessie/nessie
+    container_name: nessie
+    ports:
+      - 19120:19120
+    networks:
+      - nx-events-lake-network
+
+# accesskey: LyID4OINwyehOpzOIGp6
+# secretket: QPRtbwCBFWo2oZnKleFVnko44O78EMirFRSoZvzM
   spark:
     image: "apache/spark:3.5.0-scala2.12-java11-ubuntu"
     container_name: spark
@@ -239,13 +261,49 @@ services:
       - "--conf"
       - "spark.driver.extraJavaOptions=-Divy.cache.dir=/tmp -Divy.home=/tmp"
       - "--packages"
-      - "org.apache.spark:spark-connect_2.12:3.5.0"
+      - "org.apache.spark:spark-connect_2.12:3.5.0,org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.4.1,org.projectnessie.nessie-integrations:nessie-spark-extensions-3.5_2.12:0.73.0"
+      # - "org.apache.spark:spark-connect_2.12:3.5.0,org.apache.hadoop/hadoop-common/3.3.4,org.apache.hadoop/hadoop-aws/3.3.4,com.amazonaws/aws-java-sdk-bundle/1.12.262"
+      # - "org.apache.spark:spark-connect_2.12:3.5.0,org.apache.hadoop/hadoop-aws/3.3.4,com.amazonaws/aws-java-sdk-bundle/1.11.704"
+      # - "--conf"
+      # - "spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,org.projectnessie.spark.extensions.NessieSparkSessionExtensions"
+      - "--conf"
+      - "spark.hadoop.fs.s3a.endpoint=http://minio:9000"
+      - "--conf"
+      - "spark.hadoop.fs.s3a.access.key=LyID4OINwyehOpzOIGp6"
+      - "--conf"
+      - "spark.hadoop.fs.s3a.secret.key=QPRtbwCBFWo2oZnKleFVnko44O78EMirFRSoZvzM"
+      # - "--conf"
+      # - "spark.hadoop.fs.s3a.path.style.access=true"
+      # - "--conf"
+      # - "spark.sql.catalog.nessie=org.apache.iceberg.spark.SparkCatalog"
+      # - "--conf"
+      # - "spark.sql.catalog.nessie.uri=http://nessie:19120/api/v1"
+      # - "--conf"
+      # - "spark.sql.catalog.nessie.ref=main"
+      # - "--conf"
+      # - "spark.sql.catalog.nessie.authentication.type=NONE"
+      # - "--conf"
+      # - "spark.sql.catalog.nessie.catalog-impl=org.apache.iceberg.nessie.NessieCatalog"
+      # - "--conf"
+      # - "spark.sql.catalog.nessie.s3.endpoint=http://minio:9000"
+      # - "--conf"
+      # - "spark.sql.catalog.nessie.warehouse=s3a://warehouse/"
+      # - "--conf"
+      # - "spark.sql.catalog.nessie.io-impl=org.apache.iceberg.aws.s3.S3FileIO"
     environment:
       - SPARK_NO_DAEMONIZE=true
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_RPC_AUTHENTICATION_ENABLED=yes
+      - SPARK_RPC_ENCRYPTION_ENABLED=yes
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_REGION=us-east-1
+      - MINIO_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=LyID4OINwyehOpzOIGp6
+      - AWS_SECRET_ACCESS_KEY=QPRtbwCBFWo2oZnKleFVnko44O78EMirFRSoZvzM
+      # - AWS_S3_ENDPOINT=http://minio:9000
+      # - WAREHOUSE=s3a://warehouse/
+      # - NESSIE_URI=http://nessie:19120/api/v1
     ports:
       - "4040:4040"
       - "15002:15002"
@@ -358,6 +416,21 @@ services:
         interval: 5s
         timeout: 3s
         retries: 5
+    networks:
+      - nx-events-lake-network
+
+  db:
+    image: mysql:8.0.30-debian
+    container_name: db
+    environment:
+      - MYSQL_DATABASE=micro_videos
+      - MYSQL_ROOT_PASSWORD=root
+    # volumes:
+    #   - ./.docker/mysql:/docker-entrypoint-initdb.d
+    tmpfs:
+      - /var/lib/mysql
+    security_opt:
+      - seccomp:unconfined
     networks:
       - nx-events-lake-network
 

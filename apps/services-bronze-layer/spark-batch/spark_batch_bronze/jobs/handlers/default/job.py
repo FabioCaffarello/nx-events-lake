@@ -131,21 +131,46 @@ class Job:
             .builder
             .remote("sc://spark:15002")
             .config("log4j.logger.org.apache.hadoop.metrics2", "WARN")
+            # .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000")
+            .config('spark.sql.catalog.nessie', 'org.apache.iceberg.spark.SparkCatalog')
+            .config('spark.sql.catalog.nessie.uri', "http://nessie:19120/api/v1")
+            .config('spark.sql.catalog.nessie.ref', 'main')
+            .config('spark.sql.catalog.nessie.authentication.type', 'NONE')
+            .config('spark.sql.catalog.nessie.catalog-impl', 'org.apache.iceberg.nessie.NessieCatalog')
+            .config('spark.sql.catalog.nessie.s3.endpoint', "http://minio:9000")
+            .config('spark.sql.catalog.nessie.warehouse', "s3a://warehouse/")
+            .config('spark.sql.catalog.nessie.io-impl', 'org.apache.iceberg.aws.s3.S3FileIO')
+            .config("spark.hadoop.fs.s3a.access.key", "LyID4OINwyehOpzOIGp6")
+            .config("spark.hadoop.fs.s3a.secret.key", "QPRtbwCBFWo2oZnKleFVnko44O78EMirFRSoZvzM")
             .getOrCreate()
         )
         logger.info("[SPARK-CONNECT] Spark Running...")
         logger.info(f"Job triggered with input: {self._input_data}")
 
         # Sample data for the PySpark DataFrame
-        data = [
-            {"file_names": "file1.txt", "job_name": "example_job_1"},
-            {"file_names": "file2.txt", "job_name": "example_job_2"},
-            {"file_names": "file3.txt", "job_name": "example_job_3"},
-        ]
+        # data = [
+        #     {"file_names": "file1.txt", "job_name": "example_job_1"},
+        #     {"file_names": "file2.txt", "job_name": "example_job_2"},
+        #     {"file_names": "file3.txt", "job_name": "example_job_3"},
+        # ]
 
-        df = spark_session.createDataFrame(data)
-        logger.info(f"Dummy dataframe lazy: {df}")
-        logger.info(f"Dummy dataframe: {df.show()}")
+        # df = spark_session.createDataFrame(data)
+        # logger.info(f"Dummy dataframe lazy: {df}")
+        # logger.info(f"Dummy dataframe: {df.show()}")
+
+        logger.info("Spark Running")
+        ## Create a Table
+        spark_session.sql("CREATE TABLE nessie.names (name STRING) USING iceberg;").show()
+        ## Insert Some Data
+        spark_session.sql("INSERT INTO nessie.names VALUES ('Alex Merced'), ('Dipankar Mazumdar'), ('Jason Hughes')").show()
+        ## Query the Data
+        logger.info(f'loging nessie df: {spark_session.sql("SELECT * FROM nessie.names;").show()}')
+
+        df = spark_session.read.csv(uri, header=True, inferSchema=True)
+        logger.info(f"dataframe lazy: {df}")
+        logger.info(f"dataframe: {df.show()}")
+
+
 
         result = {"documentUri": "uri", "partition": self._partition}
         spark_session.stop()
