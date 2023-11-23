@@ -22,7 +22,7 @@ export class Config {
     console.log('NODE_ENV', process.env['NODE_ENV']);
     console.log("__dirname", __dirname);
     Config.env = readEnv({
-      path: join(__dirname, `../../../../../../../../../../apps/client-layer/backend/${service}/envs/.env.${process.env["NODE_ENV"]}`),
+      path: join(__dirname, `../../../../../../../../../apps/client-layer/backend/${service}/envs/.env.${process.env["NODE_ENV"]}`),
     }).parsed;
   }
 }
