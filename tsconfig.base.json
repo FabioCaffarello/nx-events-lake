@@ -19,8 +19,53 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "paths": {
+      "@nestlib/services/admin-videos-catalog/config-setup": [
+        "libs/typescript/nest/services/admin-videos-catalog/config-setup/src/index.ts"
+      ],
+      "@nestlib/services/admin-videos-catalog/database": [
+        "libs/typescript/nest/services/admin-videos-catalog/database/src/index.ts"
+      ],
+      "@nestlib/services/admin-videos-catalog/features/categories": [
+        "libs/typescript/nest/services/admin-videos-catalog/features/categories/src/index.ts"
+      ],
+      "@nestlib/shared/filters": [
+        "libs/typescript/nest/shared/filters/src/index.ts"
+      ],
+      "@nestlib/shared/interceptors/wrapper-data": [
+        "libs/typescript/nest/shared/interceptors/wrapper-data/src/index.ts"
+      ],
+      "@nestlib/shared/presenters": [
+        "libs/typescript/nest/shared/presenters/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/category/application/use-cases/common": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/category/application/use-cases/common/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/category/application/use-cases/create-category": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/category/application/use-cases/create-category/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/category/application/use-cases/delete-category": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/category/application/use-cases/delete-category/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/category/application/use-cases/get-category": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/category/application/use-cases/get-category/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/category/application/use-cases/list-categories": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/category/application/use-cases/list-categories/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/category/application/use-cases/update-category": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/category/application/use-cases/update-category/src/index.ts"
+      ],
       "@nodelib/services/ddd/admin-videos-catalog/category/entity": [
         "libs/typescript/node/services/ddd/admin-videos-catalog/category/entity/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/category/infra/db/in-memory": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/category/infra/db/in-memory/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/category/infra/db/sequelize": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/category/infra/db/sequelize/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/category/repository": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/category/repository/src/index.ts"
       ],
       "@nodelib/shared/ddd-utils/entity": [
         "libs/typescript/node/shared/ddd-utils/entity/src/index.ts"
