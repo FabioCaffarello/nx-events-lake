@@ -28,7 +28,7 @@ func (suite *ConfigSuite) TestNewConfigWhenIsANewConfig() {
 			Source:  "test",
 		},
 	}
-	config, err := NewConfig("test", true, "daily", "test", "test", "test", dependsOn, jobParams, serviceParams)
+	config, err := NewConfig("test", true, "daily", "test", "test", "test", "event", dependsOn, jobParams, serviceParams)
 	suite.NoError(err)
 	suite.NotNil(config)
 }
@@ -46,7 +46,7 @@ func (suite *ConfigSuite) TestNewConfigWhenNameIsEmpty() {
 			Source:  "test",
 		},
 	}
-	config, err := NewConfig("", true, "daily", "test", "test", "test", dependsOn, jobParams, serviceParams)
+	config, err := NewConfig("", true, "daily", "test", "test", "test", "event", dependsOn, jobParams, serviceParams)
 	suite.Error(err)
 	suite.Nil(config)
 }
@@ -64,7 +64,7 @@ func (suite *ConfigSuite) TestNewConfigWhenServiceIsEmpty() {
 			Source:  "test",
 		},
 	}
-	config, err := NewConfig("test", true, "daily", "", "test", "test", dependsOn, jobParams, serviceParams)
+	config, err := NewConfig("test", true, "daily", "", "test", "test", "event", dependsOn, jobParams, serviceParams)
 	suite.Error(err)
 	suite.Nil(config)
 }
@@ -82,7 +82,7 @@ func (suite *ConfigSuite) TestNewConfigWhenSourceIsEmpty() {
 			Source:  "test",
 		},
 	}
-	config, err := NewConfig("test", true, "daily", "test", "", "test", dependsOn, jobParams, serviceParams)
+	config, err := NewConfig("test", true, "daily", "test", "", "test", "event", dependsOn, jobParams, serviceParams)
 	suite.Error(err)
 	suite.Nil(config)
 }
@@ -100,7 +100,7 @@ func (suite *ConfigSuite) TestNewConfigWhenContextIsEmpty() {
 			Source:  "test",
 		},
 	}
-	config, err := NewConfig("test", true, "daily", "test", "test", "", dependsOn, jobParams, serviceParams)
+	config, err := NewConfig("test", true, "daily", "test", "test", "", "event", dependsOn, jobParams, serviceParams)
 	suite.Error(err)
 	suite.Nil(config)
 }
@@ -118,11 +118,11 @@ func (suite *ConfigSuite) TestIsConfigValid() {
 			Source:  "test",
 		},
 	}
-	config, err := NewConfig("test", true, "daily", "test", "test", "test", dependsOn, jobParams, serviceParams)
+	config, err := NewConfig("test", true, "daily", "test", "test", "test", "event", dependsOn, jobParams, serviceParams)
 	suite.NoError(err)
 	err = config.IsConfigValid()
 	suite.NoError(err)
 
   assert.Equal(suite.T(), "test-test", config.ID)
-  assert.Equal(suite.T(), "08e30afc-57c0-551c-add4-2458768b7099", config.ConfigID)
+  assert.Equal(suite.T(), "478a21cc-8100-520c-8107-7a07bb4b52bd", config.ConfigID)
 }

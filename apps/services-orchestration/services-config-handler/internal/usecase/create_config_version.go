@@ -25,6 +25,7 @@ func (ccu *CreateConfigVersionUseCase) Execute(config outputDTO.ConfigDTO) (outp
 		config.Service,
 		config.Source,
 		config.Context,
+        config.OutputMethod,
 		ConvertDependsOnDTOToEntity(config.DependsOn),
 		config.JobParameters,
 		config.ServiceParameters,

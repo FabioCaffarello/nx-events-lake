@@ -32,6 +32,7 @@ func (la *ListAllConfigsByServiceUseCase) Execute(service string) ([]outputDTO.C
 			Service:           item.Service,
 			Source:            item.Source,
 			Context:           item.Context,
+            OutputMethod:      item.OutputMethod,
 			DependsOn:         ConvertEntityToUseCaseDependencies(item.DependsOn),
 			ConfigID:          item.ConfigID,
 			ServiceParameters: item.ServiceParameters,

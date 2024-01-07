@@ -31,6 +31,7 @@ func (la *ListOneConfigByServiceAndSourceAndContextUseCase) Execute(service stri
 		Service:           item.Service,
 		Source:            item.Source,
 		Context:           item.Context,
+        OutputMethod:      item.OutputMethod,
 		DependsOn:         ConvertEntityToUseCaseDependencies(item.DependsOn),
 		ConfigID:          item.ConfigID,
 		ServiceParameters: item.ServiceParameters,

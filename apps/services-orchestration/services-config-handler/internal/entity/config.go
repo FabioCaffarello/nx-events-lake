@@ -8,13 +8,14 @@ import (
 )
 
 var (
-	ErrConfigNameEmpty      = errors.New("config name is empty")
-	ErrConfigFrequencyEmpty = errors.New("config frequency is empty")
-	ErrConfigServiceEmpty   = errors.New("config service is empty")
-	ErrConfigSourceEmpty    = errors.New("config source is empty")
-	ErrConfigContextEmpty   = errors.New("config context is empty")
-	ErrConfigDependsOnEmpty = errors.New("config dependsOn is empty")
-	ErrConfigEmpty          = errors.New("config is empty")
+	ErrConfigNameEmpty         = errors.New("config name is empty")
+	ErrConfigFrequencyEmpty    = errors.New("config frequency is empty")
+	ErrConfigServiceEmpty      = errors.New("config service is empty")
+	ErrConfigSourceEmpty       = errors.New("config source is empty")
+	ErrConfigContextEmpty      = errors.New("config context is empty")
+	ErrConfigOutputMethodEmpty = errors.New("config output method is empty")
+	ErrConfigDependsOnEmpty    = errors.New("config dependsOn is empty")
+	ErrConfigEmpty             = errors.New("config is empty")
 )
 
 type JobDependencies struct {
@@ -30,6 +31,7 @@ type Config struct {
 	Service           string                 `bson:"service"`
 	Source            string                 `bson:"source"`
 	Context           string                 `bson:"context"`
+	OutputMethod      string                 `json:"output_method"`
 	DependsOn         []JobDependencies      `bson:"depends_on"`
 	ServiceParameters map[string]interface{} `bson:"service_parameters"`
 	JobParameters     map[string]interface{} `bson:"job_parameters"`
@@ -45,6 +47,7 @@ func NewConfig(
 	service string,
 	source string,
 	context string,
+	outputMethod string,
 	dependsOn []JobDependencies,
 	jobParameters map[string]interface{},
 	serviceParameters map[string]interface{},
@@ -57,6 +60,7 @@ func NewConfig(
 		Service:           service,
 		Source:            source,
 		Context:           context,
+		OutputMethod:      outputMethod,
 		DependsOn:         dependsOn,
 		ServiceParameters: serviceParameters,
 		JobParameters:     jobParameters,
@@ -67,10 +71,10 @@ func NewConfig(
 	if err != nil {
 		return nil, err
 	}
-  err = config.SetConfigID()
-  if err != nil {
-    return nil, err
-  }
+	err = config.SetConfigID()
+	if err != nil {
+		return nil, err
+	}
 	return config, nil
 }
 
@@ -92,13 +96,14 @@ func getConfigParamsToGenerateVersionID(config *Config) map[string]interface{} {
 		"source":             config.Source,
 		"frequency":          config.Frequency,
 		"context":            config.Context,
+		"output_method":      config.OutputMethod,
 		"depends_on":         convertDependsOn(config.DependsOn),
 		"job_parameters":     config.JobParameters,
 		"service_parameters": config.ServiceParameters,
 	}
 }
 
-func(config *Config) SetConfigID() error {
+func (config *Config) SetConfigID() error {
 	if config == nil {
 		return ErrConfigEmpty
 	}
@@ -126,6 +131,9 @@ func (config *Config) IsConfigValid() error {
 	}
 	if config.Context == "" {
 		return ErrConfigContextEmpty
+	}
+	if config.OutputMethod == "" {
+		return ErrConfigOutputMethodEmpty
 	}
 	return nil
 }

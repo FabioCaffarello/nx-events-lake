@@ -9,6 +9,7 @@ Content-Type: application/json
   "service": "file-downloader",
   "source": "ceaf",
   "context": "br",
+  "output_method": "event",
   "depends_on": [{
     "service": "source-watcher",
     "source": "ceaf"
@@ -20,6 +21,9 @@ Content-Type: application/json
     "url": "https://portaldatransparencia.gov.br/download-de-dados/ceaf/{}"
   }
 }
+
+
+
 
 ###
 POST http://localhost:8002/configs/update HTTP/1.1
@@ -29,20 +33,19 @@ Content-Type: application/json
   "name": "ceaf-config",
   "active": true,
   "frequency": "daily",
-  "service": "file-downloader",
+  "service": "source-watcher",
   "source": "ceaf",
   "context": "br",
-  "depends_on": [{
-    "service": "source-watcher",
-    "source": "ceaf"
-  }],
   "service_parameters": {
     "job_handler": "default"
   },
   "job_parameters": {
-    "url": "https://portaldatransparencia.gov.br/download-de-dados/ceaf/{}"
+    "url": "https://portaldatransparencia.gov.br/download-de-dados/ceaf"
   }
 }
+
+
+
 
 ###
 
@@ -54,7 +57,7 @@ GET http://localhost:8002/configs/file-downloader-ceaf HTTP/1.1
 
 ###
 
-GET http://localhost:8002/configs/service/file-downloader HTTP/1.1
+GET http://localhost:8002/configs/service/source-watcher HTTP/1.1
 
 ###
 

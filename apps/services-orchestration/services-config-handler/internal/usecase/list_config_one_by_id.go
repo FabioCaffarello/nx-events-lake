@@ -31,6 +31,7 @@ func (la *ListOneConfigByIdUseCase) Execute(id string) (outputDTO.ConfigDTO, err
 		Service:           item.Service,
 		Source:            item.Source,
 		Context:           item.Context,
+        OutputMethod:      item.OutputMethod,
 		DependsOn:         ConvertEntityToUseCaseDependencies(item.DependsOn),
 		ConfigID:          item.ConfigID,
 		ServiceParameters: item.ServiceParameters,
