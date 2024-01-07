@@ -5,6 +5,7 @@
   "service": "file-downloader",
   "source": "ceaf",
   "context": "br",
+  "output_method": "event",
   "depends_on": [{
     "service": "source-watcher",
     "source": "ceaf"

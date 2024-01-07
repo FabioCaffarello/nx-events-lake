@@ -1,12 +1,15 @@
 ###
 
-POST http://localhost:8001/inputs/context/br/service/spark-batch-bronze/source/ceaf HTTP/1.1
+POST http://localhost:8001/inputs/context/br/service/source-watcher/source/ceaf HTTP/1.1
 Content-Type: application/json
 
 {
   "data": {
-    "documentUri": "s3a://raw-br-source-ceaf/20231110_Expulsoes/20231110",
-    "partition": "20231110"
+    "reference": {
+      "year": 2024,
+      "month": 1,
+      "day": 7
+    }
   }
 }
 

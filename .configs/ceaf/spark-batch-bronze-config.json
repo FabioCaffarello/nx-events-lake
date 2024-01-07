@@ -5,6 +5,7 @@
   "service": "spark-batch-bronze",
   "source": "ceaf",
   "context": "br",
+  "output_method": "event",
   "depends_on": [{
     "service": "file-unzip",
     "source": "ceaf"

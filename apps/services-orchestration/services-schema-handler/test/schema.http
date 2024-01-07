@@ -4,34 +4,22 @@ Content-Type: application/json
 
 {
     "schema_type": "service-input",
-    "service": "source-watcher",
+    "service": "file-downloader",
     "source": "ceaf",
     "context": "br",
     "json_schema": {
         "type": "object",
         "properties": {
-            "reference": {
-                "type": "object",
-                "properties": {
-                    "year": {
-                        "type": "integer"
-                    },
-                    "month": {
-                        "type": "integer"
-                    },
-                    "day": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "year",
-                    "month",
-                    "day"
-                ]
+            "documentUri": {
+                "type": "string"
+            },
+            "partition": {
+                "type": "string"
             }
         },
         "required": [
-            "reference"
+            "documentUri",
+            "partition"
         ]
     }
 }
@@ -86,4 +74,4 @@ GET http://localhost:8003/schemas/service/file-downloader/source/ceaf/context/br
 ###
 
 
-GET http://localhost:8003/schemas/service/file-downloader/source/ceaf/schema-type/service-input HTTP/1.1
+GET http://localhost:8003/schemas/service/source-watcher/source/ceaf/schema-type/service-input HTTP/1.1
