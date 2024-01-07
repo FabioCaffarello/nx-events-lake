@@ -38,6 +38,8 @@ func (c *CreateProcessingJobDependenciesUseCase) Execute(input inputDTO.Processi
 	processingJobDependenciesEntity, err := entity.NewProcessingJobDependencies(
 		input.Service,
 		input.Source,
+		input.Context,
+		input.ParentJobProcessingId,
 		entityJobDependencies,
 	)
 	if err != nil {
@@ -50,11 +52,12 @@ func (c *CreateProcessingJobDependenciesUseCase) Execute(input inputDTO.Processi
 	}
 
 	dto := outputDTO.ProcessingJobDependenciesDTO{
-		ID:              string(processingJobDependenciesEntity.ID),
-		Service:         processingJobDependenciesEntity.Service,
-		Source:          processingJobDependenciesEntity.Source,
-		Context:         processingJobDependenciesEntity.Context,
-		JobDependencies: ConvertEntityToUsecaseJobDependenciesWithProcessingData(processingJobDependenciesEntity.JobDependencies),
+		ID:                    string(processingJobDependenciesEntity.ID),
+		Service:               processingJobDependenciesEntity.Service,
+		Source:                processingJobDependenciesEntity.Source,
+		Context:               processingJobDependenciesEntity.Context,
+		ParentJobProcessingId: processingJobDependenciesEntity.ParentJobProcessingId,
+		JobDependencies:       ConvertEntityToUsecaseJobDependenciesWithProcessingData(processingJobDependenciesEntity.JobDependencies),
 	}
 	c.ProcessingJobDependenciesCreated.SetPayload(dto)
 	c.EventDispatcher.Dispatch(c.ProcessingJobDependenciesCreated, "services", fmt.Sprintf("staging-dep.%s.%s.%s", dto.Context, dto.Service, dto.Source))

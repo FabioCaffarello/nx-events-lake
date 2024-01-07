@@ -48,11 +48,12 @@ func (pjd *ProcessingJobDependenciesRepository) Save(processingJobDependencies *
 	if err != nil {
 		// Insert new document
 		_, err := pjd.Collection.InsertOne(context.Background(), bson.M{
-			"id":               processingJobDependencies.ID,
-			"service":          processingJobDependencies.Service,
-			"source":           processingJobDependencies.Source,
-            "context":          processingJobDependencies.Context,
-			"job_dependencies": processingJobDependencies.JobDependencies,
+			"id":                       processingJobDependencies.ID,
+			"service":                  processingJobDependencies.Service,
+			"source":                   processingJobDependencies.Source,
+			"context":                  processingJobDependencies.Context,
+			"parent_job_processing_id": processingJobDependencies.ParentJobProcessingId,
+			"job_dependencies":         processingJobDependencies.JobDependencies,
 		})
 		if err != nil {
 			return err
@@ -65,6 +66,7 @@ func (pjd *ProcessingJobDependenciesRepository) Save(processingJobDependencies *
 func (pjd *ProcessingJobDependenciesRepository) UpdateProcessingJobDependencies(jobDep *entity.JobDependenciesWithProcessingData, id string) error {
 	existingProcessingJobDependencies, err := pjd.getOneById(id)
 	log.Printf("UpdateProcessingJobDependencies: existingProcessingJobDependencies=%v", existingProcessingJobDependencies)
+	log.Printf("UpdateProcessingJobDependencies: jobDep=%v", jobDep)
 	if err != nil {
 		return err
 	}

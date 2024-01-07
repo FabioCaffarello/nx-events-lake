@@ -23,11 +23,12 @@ func (la *ListOneProcessingJobDependenciesByIdUseCase) Execute(id string) (outpu
 		return outputDTO.ProcessingJobDependenciesDTO{}, err
 	}
 	dto := outputDTO.ProcessingJobDependenciesDTO{
-		ID:              item.ID,
-		Service:         item.Service,
-		Source:          item.Source,
-		Context:         item.Context,
-		JobDependencies: ConvertEntityToUsecaseJobDependenciesWithProcessingData(item.JobDependencies),
+		ID:                    string(item.ID),
+		Service:               item.Service,
+		Source:                item.Source,
+		Context:               item.Context,
+		ParentJobProcessingId: item.ParentJobProcessingId,
+		JobDependencies:       ConvertEntityToUsecaseJobDependenciesWithProcessingData(item.JobDependencies),
 	}
 	return dto, nil
 }
