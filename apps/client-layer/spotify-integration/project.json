@@ -1,0 +1,75 @@
+{
+  "name": "client-layer-spotify-integration",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/client-layer/spotify-integration/spotify",
+  "targets": {
+    "lock": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry lock --no-update",
+        "cwd": "apps/client-layer/spotify-integration"
+      }
+    },
+    "add": {
+      "executor": "@nxlv/python:add",
+      "options": {}
+    },
+    "update": {
+      "executor": "@nxlv/python:update",
+      "options": {}
+    },
+    "remove": {
+      "executor": "@nxlv/python:remove",
+      "options": {}
+    },
+    "build": {
+      "executor": "@nxlv/python:build",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "outputPath": "apps/client-layer/spotify-integration/dist",
+        "publish": false,
+        "lockedVersions": true,
+        "bundleLocalDependencies": true
+      }
+    },
+    "install": {
+      "executor": "@nxlv/python:install",
+      "options": {
+        "silent": false,
+        "args": "",
+        "cacheDir": ".cache/pypoetry",
+        "verbose": false,
+        "debug": false
+      }
+    },
+    "lint": {
+      "executor": "@nxlv/python:flake8",
+      "outputs": [
+        "{workspaceRoot}/reports/apps/client-layer/spotify-integration/pylint.txt"
+      ],
+      "options": {
+        "outputFile": "reports/apps/client-layer/spotify-integration/pylint.txt"
+      }
+    },
+    "test": {
+      "executor": "@nxlv/python:run-commands",
+      "outputs": [
+        "{workspaceRoot}/reports/apps/client-layer/spotify-integration/unittests",
+        "{workspaceRoot}/coverage/apps/client-layer/spotify-integration"
+      ],
+      "options": {
+        "command": "poetry run pytest tests/",
+        "cwd": "apps/client-layer/spotify-integration"
+      }
+    },
+    "execute": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "poetry run python spotify/main.py",
+        "cwd": "apps/client-layer/spotify-integration"
+      }
+    }
+  },
+  "tags": ["lang:python", "scope:client-ui"]
+}
