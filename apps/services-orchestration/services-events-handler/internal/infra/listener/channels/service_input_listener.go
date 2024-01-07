@@ -44,7 +44,7 @@ func (l *ServiceInputListener) Handle(msg amqp.Delivery) error {
 	log.Println("input Id: ", id)
 	log.Println("inputStatus: ", statusInputDTO)
 
-	_, err = updateInputUseCase.Execute(statusInputDTO, contextEnv, service, source, id)
+	inputUpdated, err := updateInputUseCase.Execute(statusInputDTO, contextEnv, service, source, id)
 	if err != nil {
 		return err
 	}
@@ -55,12 +55,12 @@ func (l *ServiceInputListener) Handle(msg amqp.Delivery) error {
 		log.Println(err)
 	}
 
-    log.Println("dependentJobs", dependentJobs)
-    log.Println("err dependent", err)
-    log.Println("len dependentJobs", len(dependentJobs))
+	log.Println("dependentJobs", dependentJobs)
+	log.Println("err dependent", err)
+	log.Println("len dependentJobs", len(dependentJobs))
 
 	for _, dependentJob := range dependentJobs {
-        log.Println("dependentJob", dependentJob)
+		log.Println("dependentJob", dependentJob)
 		jobDeps := make([]statingHandlerSharedDTO.ProcessingJobDependencies, len(dependentJob.DependsOn))
 		for i, dep := range dependentJob.DependsOn {
 			jobDeps[i] = statingHandlerSharedDTO.ProcessingJobDependencies{
@@ -68,22 +68,25 @@ func (l *ServiceInputListener) Handle(msg amqp.Delivery) error {
 				Source:  dep.Source,
 			}
 		}
-        log.Println("jobDeps", jobDeps)
+		log.Println("jobDeps", jobDeps)
 
 		processingJobDependency := statingHandlerInputDTO.ProcessingJobDependenciesDTO{
-			Service:         dependentJob.Service,
-			Source:          dependentJob.Source,
-			JobDependencies: jobDeps,
+			Service:               dependentJob.Service,
+			Source:                dependentJob.Source,
+			Context:               contextEnv,
+			ParentJobProcessingId: inputUpdated.Metadata.ProcessingId,
+			// OutputMethod:          dependentJob.OutputMethod,
+			JobDependencies:       jobDeps,
 		}
 
-        log.Println("processingJobDependency", processingJobDependency)
+		log.Println("processingJobDependency", processingJobDependency)
 
 		_, err = createProcessingJobDependenciesUseCase.Execute(processingJobDependency)
 		if err != nil {
 			log.Println(err)
 		}
 
-        log.Println("err createProcessingJobDependenciesUseCase", err)
+		log.Println("err createProcessingJobDependenciesUseCase", err)
 
 	}
 

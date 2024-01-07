@@ -18,7 +18,8 @@ func NewCreateProcessingJobDependenciesUseCase() *CreateProcessingJobDependencie
 }
 
 func (la *CreateProcessingJobDependenciesUseCase) Execute(jobDependencies stagingHandlerInputDTO.ProcessingJobDependenciesDTO) (stagingHandlerOutputDTO.ProcessingJobDependenciesDTO, error) {
-	jobDependenciesCreated, err := la.StagingHandlerAPIClient.CreateProcessingJobDependencies(jobDependencies)
+	log.Println("jobDependencies", jobDependencies)
+    jobDependenciesCreated, err := la.StagingHandlerAPIClient.CreateProcessingJobDependencies(jobDependencies)
 	log.Println("jobDependenciesCreated", jobDependenciesCreated)
 	log.Println("err jobDependenciesCreated", err)
 	if err != nil {

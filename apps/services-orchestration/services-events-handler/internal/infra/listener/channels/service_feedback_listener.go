@@ -3,6 +3,7 @@ package channels
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 
 	"apps/services-orchestration/services-events-handler/internal/usecase"
@@ -12,7 +13,7 @@ import (
 	outputHandlerInputDTO "libs/golang/services/dtos/services-output-handler/input"
 	outputHandlerISharedDTO "libs/golang/services/dtos/services-output-handler/shared"
 	stagingHandlerSharedDTO "libs/golang/services/dtos/services-staging-handler/shared"
-	configID "libs/golang/shared/go-id/config"
+	"libs/golang/shared/go-id/md5"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -53,6 +54,7 @@ func (l *ServiceFeedbackListener) Handle(msg amqp.Delivery) error {
 	service := serviceFeedbackDTO.Metadata.Service
 	source := serviceFeedbackDTO.Metadata.Source
 	contextEnv := serviceFeedbackDTO.Metadata.Context
+	processingId := serviceFeedbackDTO.Metadata.Input.ProcessingId
 	id := serviceFeedbackDTO.Metadata.Input.ID
 
 	updateInputUseCase := usecase.NewUpdateStatusInputUseCase()
@@ -64,11 +66,11 @@ func (l *ServiceFeedbackListener) Handle(msg amqp.Delivery) error {
 
 	switch statusCodeRange {
 	case "2XX":
-		l.HandleFeedback200(serviceFeedbackDTO, service, source)
+		l.HandleFeedback200(serviceFeedbackDTO, service, source, processingId)
 	case "4XX":
-		l.HandleFeedback400(serviceFeedbackDTO, service, source)
+		l.HandleFeedback400(serviceFeedbackDTO, service, source, processingId)
 	case "5XX":
-		l.HandleFeedback500(serviceFeedbackDTO, service, source)
+		l.HandleFeedback500(serviceFeedbackDTO, service, source, processingId)
 	default:
 		return ErrorInvalidStatus
 	}
@@ -87,7 +89,7 @@ func InterfaceArrayToStringArray(interfaceArray []interface{}) []string {
 	return stringArray
 }
 
-func (l *ServiceFeedbackListener) HandleFeedback200(msg eventsHandlerInputDTO.ServiceFeedbackDTO, service string, source string) {
+func (l *ServiceFeedbackListener) HandleFeedback200(msg eventsHandlerInputDTO.ServiceFeedbackDTO, service string, source string, processingId string) {
 	outputData := getServiceOutputDTO(msg)
 	createOutputUseCase := usecase.NewCreateOutputUseCase()
 	_, err := createOutputUseCase.Execute(service, outputData)
@@ -157,13 +159,12 @@ func (l *ServiceFeedbackListener) HandleFeedback200(msg eventsHandlerInputDTO.Se
 
 	if len(dependentJobs) > 0 {
 		for _, dependentJob := range dependentJobs {
-			processingJobDepId := configID.NewID(dependentJob.Service, dependentJob.Source)
+			processingJobParentId := string(md5.NewMd5Hash(fmt.Sprintf("%s-%s-%s-%s", dependentJob.Context, dependentJob.Service, dependentJob.Source, processingId)))
+			log.Println("processingJobParentId: ", processingJobParentId)
 
-			log.Println("processingJobDepId: ", processingJobDepId)
-
-            // Should Update batch
-			updateProcessingJobDependenciesUseCase.Execute(processingJobDepId, jobDep)
-			shouldRun, err := checkAllJobDependenciesStatus200UseCase.Execute(processingJobDepId)
+			// Should Update batch
+			updateProcessingJobDependenciesUseCase.Execute(processingJobParentId, jobDep)
+			shouldRun, err := checkAllJobDependenciesStatus200UseCase.Execute(processingJobParentId)
 			log.Println("shouldRun: ", shouldRun)
 			if err != nil {
 				log.Println(err)
@@ -174,18 +175,19 @@ func (l *ServiceFeedbackListener) HandleFeedback200(msg eventsHandlerInputDTO.Se
 					if err != nil {
 						log.Println(err)
 					}
+                    // TODO: Update pipeline graph
 				}
-				removeProcessingJobDependenciesUseCase.Execute(processingJobDepId)
+				removeProcessingJobDependenciesUseCase.Execute(processingJobParentId)
 			}
 		}
 	}
 }
 
-func (l *ServiceFeedbackListener) HandleFeedback400(msg eventsHandlerInputDTO.ServiceFeedbackDTO, service string, source string) {
+func (l *ServiceFeedbackListener) HandleFeedback400(msg eventsHandlerInputDTO.ServiceFeedbackDTO, service string, source string, processingId string) {
 
 }
 
-func (l *ServiceFeedbackListener) HandleFeedback500(msg eventsHandlerInputDTO.ServiceFeedbackDTO, service string, source string) {
+func (l *ServiceFeedbackListener) HandleFeedback500(msg eventsHandlerInputDTO.ServiceFeedbackDTO, service string, source string, processingId string) {
 
 }
 
