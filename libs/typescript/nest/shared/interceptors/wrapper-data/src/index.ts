@@ -1,1 +1,1 @@
-export * from './lib/wrapper-data.module';
+export * from './lib/wrapper-data.interceptor';

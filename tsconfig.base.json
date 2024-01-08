@@ -8,16 +8,23 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2017",
+    "target": "es2021",
     "module": "esnext",
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "esModuleInterop": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
+    "incremental": true,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "removeComments": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@nestlib/services/admin-videos-catalog/config-setup": [
         "libs/typescript/nest/services/admin-videos-catalog/config-setup/src/index.ts"
@@ -25,8 +32,14 @@
       "@nestlib/services/admin-videos-catalog/database": [
         "libs/typescript/nest/services/admin-videos-catalog/database/src/index.ts"
       ],
+      "@nestlib/services/admin-videos-catalog/features/cast-member": [
+        "libs/typescript/nest/services/admin-videos-catalog/features/cast-member/src/index.ts"
+      ],
       "@nestlib/services/admin-videos-catalog/features/categories": [
         "libs/typescript/nest/services/admin-videos-catalog/features/categories/src/index.ts"
+      ],
+      "@nestlib/services/admin-videos-catalog/features/genres": [
+        "libs/typescript/nest/services/admin-videos-catalog/features/genres/src/index.ts"
       ],
       "@nestlib/shared/filters": [
         "libs/typescript/nest/shared/filters/src/index.ts"
@@ -34,8 +47,44 @@
       "@nestlib/shared/interceptors/wrapper-data": [
         "libs/typescript/nest/shared/interceptors/wrapper-data/src/index.ts"
       ],
+      "@nestlib/shared/module": [
+        "libs/typescript/nest/shared/module/src/index.ts"
+      ],
       "@nestlib/shared/presenters": [
         "libs/typescript/nest/shared/presenters/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/cast-member/application/use-cases/common": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/cast-member/application/use-cases/common/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/cast-member/application/use-cases/create-cast-member": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/cast-member/application/use-cases/create-cast-member/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/cast-member/application/use-cases/delete-cast-member": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/cast-member/application/use-cases/delete-cast-member/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/cast-member/application/use-cases/get-cast-member": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/cast-member/application/use-cases/get-cast-member/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/cast-member/application/use-cases/list-cast-members": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/cast-member/application/use-cases/list-cast-members/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/cast-member/application/use-cases/update-cast-member": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/cast-member/application/use-cases/update-cast-member/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/cast-member/application/validations": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/cast-member/application/validations/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/cast-member/entity": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/cast-member/entity/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/cast-member/infra/db/in-memory": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/cast-member/infra/db/in-memory/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/cast-member/infra/db/sequelize": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/cast-member/infra/db/sequelize/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/cast-member/repository": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/cast-member/repository/src/index.ts"
       ],
       "@nodelib/services/ddd/admin-videos-catalog/category/application/use-cases/common": [
         "libs/typescript/node/services/ddd/admin-videos-catalog/category/application/use-cases/common/src/index.ts"
@@ -55,6 +104,9 @@
       "@nodelib/services/ddd/admin-videos-catalog/category/application/use-cases/update-category": [
         "libs/typescript/node/services/ddd/admin-videos-catalog/category/application/use-cases/update-category/src/index.ts"
       ],
+      "@nodelib/services/ddd/admin-videos-catalog/category/application/validations": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/category/application/validations/src/index.ts"
+      ],
       "@nodelib/services/ddd/admin-videos-catalog/category/entity": [
         "libs/typescript/node/services/ddd/admin-videos-catalog/category/entity/src/index.ts"
       ],
@@ -67,8 +119,83 @@
       "@nodelib/services/ddd/admin-videos-catalog/category/repository": [
         "libs/typescript/node/services/ddd/admin-videos-catalog/category/repository/src/index.ts"
       ],
+      "@nodelib/services/ddd/admin-videos-catalog/genre/application/use-cases/common": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/genre/application/use-cases/common/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/genre/application/use-cases/create-genre": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/genre/application/use-cases/create-genre/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/genre/application/use-cases/delete-genre": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/genre/application/use-cases/delete-genre/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/genre/application/use-cases/get-genre": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/genre/application/use-cases/get-genre/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/genre/application/use-cases/list-genres": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/genre/application/use-cases/list-genres/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/genre/application/use-cases/update-genre": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/genre/application/use-cases/update-genre/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/genre/application/validations": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/genre/application/validations/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/genre/entity": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/genre/entity/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/genre/infra/db/in-memory": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/genre/infra/db/in-memory/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/genre/infra/db/sequelize": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/genre/infra/db/sequelize/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/genre/repository": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/genre/repository/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/value-objects/banner": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/value-objects/banner/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/entity": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/entity/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/infra/db/in-memory": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/infra/db/in-memory/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/infra/db/sequelize": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/infra/db/sequelize/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/repository": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/repository/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/validator": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/validator/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/value-objects/banner": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/value-objects/banner/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/value-objects/thumbnail": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/value-objects/thumbnail/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/value-objects/trailer": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/value-objects/trailer/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/value-objects/video-media": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/value-objects/video-media/src/index.ts"
+      ],
+      "@nodelib/shared/application": [
+        "libs/typescript/node/shared/application/src/index.ts"
+      ],
+      "@nodelib/shared/ddd-utils/aggregate-root": [
+        "libs/typescript/node/shared/ddd-utils/aggregate-root/src/index.ts"
+      ],
+      "@nodelib/shared/ddd-utils/either": [
+        "libs/typescript/node/shared/ddd-utils/either/src/index.ts"
+      ],
       "@nodelib/shared/ddd-utils/entity": [
         "libs/typescript/node/shared/ddd-utils/entity/src/index.ts"
+      ],
+      "@nodelib/shared/ddd-utils/events": [
+        "libs/typescript/node/shared/ddd-utils/events/src/index.ts"
       ],
       "@nodelib/shared/ddd-utils/infra/db/in-memory": [
         "libs/typescript/node/shared/ddd-utils/infra/db/in-memory/src/index.ts"
@@ -88,11 +215,26 @@
       "@nodelib/shared/errors": [
         "libs/typescript/node/shared/errors/src/index.ts"
       ],
+      "@nodelib/shared/types": [
+        "libs/typescript/node/shared/types/src/index.ts"
+      ],
       "@nodelib/shared/validators": [
         "libs/typescript/node/shared/validators/src/index.ts"
       ],
       "@nodelib/shared/value-object": [
         "libs/typescript/node/shared/value-object/src/index.ts"
+      ],
+      "@nodelib/shared/value-objects/audio-video-media": [
+        "libs/typescript/node/shared/value-objects/audio-video-media/src/index.ts"
+      ],
+      "@nodelib/shared/value-objects/banner": [
+        "libs/typescript/node/shared/value-objects/banner/src/index.ts"
+      ],
+      "@nodelib/shared/value-objects/image-media": [
+        "libs/typescript/node/shared/value-objects/image-media/src/index.ts"
+      ],
+      "@nodelib/shared/value-objects/rating": [
+        "libs/typescript/node/shared/value-objects/rating/src/index.ts"
       ],
       "@nodelib/shared/value-objects/uuid": [
         "libs/typescript/node/shared/value-objects/uuid/src/index.ts"
