@@ -1,8 +1,10 @@
 go 1.20
 
 use (
+	apps/services-gold-layer/video-encoder
 	apps/services-orchestration/services-batch-handler
 	apps/services-orchestration/services-config-handler
+	apps/services-orchestration/services-definitions-handler
 	apps/services-orchestration/services-events-handler
 	apps/services-orchestration/services-file-catalog-handler
 	apps/services-orchestration/services-input-handler
