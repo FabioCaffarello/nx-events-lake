@@ -1,0 +1,75 @@
+[
+    {
+        "id": "",
+        "active": true,
+        "frequency": "daily",
+        "source": "ceaf",
+        "context": "br",
+        "pipelineVersionId": "",
+        "status": "success",
+        "pipeline": [
+            {
+                "type": "scheduled",
+                "service": "source-watcher",
+                "source": "ceaf",
+                "childProcessing": [
+                    {
+                        "kind": "job",
+                        "processingId": "",
+                        "configVersionId": "",
+                        "inputSchemaVersionId": "",
+                        "outputSchemaVersionId": "",
+                        "jobDefinitionVersionId": "",
+                        "inputId": "",
+                        "outputId": "",
+                        "status": 200
+                    }
+                ]
+            },
+            {
+                "type": "event",
+                "service": "file-downloader",
+                "source": "ceaf",
+                "childProcessing": [
+                    {
+                        "kind": "job",
+                        "processingId": ""
+                    }
+                ]
+            },
+            {
+                "type": "event",
+                "service": "file-unzip",
+                "source": "ceaf",
+                "childProcessing": [
+                    {
+                        "kind": "job",
+                        "processingId": ""
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "",
+        "active": true,
+        "frequency": "daily",
+        "source": "ceaf",
+        "context": "br",
+        "pipeline": [
+            {
+                "type": "scheduled",
+                "service": "source-watcher",
+                "source": "annual-reports",
+                "childProcessing": [
+                    {
+                        "kind": "1_N",
+                        "pipelineIds": [
+                            ""
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
