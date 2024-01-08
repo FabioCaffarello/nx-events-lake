@@ -1,6 +1,5 @@
-import { Category } from '@nodelib/services/ddd/admin-videos-catalog/category/entity';
-import { EntityValidationError } from '@nodelib/shared/validators';
-import { Uuid } from '@nodelib/shared/value-objects/uuid';
+import { Category, CategoryId } from '@nodelib/services/ddd/admin-videos-catalog/category/entity';
+import { LoadEntityError } from '@nodelib/shared/validators';
 import { CategoryModel } from './category.model';
 
 export class CategoryModelMapper {
@@ -16,7 +15,7 @@ export class CategoryModelMapper {
 
   static toEntity(model: CategoryModel): Category {
     const category = new Category({
-      category_id: new Uuid(model.category_id),
+      category_id: new CategoryId(model.category_id),
       name: model.name,
       description: model.description,
       is_active: model.is_active,
@@ -25,7 +24,7 @@ export class CategoryModelMapper {
 
     category.validate();
     if (category.notification.hasErrors()) {
-      throw new EntityValidationError(category.notification.toJSON());
+      throw new LoadEntityError(category.notification.toJSON());
     }
     return category;
   }

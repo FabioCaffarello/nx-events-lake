@@ -1,6 +1,6 @@
 import { ICategoryRepository } from '@nodelib/services/ddd/admin-videos-catalog/category/repository';
 import { IUseCase } from '@nodelib/shared/ddd-utils/use-case';
-import { Uuid } from '@nodelib/shared/value-objects/uuid';
+import { CategoryId } from '@nodelib/services/ddd/admin-videos-catalog/category/entity'
 
 export class DeleteCategoryUseCase
   implements IUseCase<DeleteCategoryInput, DeleteCategoryOutput>
@@ -8,8 +8,8 @@ export class DeleteCategoryUseCase
   constructor(private categoryRepo: ICategoryRepository) {}
 
   async execute(input: DeleteCategoryInput): Promise<DeleteCategoryOutput> {
-    const uuid = new Uuid(input.id);
-    await this.categoryRepo.delete(uuid);
+    const categoryId = new CategoryId(input.id);
+    await this.categoryRepo.delete(categoryId);
   }
 }
 

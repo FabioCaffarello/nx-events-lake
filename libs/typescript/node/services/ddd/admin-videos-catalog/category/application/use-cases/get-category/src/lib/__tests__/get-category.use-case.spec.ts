@@ -1,7 +1,7 @@
-import { Category } from '@nodelib/services/ddd/admin-videos-catalog/category/entity';
+import { Category, CategoryId } from '@nodelib/services/ddd/admin-videos-catalog/category/entity';
 import { CategoryInMemoryRepository } from '@nodelib/services/ddd/admin-videos-catalog/category/infra/db/in-memory';
 import { NotFoundError } from '@nodelib/shared/errors';
-import { InvalidUuidError, Uuid } from '@nodelib/shared/value-objects/uuid';
+import { InvalidUuidError } from '@nodelib/shared/value-objects/uuid';
 import { GetCategoryUseCase } from '../get-category.use-case';
 
 describe('GetCategoryUseCase Unit Tests', () => {
@@ -18,9 +18,9 @@ describe('GetCategoryUseCase Unit Tests', () => {
       new InvalidUuidError()
     );
 
-    const uuid = new Uuid();
-    await expect(() => useCase.execute({ id: uuid.id })).rejects.toThrow(
-      new NotFoundError(uuid.id, Category)
+    const categoryId = new CategoryId();
+    await expect(() => useCase.execute({ id: categoryId.id })).rejects.toThrow(
+      new NotFoundError(categoryId.id, Category)
     );
   });
 

@@ -1,19 +1,18 @@
-import { Category } from '@nodelib/services/ddd/admin-videos-catalog/category/entity'
+import { Category, CategoryId } from '@nodelib/services/ddd/admin-videos-catalog/category/entity'
 import { CategoryFilter, ICategoryRepository } from '@nodelib/services/ddd/admin-videos-catalog/category/repository'
 import { InMemorySearchableRepository } from '@nodelib/shared/ddd-utils/infra/db/in-memory'
 import { SortDirection } from '@nodelib/shared/ddd-utils/repository'
-import { Uuid } from '@nodelib/shared/value-objects/uuid'
 
 
 export class CategoryInMemoryRepository
-  extends InMemorySearchableRepository<Category, Uuid>
+  extends InMemorySearchableRepository<Category, CategoryId>
   implements ICategoryRepository
 {
-  sortableFields: string[] = ["name", "created_at"];
+  sortableFields: string[] = ['name', 'created_at'];
 
   protected async applyFilter(
     items: Category[],
-    filter: CategoryFilter
+    filter: CategoryFilter | null,
   ): Promise<Category[]> {
     if (!filter) {
       return items;
@@ -30,10 +29,10 @@ export class CategoryInMemoryRepository
   protected applySort(
     items: Category[],
     sort: string | null,
-    sort_dir: SortDirection | null
+    sort_dir: SortDirection | null,
   ) {
     return sort
       ? super.applySort(items, sort, sort_dir)
-      : super.applySort(items, "created_at", "desc");
+      : super.applySort(items, 'created_at', 'desc');
   }
 }

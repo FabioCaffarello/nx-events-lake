@@ -1,0 +1,25 @@
+{
+  "name": "typescript-node-shared-value-objects-image-media",
+  "$schema": "../../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/typescript/node/shared/value-objects/image-media/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/typescript/node/shared/value-objects/image-media/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/typescript/node/shared/value-objects/image-media/jest.config.ts"
+      }
+    }
+  },
+  "tags": ["lang:node", "scope:shared"]
+}

@@ -1,1 +1,1 @@
-export * from './lib/category-repository';
+export * from './lib/category.repository';

@@ -2,12 +2,11 @@ import {
   CategoryOutput,
   CategoryOutputMapper,
 } from '@nodelib/services/ddd/admin-videos-catalog/category/application/use-cases/common';
-import { Category } from '@nodelib/services/ddd/admin-videos-catalog/category/entity';
+import { Category, CategoryId } from '@nodelib/services/ddd/admin-videos-catalog/category/entity';
 import { ICategoryRepository } from '@nodelib/services/ddd/admin-videos-catalog/category/repository';
 import { IUseCase } from '@nodelib/shared/ddd-utils/use-case';
 import { NotFoundError } from '@nodelib/shared/errors';
 import { EntityValidationError } from '@nodelib/shared/validators';
-import { Uuid } from '@nodelib/shared/value-objects/uuid';
 import { UpdateCategoryInput } from './update-category.input';
 
 export class UpdateCategoryUseCase
@@ -16,8 +15,8 @@ export class UpdateCategoryUseCase
   constructor(private categoryRepo: ICategoryRepository) {}
 
   async execute(input: UpdateCategoryInput): Promise<UpdateCategoryOutput> {
-    const uuid = new Uuid(input.id);
-    const category = await this.categoryRepo.findById(uuid);
+    const categoryId = new CategoryId(input.id);
+    const category = await this.categoryRepo.findById(categoryId);
 
     if (!category) {
       throw new NotFoundError(input.id, Category);

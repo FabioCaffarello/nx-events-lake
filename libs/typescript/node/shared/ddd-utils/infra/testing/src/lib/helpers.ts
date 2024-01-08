@@ -1,6 +1,6 @@
-import { Sequelize, SequelizeOptions } from "sequelize-typescript";
-import { Config } from "./config";
-import { beforeAll, beforeEach, afterAll } from "@jest/globals";
+import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
+import { Config } from './config';
+import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
 
 export function setupSequelize(options: SequelizeOptions = {}) {
@@ -23,3 +23,5 @@ export function setupSequelize(options: SequelizeOptions = {}) {
     },
   };
 }
+
+

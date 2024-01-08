@@ -2,7 +2,7 @@ import { ClassValidatorFields, Notification } from "@nodelib/shared/validators";
 import {
   MaxLength,
 } from "class-validator";
-import { Category } from "./category.entity";
+import { Category } from "./category.aggregate";
 
 
 export class CategoryRules {

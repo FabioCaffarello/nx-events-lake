@@ -1,0 +1,25 @@
+{
+  "name": "typescript-node-services-ddd-admin-videos-catalog-genre-application-validations",
+  "$schema": "../../../../../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/typescript/node/services/ddd/admin-videos-catalog/genre/application/validations/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/typescript/node/services/ddd/admin-videos-catalog/genre/application/validations/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/typescript/node/services/ddd/admin-videos-catalog/genre/application/validations/jest.config.ts"
+      }
+    }
+  },
+  "tags": ["lang:node", "scope:shared"]
+}

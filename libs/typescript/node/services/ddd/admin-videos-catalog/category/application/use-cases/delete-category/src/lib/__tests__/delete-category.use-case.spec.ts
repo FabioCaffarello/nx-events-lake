@@ -1,7 +1,7 @@
-import { Category } from '@nodelib/services/ddd/admin-videos-catalog/category/entity';
+import { Category, CategoryId } from '@nodelib/services/ddd/admin-videos-catalog/category/entity';
 import { CategoryInMemoryRepository } from '@nodelib/services/ddd/admin-videos-catalog/category/infra/db/in-memory';
 import { NotFoundError } from '@nodelib/shared/errors';
-import { InvalidUuidError, Uuid } from  '@nodelib/shared/value-objects/uuid';
+import { InvalidUuidError } from  '@nodelib/shared/value-objects/uuid';
 import { DeleteCategoryUseCase } from '../delete-category.use-case';
 
 describe('DeleteCategoryUseCase Unit Tests', () => {
@@ -18,11 +18,11 @@ describe('DeleteCategoryUseCase Unit Tests', () => {
       useCase.execute({ id: 'fake id'})
     ).rejects.toThrow(new InvalidUuidError());
 
-    const uuid = new Uuid();
+    const categoryId = new CategoryId();
 
     await expect(() =>
-      useCase.execute({ id: uuid.id})
-    ).rejects.toThrow(new NotFoundError(uuid.id, Category));
+      useCase.execute({ id: categoryId.id})
+    ).rejects.toThrow(new NotFoundError(categoryId.id, Category));
   });
 
   it('should delete a category', async () => {

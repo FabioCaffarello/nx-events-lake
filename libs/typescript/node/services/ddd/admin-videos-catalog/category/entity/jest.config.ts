@@ -10,4 +10,5 @@ export default {
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory:
     '../../../../../../../../coverage/libs/typescript/node/services/ddd/admin-videos-catalog/category/entity',
+    // setupFilesAfterEnv: ['../../../expect-helpers.ts']
 };

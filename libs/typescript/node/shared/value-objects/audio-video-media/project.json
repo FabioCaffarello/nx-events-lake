@@ -1,0 +1,25 @@
+{
+  "name": "typescript-node-shared-value-objects-audio-video-media",
+  "$schema": "../../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/typescript/node/shared/value-objects/audio-video-media/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/typescript/node/shared/value-objects/audio-video-media/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/typescript/node/shared/value-objects/audio-video-media/jest.config.ts"
+      }
+    }
+  },
+  "tags": ["lang:node", "scope:shared"]
+}

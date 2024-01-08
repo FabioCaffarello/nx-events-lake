@@ -1,0 +1,25 @@
+{
+  "name": "typescript-node-services-ddd-admin-videos-catalog-genre-infra-db-in-memory",
+  "$schema": "../../../../../../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/typescript/node/services/ddd/admin-videos-catalog/genre/infra/db/in-memory/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/typescript/node/services/ddd/admin-videos-catalog/genre/infra/db/in-memory/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/typescript/node/services/ddd/admin-videos-catalog/genre/infra/db/in-memory/jest.config.ts"
+      }
+    }
+  },
+  "tags": ["lang:node", "scope:shared"]
+}

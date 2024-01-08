@@ -1,8 +1,7 @@
-import { Category } from '@nodelib/services/ddd/admin-videos-catalog/category/entity';
+import { Category, CategoryId } from '@nodelib/services/ddd/admin-videos-catalog/category/entity';
 import { CategoryModel, CategorySequelizeRepository } from '@nodelib/services/ddd/admin-videos-catalog/category/infra/db/sequelize';
 import { setupSequelize } from '@nodelib/shared/ddd-utils/infra/testing';
 import { NotFoundError } from '@nodelib/shared/errors';
-import { Uuid } from '@nodelib/shared/value-objects/uuid';
 import { GetCategoryUseCase } from '../get-category.use-case';
 
 describe('GetCategoryUseCase Integration Tests', () => {
@@ -17,9 +16,9 @@ describe('GetCategoryUseCase Integration Tests', () => {
   });
 
   it('should throws error when entity not found', async () => {
-    const uuid = new Uuid();
-    await expect(() => useCase.execute({ id: uuid.id })).rejects.toThrow(
-      new NotFoundError(uuid.id, Category)
+    const categoryId = new CategoryId();
+    await expect(() => useCase.execute({ id: categoryId.id })).rejects.toThrow(
+      new NotFoundError(categoryId.id, Category)
     );
   });
 

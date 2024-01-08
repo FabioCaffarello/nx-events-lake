@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import {  Notification } from '@nodelib/shared/validators';
+import { ValueObject } from '@nodelib/shared/value-object';
 
 
 expect.extend({
@@ -30,6 +31,17 @@ expect.extend({
             `The validation errors not contains ${JSON.stringify(
               received,
             )}. Current: ${JSON.stringify(expected.toJSON())}`,
+        };
+  },
+  toBeValueObject(expected: ValueObject, received: ValueObject) {
+    return expected.equals(received)
+      ? { pass: true, message: () => '' }
+      : {
+          pass: false,
+          message: () =>
+            `The values object are not equal. Expected: ${JSON.stringify(
+              expected,
+            )} | Received: ${JSON.stringify(received)}`,
         };
   },
 });

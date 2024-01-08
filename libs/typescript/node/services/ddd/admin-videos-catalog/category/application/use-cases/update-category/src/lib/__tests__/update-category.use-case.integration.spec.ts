@@ -1,8 +1,7 @@
-import { Category } from '@nodelib/services/ddd/admin-videos-catalog/category/entity';
+import { Category, CategoryId } from '@nodelib/services/ddd/admin-videos-catalog/category/entity';
 import { CategoryModel, CategorySequelizeRepository } from '@nodelib/services/ddd/admin-videos-catalog/category/infra/db/sequelize';
 import { NotFoundError } from '@nodelib/shared/errors';
 import { setupSequelize } from '@nodelib/shared/ddd-utils/infra/testing';
-import { Uuid } from '@nodelib/shared/value-objects/uuid';
 import { UpdateCategoryUseCase } from '../update-category.use-case';
 
 describe('UpdateCategoryUseCase Integration Tests', () => {
@@ -17,10 +16,10 @@ describe('UpdateCategoryUseCase Integration Tests', () => {
   });
 
   it('should throws error when entity not found', async () => {
-    const uuid = new Uuid();
+    const categoryId = new CategoryId();
     await expect(() =>
-      useCase.execute({ id: uuid.id, name: 'fake' }),
-    ).rejects.toThrow(new NotFoundError(uuid.id, Category));
+      useCase.execute({ id: categoryId.id, name: 'fake' }),
+    ).rejects.toThrow(new NotFoundError(categoryId.id, Category));
   });
 
   it('should update a category', async () => {
@@ -147,20 +146,20 @@ describe('UpdateCategoryUseCase Integration Tests', () => {
         ...('description' in i.input && { description: i.input.description }),
         ...('is_active' in i.input && { is_active: i.input.is_active }),
       });
-      const entityUpdated = await repository.findById(new Uuid(i.input.id));
+      const entityUpdated = await repository.findById(new CategoryId(i.input.id));
       expect(output).toStrictEqual({
         id: entity.category_id.id,
         name: i.expected.name,
         description: i.expected.description,
         is_active: i.expected.is_active,
-        created_at: entityUpdated.created_at,
+        created_at: entityUpdated!.created_at,
       });
-      expect(entityUpdated.toJSON()).toStrictEqual({
+      expect(entityUpdated!.toJSON()).toStrictEqual({
         category_id: entity.category_id.id,
         name: i.expected.name,
         description: i.expected.description,
         is_active: i.expected.is_active,
-        created_at: entityUpdated.created_at,
+        created_at: entityUpdated!.created_at,
       });
     }
   });
