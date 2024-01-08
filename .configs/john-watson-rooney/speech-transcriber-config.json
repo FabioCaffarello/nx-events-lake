@@ -5,6 +5,7 @@
     "service": "speech-transcriber",
     "source": "john-watson-rooney",
     "context": "br",
+    "output_method": "event",
     "depends_on": [{
       "service": "media-transcoder",
       "source": "john-watson-rooney"
