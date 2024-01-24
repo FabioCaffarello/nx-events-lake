@@ -1,0 +1,68 @@
+{
+  "name": "python-services-modules-treatment-pyspark-shared-features-text",
+  "$schema": "../../../../../../../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/python/services/modules/treatment/pyspark/shared/features/text/shared_features_text",
+  "targets": {
+    "lock": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry lock --no-update",
+        "cwd": "libs/python/services/modules/treatment/pyspark/shared/features/text"
+      }
+    },
+    "add": {
+      "executor": "@nxlv/python:add",
+      "options": {}
+    },
+    "update": {
+      "executor": "@nxlv/python:update",
+      "options": {}
+    },
+    "remove": {
+      "executor": "@nxlv/python:remove",
+      "options": {}
+    },
+    "build": {
+      "executor": "@nxlv/python:build",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "outputPath": "libs/python/services/modules/treatment/pyspark/shared/features/text/dist",
+        "publish": false,
+        "lockedVersions": true,
+        "bundleLocalDependencies": true
+      }
+    },
+    "install": {
+      "executor": "@nxlv/python:install",
+      "options": {
+        "silent": false,
+        "args": "",
+        "cacheDir": ".cache/pypoetry",
+        "verbose": false,
+        "debug": false
+      }
+    },
+    "lint": {
+      "executor": "@nxlv/python:flake8",
+      "outputs": [
+        "{workspaceRoot}/reports/libs/python/services/modules/treatment/pyspark/shared/features/text/pylint.txt"
+      ],
+      "options": {
+        "outputFile": "reports/libs/python/services/modules/treatment/pyspark/shared/features/text/pylint.txt"
+      }
+    },
+    "test": {
+      "executor": "@nxlv/python:run-commands",
+      "outputs": [
+        "{workspaceRoot}/reports/libs/python/services/modules/treatment/pyspark/shared/features/text/unittests",
+        "{workspaceRoot}/coverage/libs/python/services/modules/treatment/pyspark/shared/features/text"
+      ],
+      "options": {
+        "command": "poetry run pytest tests/",
+        "cwd": "libs/python/services/modules/treatment/pyspark/shared/features/text"
+      }
+    }
+  },
+  "tags": ["lang:python", "scope:service-module"]
+}

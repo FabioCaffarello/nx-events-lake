@@ -35,6 +35,7 @@ func (l *ServiceInputListener) Handle(msg amqp.Delivery) error {
 	source := serviceInputDTO.Metadata.Source
 	contextEnv := serviceInputDTO.Metadata.Context
 	id := serviceInputDTO.ID
+	processingTimestamp := serviceInputDTO.Metadata.ProcessingTimestamp
 	statusInputDTO := setStatusFlagToProcessing()
 
 	updateInputUseCase := usecase.NewUpdateStatusInputUseCase()
@@ -49,15 +50,40 @@ func (l *ServiceInputListener) Handle(msg amqp.Delivery) error {
 		return err
 	}
 
-	dependentJobs, err := findAllDependentJobUseCase.Execute(service, source)
-	println("dependentJobs", dependentJobs)
+	processingId := inputUpdated.Metadata.ProcessingId
+
+	processingGraphInput := setProcessingGraph(source, contextEnv, processingId)
+	createProcessingGraphUseCase := usecase.NewCreateProcessingGraphUseCase()
+	_, _, err = createProcessingGraphUseCase.Execute(processingGraphInput, processingId)
+	if err != nil {
+		log.Println(err)
+	}
+	createProcessingGraphTaskUseCase := usecase.NewCreateProcessingGraphTaskUseCase()
+	_, err = createProcessingGraphTaskUseCase.Execute(
+		source,
+		service,
+		processingId,
+		contextEnv,
+		processingId,
+		id,
+		"",
+		processingTimestamp,
+		processingId,
+	)
 	if err != nil {
 		log.Println(err)
 	}
 
-	log.Println("dependentJobs", dependentJobs)
-	log.Println("err dependent", err)
-	log.Println("len dependentJobs", len(dependentJobs))
+	updateProcessingGraphTaskStatus := usecase.NewUpdateProcessingGraphTaskStatusUseCase()
+	_, err = updateProcessingGraphTaskStatus.Execute(source, processingId, 1, processingTimestamp)
+	if err != nil {
+		log.Println(err)
+	}
+
+	dependentJobs, err := findAllDependentJobUseCase.Execute(service, source)
+	if err != nil {
+		log.Println(err)
+	}
 
 	for _, dependentJob := range dependentJobs {
 		log.Println("dependentJob", dependentJob)
@@ -68,25 +94,20 @@ func (l *ServiceInputListener) Handle(msg amqp.Delivery) error {
 				Source:  dep.Source,
 			}
 		}
-		log.Println("jobDeps", jobDeps)
 
 		processingJobDependency := statingHandlerInputDTO.ProcessingJobDependenciesDTO{
 			Service:               dependentJob.Service,
 			Source:                dependentJob.Source,
 			Context:               contextEnv,
-			ParentJobProcessingId: inputUpdated.Metadata.ProcessingId,
-			// OutputMethod:          dependentJob.OutputMethod,
+			ParentJobProcessingId: processingId,
 			JobDependencies:       jobDeps,
 		}
 
-		log.Println("processingJobDependency", processingJobDependency)
-
 		_, err = createProcessingJobDependenciesUseCase.Execute(processingJobDependency)
+		log.Println("processingJobDependency", processingJobDependency)
 		if err != nil {
 			log.Println(err)
 		}
-
-		log.Println("err createProcessingJobDependenciesUseCase", err)
 
 	}
 
@@ -97,5 +118,13 @@ func setStatusFlagToProcessing() inputHandlerSharedDTO.Status {
 	return inputHandlerSharedDTO.Status{
 		Code:   1,
 		Detail: "Processing",
+	}
+}
+
+func setProcessingGraph(source string, context string, startProcessingId string) statingHandlerInputDTO.ProcessingGraphDTO {
+	return statingHandlerInputDTO.ProcessingGraphDTO{
+		Context:           context,
+		Source:            source,
+		StartProcessingId: startProcessingId,
 	}
 }

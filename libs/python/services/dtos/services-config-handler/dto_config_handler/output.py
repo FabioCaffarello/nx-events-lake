@@ -12,6 +12,7 @@ class ConfigDTO:
     source: str = field(metadata={"json_name": "source"})
     context: str = field(metadata={"json_name": "context"})
     config_id: str = field(metadata={"json_name": "config_id"})
+    output_method: str = field(metadata={"json_name": "output_method"})
     depends_on: List[JobDependencies] = field(metadata={"json_name": "depends_on"})
     service_parameters: Dict[str, any] = field(metadata={"json_name": "service_parameters"})
     job_parameters: Dict[str, any] = field(metadata={"json_name": "job_parameters"})

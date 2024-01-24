@@ -5,6 +5,7 @@
   "service": "file-downloader",
   "source": "ceaf",
   "context": "br",
+  "input_method": "GenerateInputUsingBucketUriAndPartition",
   "output_method": "event",
   "depends_on": [{
     "service": "source-watcher",

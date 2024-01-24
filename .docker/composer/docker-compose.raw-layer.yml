@@ -1,0 +1,52 @@
+version: '3'
+
+
+services:
+  file-unzip:
+    image: fabiocaffarello/file-unzip:latest
+    container_name: file-unzip
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - nx-events-lake-network
+
+  source-watcher:
+    image: fabiocaffarello/source-watcher:latest
+    container_name: source-watcher
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      config-handler:
+        condition: service_healthy
+      schema-handler:
+        condition: service_healthy
+    networks:
+      - nx-events-lake-network
+
+  file-downloader:
+    image: fabiocaffarello/file-downloader:latest
+    container_name: file-downloader
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      config-handler:
+        condition: service_healthy
+      schema-handler:
+        condition: service_healthy
+    networks:
+      - nx-events-lake-network
+
+volumes:
+  minio_data:
+
+networks:
+  nx-events-lake-network:
+    name: nx-events-lake-network
+    driver: bridge

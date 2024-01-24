@@ -53,7 +53,7 @@ func (suite *ConfigRepositorySuite) TestSaveWhenIsANewConfig() {
 			Source:  "test",
 		},
 	}
-	config, err := entity.NewConfig("test", true, "daily", "test", "test", "test", "event", dependsOn, jobParams, serviceParams)
+	config, err := entity.NewConfig("test", true, "daily", "test", "test", "test", "GenerateInputUsingBucketUriAndPartition", "event", dependsOn, jobParams, serviceParams)
 	suite.NoError(err)
 	err = suite.repo.Save(config)
 	suite.NoError(err)
@@ -72,7 +72,7 @@ func (suite *ConfigRepositorySuite) TestSaveWhenIsAExistingConfig() {
 			Source:  "test",
 		},
 	}
-	config, err := entity.NewConfig("test", true, "daily", "test", "test", "test", "event", dependsOn, jobParams, serviceParams)
+	config, err := entity.NewConfig("test", true, "daily", "test", "test", "test", "GenerateInputUsingBucketUriAndPartition", "event", dependsOn, jobParams, serviceParams)
 	suite.NoError(err)
 	err = suite.repo.Save(config)
 	suite.NoError(err)
@@ -80,87 +80,87 @@ func (suite *ConfigRepositorySuite) TestSaveWhenIsAExistingConfig() {
 	suite.NoError(err)
 }
 
-// func (suite *ConfigRepositorySuite) TestFindOneById() {
-// 	jobParams := map[string]interface{}{
-// 		"test": "test",
-// 	}
-// 	serviceParams := map[string]interface{}{
-// 		"test": "test",
-// 	}
-// 	dependsOn := []entity.JobDependencies{
-// 		{
-// 			Service: "test",
-// 			Source:  "test",
-// 		},
-// 	}
-// 	config, err := entity.NewConfig("test", true, "daily", "test", "test", "test", "event", dependsOn, jobParams, serviceParams)
-// 	suite.NoError(err)
-// 	err = suite.repo.Save(config)
-// 	suite.NoError(err)
-// 	result, err := suite.repo.FindOneById(string(config.ID))
-// 	suite.NoError(err)
-// 	suite.Equal(config, result)
-// }
+func (suite *ConfigRepositorySuite) TestFindOneById() {
+	jobParams := map[string]interface{}{
+		"test": "test",
+	}
+	serviceParams := map[string]interface{}{
+		"test": "test",
+	}
+	dependsOn := []entity.JobDependencies{
+		{
+			Service: "test",
+			Source:  "test",
+		},
+	}
+	config, err := entity.NewConfig("test", true, "daily", "test", "test", "test", "GenerateInputUsingBucketUriAndPartition", "event", dependsOn, jobParams, serviceParams)
+	suite.NoError(err)
+	err = suite.repo.Save(config)
+	suite.NoError(err)
+	result, err := suite.repo.FindOneById(string(config.ID))
+	suite.NoError(err)
+	suite.Equal(config, result)
+}
 
 func (suite *ConfigRepositorySuite) TestFindAllByService() {
-     jobParams := map[string]interface{}{
-          "test": "test",
-     }
-     serviceParams := map[string]interface{}{
-          "test": "test",
-     }
-     dependsOn := []entity.JobDependencies{
-          {
-               Service: "test",
-               Source: "test",
-          },
-     }
-     config, err := entity.NewConfig("test", true, "daily", "test", "test", "test", "event", dependsOn, jobParams, serviceParams)
-     suite.NoError(err)
-     err = suite.repo.Save(config)
-     suite.NoError(err)
-     results, err := suite.repo.FindAllByService("test")
-     suite.NoError(err)
-     suite.Len(results, 1)
+	jobParams := map[string]interface{}{
+		"test": "test",
+	}
+	serviceParams := map[string]interface{}{
+		"test": "test",
+	}
+	dependsOn := []entity.JobDependencies{
+		{
+			Service: "test",
+			Source:  "test",
+		},
+	}
+	config, err := entity.NewConfig("test", true, "daily", "test", "test", "test", "GenerateInputUsingBucketUriAndPartition", "event", dependsOn, jobParams, serviceParams)
+	suite.NoError(err)
+	err = suite.repo.Save(config)
+	suite.NoError(err)
+	results, err := suite.repo.FindAllByService("test")
+	suite.NoError(err)
+	suite.Len(results, 1)
 }
 
 func (suite *ConfigRepositorySuite) TestFindAll() {
-     jobParams1 := map[string]interface{}{
-          "url": "http://test1.com",
-     }
-     serviceParams1 := map[string]interface{}{
-          "test": "test",
-     }
-     dependsOn1 := []entity.JobDependencies{
-          {
-               Service: "test",
-               Source: "test3",
-          },
-     }
-     config1, err := entity.NewConfig("test", true, "daily", "test", "test1", "test", "event", dependsOn1, jobParams1, serviceParams1)
-     suite.NoError(err)
+	jobParams1 := map[string]interface{}{
+		"url": "http://test1.com",
+	}
+	serviceParams1 := map[string]interface{}{
+		"test": "test",
+	}
+	dependsOn1 := []entity.JobDependencies{
+		{
+			Service: "test",
+			Source:  "test3",
+		},
+	}
+	config1, err := entity.NewConfig("test", true, "daily", "test", "test1", "test", "GenerateInputUsingBucketUriAndPartition", "event", dependsOn1, jobParams1, serviceParams1)
+	suite.NoError(err)
 
-     jobParams2 := map[string]interface{}{
-          "url": "http://test2.com",
-     }
-     serviceParams2 := map[string]interface{}{
-          "test": "test",
-     }
-     dependsOn2 := []entity.JobDependencies{
-          {
-               Service: "test",
-               Source: "test3",
-          },
-     }
-     config2, err := entity.NewConfig("test", true, "daily", "test", "test2", "test", "event", dependsOn2, jobParams2, serviceParams2)
-     suite.NoError(err)
+	jobParams2 := map[string]interface{}{
+		"url": "http://test2.com",
+	}
+	serviceParams2 := map[string]interface{}{
+		"test": "test",
+	}
+	dependsOn2 := []entity.JobDependencies{
+		{
+			Service: "test",
+			Source:  "test3",
+		},
+	}
+	config2, err := entity.NewConfig("test", true, "daily", "test", "test2", "test", "GenerateInputUsingBucketUriAndPartition", "event", dependsOn2, jobParams2, serviceParams2)
+	suite.NoError(err)
 
-     err = suite.repo.Save(config1)
-     suite.NoError(err)
-     err = suite.repo.Save(config2)
-     suite.NoError(err)
+	err = suite.repo.Save(config1)
+	suite.NoError(err)
+	err = suite.repo.Save(config2)
+	suite.NoError(err)
 
-     results, err := suite.repo.FindAll()
-     suite.NoError(err)
-     suite.Len(results, 2)
+	results, err := suite.repo.FindAll()
+	suite.NoError(err)
+	suite.Len(results, 2)
 }

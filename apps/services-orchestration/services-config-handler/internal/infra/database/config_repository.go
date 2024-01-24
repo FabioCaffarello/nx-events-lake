@@ -55,7 +55,8 @@ func (cr *ConfigRepository) Save(config *entity.Config) error {
 			"service":            config.Service,
 			"source":             config.Source,
 			"context":            config.Context,
-            "output_method":      config.OutputMethod,
+            "input_method":       config.InputMethod,
+			"output_method":      config.OutputMethod,
 			"depends_on":         config.DependsOn,
 			"config_id":          config.ConfigID,
 			"service_parameters": config.ServiceParameters,
@@ -76,7 +77,8 @@ func (cr *ConfigRepository) Save(config *entity.Config) error {
 		"service":            config.Service,
 		"source":             config.Source,
 		"context":            config.Context,
-        "output_method":      config.OutputMethod,
+        "input_method":       config.InputMethod,
+		"output_method":      config.OutputMethod,
 		"depends_on":         config.DependsOn,
 		"config_id":          config.ConfigID,
 		"service_parameters": config.ServiceParameters,
@@ -200,21 +202,21 @@ func (cr *ConfigRepository) FindAllByDependentJod(service string, source string)
 }
 
 func (cr *ConfigRepository) FindOneByServiceAndSourceAndContext(service string, source string, contextEnv string) (*entity.Config, error) {
-    filter := bson.M{
-        "service": service,
-        "source":  source,
-        "context": contextEnv,
-    }
-    existingDoc := cr.Collection.FindOne(context.Background(), filter)
-    // Check if the document does not exist
-    if existingDoc.Err() != nil {
-        return nil, existingDoc.Err()
-    }
+	filter := bson.M{
+		"service": service,
+		"source":  source,
+		"context": contextEnv,
+	}
+	existingDoc := cr.Collection.FindOne(context.Background(), filter)
+	// Check if the document does not exist
+	if existingDoc.Err() != nil {
+		return nil, existingDoc.Err()
+	}
 
-    var result entity.Config
-    if err := existingDoc.Decode(&result); err != nil {
-        return nil, err
-    }
+	var result entity.Config
+	if err := existingDoc.Decode(&result); err != nil {
+		return nil, err
+	}
 
-    return &result, nil
+	return &result, nil
 }

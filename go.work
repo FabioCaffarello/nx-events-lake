@@ -2,12 +2,11 @@ go 1.20
 
 use (
 	apps/services-gold-layer/video-encoder
-	apps/services-orchestration/services-batch-handler
 	apps/services-orchestration/services-config-handler
-	apps/services-orchestration/services-definitions-handler
 	apps/services-orchestration/services-events-handler
 	apps/services-orchestration/services-file-catalog-handler
 	apps/services-orchestration/services-input-handler
+	apps/services-orchestration/services-jobs-handler
 	apps/services-orchestration/services-output-handler
 	apps/services-orchestration/services-schema-handler
 	apps/services-orchestration/services-staging-handler
@@ -18,14 +17,18 @@ use (
 	libs/golang/services/api-clients/services-config-handler
 	libs/golang/services/api-clients/services-input-handler
 	libs/golang/services/api-clients/services-output-handler
+	libs/golang/services/api-clients/services-schema-handler
 	libs/golang/services/api-clients/services-staging-handler
 	libs/golang/services/dtos/services-config-handler
 	libs/golang/services/dtos/services-events-handler
 	libs/golang/services/dtos/services-file-catalog-handler
 	libs/golang/services/dtos/services-input-handler
+	libs/golang/services/dtos/services-jobs-handler
 	libs/golang/services/dtos/services-output-handler
 	libs/golang/services/dtos/services-schema-handler
 	libs/golang/services/dtos/services-staging-handler
+	libs/golang/services/modules/generate-inputs/core
+	libs/golang/services/modules/generate-inputs/domains/uri-partition
 	libs/golang/shared/go-events
 	libs/golang/shared/go-id
 	libs/golang/shared/go-request

@@ -1,1 +1,1 @@
-export * from './lib/typescript-node-services-ddd-admin-videos-catalog-video-infra-db-in-memory';
+export * from './lib/video-in-memory.repository';

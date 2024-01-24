@@ -16,5 +16,5 @@
   ],
   "include": [
     "src/**/*.ts"
-  ]
+, "../../../../libs/typescript/nest/services/admin-videos-catalog/rabbitmq-fake/src/lib/rabbitmq-fake.consumer.ts"  ]
 }

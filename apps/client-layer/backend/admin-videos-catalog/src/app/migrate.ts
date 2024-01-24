@@ -1,5 +1,5 @@
-import { migrator } from '@admin-videos-catalog/core/shared/infra/db/sequelize';
-import { MigrationsModule } from '@admin-videos-catalog/nest-modules/database-module';
+import { migrator } from '@nodelib/shared/ddd-utils/infra/db/sequelize';
+import { MigrationsModule } from '@nestlib/services/admin-videos-catalog/database';
 import { NestFactory } from '@nestjs/core';
 import { getConnectionToken } from '@nestjs/sequelize';
 

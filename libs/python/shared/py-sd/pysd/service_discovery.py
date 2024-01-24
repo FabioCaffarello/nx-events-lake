@@ -30,6 +30,7 @@ class ServiceVars:
     configHandler: str = "CONFIG_HANDLER"
     fileCatalogHandler: str = "FILE_CATALOG_HANDLER"
     schemasHandler: str = "SCHEMA_HANDLER"
+    jobsHandler: str = "JOBS_HANDLER"
     minio: str = "MINIO"
     services_rabbitmq_exchange: str = "services"
 
@@ -145,6 +146,19 @@ class ServiceDiscovery:
         endpoint = self._get_endpoint("FILE_CATALOG_HANDLER_PORT_8000_TCP", service_name)
         if "localhost" in endpoint:
             endpoint = endpoint.replace("8000", "8006")
+        return endpoint
+
+    def services_jobs_handler_endpoint(self):
+        """
+        Gets the services jobs handler endpoint.
+
+        Returns:
+            str: The services jobs handler endpoint.
+        """
+        service_name = self._service_vars.jobsHandler
+        endpoint = self._get_endpoint("JOBS_HANDLER_PORT_8000_TCP", service_name)
+        if "localhost" in endpoint:
+            endpoint = endpoint.replace("8000", "8007")
         return endpoint
 
     def minio_endpoint(self):

@@ -26,11 +26,17 @@
     "removeComments": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
+      "@nestlib/services/admin-videos-catalog/auth": [
+        "libs/typescript/nest/services/admin-videos-catalog/auth/src/index.ts"
+      ],
       "@nestlib/services/admin-videos-catalog/config-setup": [
         "libs/typescript/nest/services/admin-videos-catalog/config-setup/src/index.ts"
       ],
       "@nestlib/services/admin-videos-catalog/database": [
         "libs/typescript/nest/services/admin-videos-catalog/database/src/index.ts"
+      ],
+      "@nestlib/services/admin-videos-catalog/event": [
+        "libs/typescript/nest/services/admin-videos-catalog/event/src/index.ts"
       ],
       "@nestlib/services/admin-videos-catalog/features/cast-member": [
         "libs/typescript/nest/services/admin-videos-catalog/features/cast-member/src/index.ts"
@@ -40,6 +46,18 @@
       ],
       "@nestlib/services/admin-videos-catalog/features/genres": [
         "libs/typescript/nest/services/admin-videos-catalog/features/genres/src/index.ts"
+      ],
+      "@nestlib/services/admin-videos-catalog/features/videos": [
+        "libs/typescript/nest/services/admin-videos-catalog/features/videos/src/index.ts"
+      ],
+      "@nestlib/services/admin-videos-catalog/rabbitmq": [
+        "libs/typescript/nest/services/admin-videos-catalog/rabbitmq/src/index.ts"
+      ],
+      "@nestlib/services/admin-videos-catalog/rabbitmq-fake": [
+        "libs/typescript/nest/services/admin-videos-catalog/rabbitmq-fake/src/index.ts"
+      ],
+      "@nestlib/services/admin-videos-catalog/use-case": [
+        "libs/typescript/nest/services/admin-videos-catalog/use-case/src/index.ts"
       ],
       "@nestlib/shared/filters": [
         "libs/typescript/nest/shared/filters/src/index.ts"
@@ -155,14 +173,44 @@
       "@nodelib/services/ddd/admin-videos-catalog/value-objects/banner": [
         "libs/typescript/node/services/ddd/admin-videos-catalog/value-objects/banner/src/index.ts"
       ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/application/handlers": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/application/handlers/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/application/use-cases/common": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/application/use-cases/common/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/application/use-cases/create-video": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/application/use-cases/create-video/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/application/use-cases/get-video": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/application/use-cases/get-video/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/application/use-cases/process-audio-video-medias": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/application/use-cases/process-audio-video-medias/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/application/use-cases/update-video": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/application/use-cases/update-video/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/application/use-cases/upload-audio-video-medias": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/application/use-cases/upload-audio-video-medias/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/application/use-cases/upload-image-medias": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/application/use-cases/upload-image-medias/src/index.ts"
+      ],
       "@nodelib/services/ddd/admin-videos-catalog/video/entity": [
         "libs/typescript/node/services/ddd/admin-videos-catalog/video/entity/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/events": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/events/src/index.ts"
       ],
       "@nodelib/services/ddd/admin-videos-catalog/video/infra/db/in-memory": [
         "libs/typescript/node/services/ddd/admin-videos-catalog/video/infra/db/in-memory/src/index.ts"
       ],
       "@nodelib/services/ddd/admin-videos-catalog/video/infra/db/sequelize": [
         "libs/typescript/node/services/ddd/admin-videos-catalog/video/infra/db/sequelize/src/index.ts"
+      ],
+      "@nodelib/services/ddd/admin-videos-catalog/video/infra/db/testing": [
+        "libs/typescript/node/services/ddd/admin-videos-catalog/video/infra/db/testing/src/index.ts"
       ],
       "@nodelib/services/ddd/admin-videos-catalog/video/repository": [
         "libs/typescript/node/services/ddd/admin-videos-catalog/video/repository/src/index.ts"
@@ -202,6 +250,12 @@
       ],
       "@nodelib/shared/ddd-utils/infra/db/sequelize": [
         "libs/typescript/node/shared/ddd-utils/infra/db/sequelize/src/index.ts"
+      ],
+      "@nodelib/shared/ddd-utils/infra/message-broker": [
+        "libs/typescript/node/shared/ddd-utils/infra/message-broker/src/index.ts"
+      ],
+      "@nodelib/shared/ddd-utils/infra/storage": [
+        "libs/typescript/node/shared/ddd-utils/infra/storage/src/index.ts"
       ],
       "@nodelib/shared/ddd-utils/infra/testing": [
         "libs/typescript/node/shared/ddd-utils/infra/testing/src/index.ts"

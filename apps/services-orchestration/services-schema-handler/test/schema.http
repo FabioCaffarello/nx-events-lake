@@ -3,8 +3,8 @@ POST http://localhost:8003/schemas HTTP/1.1
 Content-Type: application/json
 
 {
-    "schema_type": "service-input",
-    "service": "file-downloader",
+    "schema_type": "service-output",
+    "service": "spark-batch-bronze",
     "source": "ceaf",
     "context": "br",
     "json_schema": {
@@ -23,7 +23,6 @@ Content-Type: application/json
         ]
     }
 }
-
 ###
 
 POST http://localhost:8003/schemas/update HTTP/1.1
@@ -75,3 +74,7 @@ GET http://localhost:8003/schemas/service/file-downloader/source/ceaf/context/br
 
 
 GET http://localhost:8003/schemas/service/source-watcher/source/ceaf/schema-type/service-input HTTP/1.1
+
+###
+
+GET http://localhost:8003/schemas/service/source-watcher/source/ceaf/context/br/schema-type/service-output HTTP/1.1

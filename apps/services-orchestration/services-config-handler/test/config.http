@@ -6,21 +6,21 @@ Content-Type: application/json
   "name": "ceaf-config",
   "active": true,
   "frequency": "daily",
-  "service": "file-downloader",
+  "service": "spark-batch-bronze",
   "source": "ceaf",
   "context": "br",
+  "input_method": "GenerateInputUsingBucketUriAndPartition",
   "output_method": "event",
   "depends_on": [{
-    "service": "source-watcher",
+    "service": "file-unzip",
     "source": "ceaf"
   }],
   "service_parameters": {
     "job_handler": "default"
   },
-  "job_parameters": {
-    "url": "https://portaldatransparencia.gov.br/download-de-dados/ceaf/{}"
-  }
+  "job_parameters": {}
 }
+
 
 
 
@@ -33,15 +33,19 @@ Content-Type: application/json
   "name": "ceaf-config",
   "active": true,
   "frequency": "daily",
-  "service": "source-watcher",
+  "service": "spark-batch-bronze",
   "source": "ceaf",
   "context": "br",
+  "input_method": "",
+  "output_method": "event",
+  "depends_on": [{
+    "service": "file-unzip",
+    "source": "ceaf"
+  }],
   "service_parameters": {
     "job_handler": "default"
   },
-  "job_parameters": {
-    "url": "https://portaldatransparencia.gov.br/download-de-dados/ceaf"
-  }
+  "job_parameters": {}
 }
 
 

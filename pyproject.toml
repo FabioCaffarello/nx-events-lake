@@ -100,6 +100,50 @@ readme = "README.md"
     path = "apps/client-layer/spotify-integration"
     develop = true
 
+    [tool.poetry.dependencies.shared-py-warlock]
+    path = "libs/python/shared/py-warlock"
+    develop = true
+
+    [tool.poetry.dependencies.consumer-module]
+    path = "libs/python/services/modules/consumer"
+    develop = true
+
+    [tool.poetry.dependencies.controller-module]
+    path = "libs/python/services/modules/controller"
+    develop = true
+
+    [tool.poetry.dependencies.jobs-module]
+    path = "libs/python/services/modules/jobs"
+    develop = true
+
+    [tool.poetry.dependencies.module-python-treatment-domain-core]
+    path = "libs/python/services/modules/treatment/python/core"
+    develop = true
+
+    [tool.poetry.dependencies.module-pyspark-treatment-domains-text-rename-camel-case]
+    path = "libs/python/services/modules/treatment/pyspark/domains/text/raname-camel-case"
+    develop = true
+
+    [tool.poetry.dependencies.module-pyspark-treatment-domain-core]
+    path = "libs/python/services/modules/treatment/pyspark/core"
+    develop = true
+
+    [tool.poetry.dependencies.module-pyspark-treatment-shared-features-text]
+    path = "libs/python/services/modules/treatment/pyspark/shared/features/text"
+    develop = true
+
+    [tool.poetry.dependencies.module-python-treatment-shared-features-text]
+    path = "libs/python/services/modules/treatment/python/shared/features/text"
+    develop = true
+
+    [tool.poetry.dependencies.services-jobs-handler-client]
+    path = "libs/python/services/api-clients/services-jobs-handler"
+    develop = true
+
+    [tool.poetry.dependencies.services-jobs-handler-dto]
+    path = "libs/python/services/dtos/services-jobs-handler"
+    develop = true
+
 [tool.poetry.group.dev.dependencies]
 flake8 = "6.0.0"
 autopep8 = "2.0.2"

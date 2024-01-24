@@ -28,7 +28,7 @@ func (suite *ConfigSuite) TestNewConfigWhenIsANewConfig() {
 			Source:  "test",
 		},
 	}
-	config, err := NewConfig("test", true, "daily", "test", "test", "test", "event", dependsOn, jobParams, serviceParams)
+	config, err := NewConfig("test", true, "daily", "test", "test", "test", "GenerateInputUsingBucketUriAndPartition", "event", dependsOn, jobParams, serviceParams)
 	suite.NoError(err)
 	suite.NotNil(config)
 }
@@ -46,7 +46,7 @@ func (suite *ConfigSuite) TestNewConfigWhenNameIsEmpty() {
 			Source:  "test",
 		},
 	}
-	config, err := NewConfig("", true, "daily", "test", "test", "test", "event", dependsOn, jobParams, serviceParams)
+	config, err := NewConfig("", true, "daily", "test", "test", "test", "GenerateInputUsingBucketUriAndPartition", "event", dependsOn, jobParams, serviceParams)
 	suite.Error(err)
 	suite.Nil(config)
 }
@@ -64,7 +64,7 @@ func (suite *ConfigSuite) TestNewConfigWhenServiceIsEmpty() {
 			Source:  "test",
 		},
 	}
-	config, err := NewConfig("test", true, "daily", "", "test", "test", "event", dependsOn, jobParams, serviceParams)
+	config, err := NewConfig("test", true, "daily", "", "test", "test", "GenerateInputUsingBucketUriAndPartition", "event", dependsOn, jobParams, serviceParams)
 	suite.Error(err)
 	suite.Nil(config)
 }
@@ -82,7 +82,7 @@ func (suite *ConfigSuite) TestNewConfigWhenSourceIsEmpty() {
 			Source:  "test",
 		},
 	}
-	config, err := NewConfig("test", true, "daily", "test", "", "test", "event", dependsOn, jobParams, serviceParams)
+	config, err := NewConfig("test", true, "daily", "test", "", "test", "GenerateInputUsingBucketUriAndPartition", "event", dependsOn, jobParams, serviceParams)
 	suite.Error(err)
 	suite.Nil(config)
 }
@@ -100,7 +100,7 @@ func (suite *ConfigSuite) TestNewConfigWhenContextIsEmpty() {
 			Source:  "test",
 		},
 	}
-	config, err := NewConfig("test", true, "daily", "test", "test", "", "event", dependsOn, jobParams, serviceParams)
+	config, err := NewConfig("test", true, "daily", "test", "test", "", "GenerateInputUsingBucketUriAndPartition", "event", dependsOn, jobParams, serviceParams)
 	suite.Error(err)
 	suite.Nil(config)
 }
@@ -118,7 +118,7 @@ func (suite *ConfigSuite) TestIsConfigValid() {
 			Source:  "test",
 		},
 	}
-	config, err := NewConfig("test", true, "daily", "test", "test", "test", "event", dependsOn, jobParams, serviceParams)
+	config, err := NewConfig("test", true, "daily", "test", "test", "test", "GenerateInputUsingBucketUriAndPartition", "event", dependsOn, jobParams, serviceParams)
 	suite.NoError(err)
 	err = config.IsConfigValid()
 	suite.NoError(err)

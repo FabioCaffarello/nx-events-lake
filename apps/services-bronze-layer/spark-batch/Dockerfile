@@ -1,4 +1,5 @@
-FROM python:3.10-slim-buster
+FROM docker.io/bitnami/spark:3.3
+# FROM python:3.10-slim-buster
 
 USER root
 

@@ -1,6 +1,0 @@
-service: file-downloader
-source: ceaf
-context: br
-business:
-- name: financial
-job_output: stream | event

@@ -78,6 +78,22 @@ readme = "README.md"
     path = "../../../libs/python/services/api-clients/services-file-catalog-handler"
     develop = true
 
+    [tool.poetry.dependencies.jobs-module]
+    path = "../../../libs/python/services/modules/jobs"
+    develop = true
+
+    [tool.poetry.dependencies.controller-module]
+    path = "../../../libs/python/services/modules/controller"
+    develop = true
+
+    [tool.poetry.dependencies.consumer-module]
+    path = "../../../libs/python/services/modules/consumer"
+    develop = true
+
+    [tool.poetry.dependencies.module-pyspark-treatment-domains-text-rename-camel-case]
+    path = "../../../libs/python/services/modules/treatment/pyspark/domains/text/raname-camel-case"
+    develop = true
+
 [build-system]
 requires = [ "poetry-core" ]
 build-backend = "poetry.core.masonry.api"

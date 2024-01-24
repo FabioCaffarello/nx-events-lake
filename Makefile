@@ -67,11 +67,25 @@ run: image cleanup
 reload: start-service-setup
 	docker-compose up -d
 
-run-spark-stack: start-service-setup start-service-orchestration
-	docker-compose up -d source-watcher file-downloader file-unzip spark spark-batch-bronze nessie dremio
-
-run-llm-stack: start-service-setup start-service-orchestration
-	docker-compose up -d source-watcher file-downloader llm pull-model media-transcoder speech-transcriber document-vectorizer streamlit-genai
+run-simple-pipe: start-service-setup start-service-orchestration
+	docker-compose up -d source-watcher file-downloader file-unzip
 
 logs:
-	docker-compose logs -f $(service)
+	docker logs -f $(service)
+
+
+run-spark-stack:
+	docker-compose \
+	-f ./.docker/composer/docker-compose.core.yml \
+	-f ./.docker/composer/docker-compose.orchestration.yml \
+	-f ./.docker/composer/docker-compose.raw-layer.yml \
+	-f ./.docker/composer/docker-compose.bronze-layer.yml \
+	up -d
+
+run-llm-stack:
+	docker-compose \
+	-f ./.docker/composer/docker-compose.core.yml \
+	-f ./.docker/composer/docker-compose.orchestration.yml \
+	-f ./.docker/composer/docker-compose.raw-layer.yml \
+	-f ./.docker/composer/docker-compose.llm.yml \
+	up -d

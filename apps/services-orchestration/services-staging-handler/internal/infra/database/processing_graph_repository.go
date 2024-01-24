@@ -49,12 +49,9 @@ func (pgr *ProcessingGraphRepository) Save(processingGraph *entity.ProcessingGra
         // Insert new document
         _, err := pgr.Collection.InsertOne(context.Background(), bson.M{
             "id": processingGraph.ID,
-            "frequency": processingGraph.Frequency,
             "context": processingGraph.Context,
             "source": processingGraph.Source,
-            "service_start": processingGraph.ServiceStart,
-            "processing_id": processingGraph.ProcessingId,
-            "tasks": processingGraph.Tasks,
+            "start_processing_id": processingGraph.StartProcessingId,
             "created_at": processingGraph.CreatedAt,
             "updated_at": processingGraph.UpdatedAt,
         })
@@ -66,9 +63,87 @@ func (pgr *ProcessingGraphRepository) Save(processingGraph *entity.ProcessingGra
     return nil
 }
 
-// func (pgr *ProcessingGraphRepository) UpdateProcessingGraphTask(processingGraph *entity.Task, id string) error {
-//     existingProcessingGraph, err := pgr.getOneById(id)
-// }
+func (pgr *ProcessingGraphRepository) CreateTask(source string, startProcessingId string, task *entity.Task) (*entity.ProcessingGraph, error) {
+    processingGraph, err := pgr.FindOneBySourceAndStartProcessingId(source, startProcessingId)
+    if err != nil {
+        return nil, err
+    }
+    processingGraph.Tasks = append(processingGraph.Tasks, *task)
+    _, err = pgr.Collection.UpdateOne(context.Background(), bson.M{"id": processingGraph.ID}, bson.M{"$set": bson.M{"tasks": processingGraph.Tasks}})
+    if err != nil {
+        return nil, err
+    }
+    return processingGraph, nil
+}
+
+func (pgr *ProcessingGraphRepository) UpdateTaskStatus(source string, processingId string, statusCode int) (*entity.ProcessingGraph, error) {
+    processingGraph, err := pgr.FindOneByTaskSourceAndProcessingId(source, processingId)
+    if err != nil {
+        return nil, err
+    }
+    for i, t := range processingGraph.Tasks {
+        if t.Source == source && t.ProcessingId == processingId {
+            processingGraph.Tasks[i].StatusCode = statusCode
+            break
+        }
+    }
+    _, err = pgr.Collection.UpdateOne(context.Background(), bson.M{"id": processingGraph.ID}, bson.M{"$set": bson.M{"tasks": processingGraph.Tasks}})
+    if err != nil {
+        return nil, err
+    }
+    return processingGraph, nil
+}
+
+func (pgr *ProcessingGraphRepository) UpdateTaskOutput(source string, processingId string, outputId string) (*entity.ProcessingGraph, error) {
+    processingGraph, err := pgr.FindOneByTaskSourceAndProcessingId(source, processingId)
+    if err != nil {
+        return nil, err
+    }
+    for i, t := range processingGraph.Tasks {
+        if t.Source == source && t.ProcessingId == processingId {
+            processingGraph.Tasks[i].OutputId = outputId
+            break
+        }
+    }
+    _, err = pgr.Collection.UpdateOne(context.Background(), bson.M{"id": processingGraph.ID}, bson.M{"$set": bson.M{"tasks": processingGraph.Tasks}})
+    if err != nil {
+        return nil, err
+    }
+    return processingGraph, nil
+}
+
+func (pgr *ProcessingGraphRepository) FindOneBySourceAndStartProcessingId(source string, startProcessingId string) (*entity.ProcessingGraph, error) {
+    filter := bson.M{"source": source, "start_processing_id": startProcessingId}
+    existingDoc := pgr.Collection.FindOne(context.Background(), filter)
+    // Check if the document does not exist
+    if existingDoc.Err() != nil {
+        return nil, existingDoc.Err()
+    }
+
+    var result entity.ProcessingGraph
+    if err := existingDoc.Decode(&result); err != nil {
+        return nil, err
+    }
+
+    return &result, nil
+}
+
+func (pgr *ProcessingGraphRepository) FindOneByTaskSourceAndProcessingId(source string, processingId string) (*entity.ProcessingGraph, error) {
+    filter := bson.M{"tasks.source": source, "tasks.processing_id": processingId}
+    existingDoc := pgr.Collection.FindOne(context.Background(), filter)
+    // Check if the document does not exist
+    if existingDoc.Err() != nil {
+        return nil, existingDoc.Err()
+    }
+
+    var result entity.ProcessingGraph
+    if err := existingDoc.Decode(&result); err != nil {
+        return nil, err
+    }
+
+    return &result, nil
+}
+
 
 func (pgr *ProcessingGraphRepository) FindOneById(id string) (*entity.ProcessingGraph, error) {
     return pgr.getOneById(id)

@@ -1,0 +1,68 @@
+{
+  "name": "python-services-modules-treatment-pyspark-domains-text-raname-camel-case",
+  "$schema": "../../../../../../../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/python/services/modules/treatment/pyspark/domains/text/raname-camel-case/domain_text_rename_camel_case",
+  "targets": {
+    "lock": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry lock --no-update",
+        "cwd": "libs/python/services/modules/treatment/pyspark/domains/text/raname-camel-case"
+      }
+    },
+    "add": {
+      "executor": "@nxlv/python:add",
+      "options": {}
+    },
+    "update": {
+      "executor": "@nxlv/python:update",
+      "options": {}
+    },
+    "remove": {
+      "executor": "@nxlv/python:remove",
+      "options": {}
+    },
+    "build": {
+      "executor": "@nxlv/python:build",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "outputPath": "libs/python/services/modules/treatment/pyspark/domains/text/raname-camel-case/dist",
+        "publish": false,
+        "lockedVersions": true,
+        "bundleLocalDependencies": true
+      }
+    },
+    "install": {
+      "executor": "@nxlv/python:install",
+      "options": {
+        "silent": false,
+        "args": "",
+        "cacheDir": ".cache/pypoetry",
+        "verbose": false,
+        "debug": false
+      }
+    },
+    "lint": {
+      "executor": "@nxlv/python:flake8",
+      "outputs": [
+        "{workspaceRoot}/reports/libs/python/services/modules/treatment/pyspark/domains/text/raname-camel-case/pylint.txt"
+      ],
+      "options": {
+        "outputFile": "reports/libs/python/services/modules/treatment/pyspark/domains/text/raname-camel-case/pylint.txt"
+      }
+    },
+    "test": {
+      "executor": "@nxlv/python:run-commands",
+      "outputs": [
+        "{workspaceRoot}/reports/libs/python/services/modules/treatment/pyspark/domains/text/raname-camel-case/unittests",
+        "{workspaceRoot}/coverage/libs/python/services/modules/treatment/pyspark/domains/text/raname-camel-case"
+      ],
+      "options": {
+        "command": "poetry run pytest tests/",
+        "cwd": "libs/python/services/modules/treatment/pyspark/domains/text/raname-camel-case"
+      }
+    }
+  },
+  "tags": ["lang:python", "scope:service-module"]
+}

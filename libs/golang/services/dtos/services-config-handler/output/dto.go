@@ -12,9 +12,10 @@ type ConfigDTO struct {
 	Service           string                      `json:"service"`
 	Source            string                      `json:"source"`
 	Context           string                      `json:"context"`
+    InputMethod       string                      `json:"input_method"`
+	OutputMethod      string                      `json:"output_method"`
 	DependsOn         []sharedDTO.JobDependencies `json:"depends_on"`
 	ConfigID          string                      `json:"config_id"`
-	OutputMethod      string                      `json:"output_method"`
 	ServiceParameters map[string]interface{}      `json:"service_parameters"`
 	JobParameters     map[string]interface{}      `json:"job_parameters"`
 	CreatedAt         string                      `json:"created_at"`

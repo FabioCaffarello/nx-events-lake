@@ -1,0 +1,25 @@
+{
+  "name": "typescript-nest-services-admin-videos-catalog-use-case",
+  "$schema": "../../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/typescript/nest/services/admin-videos-catalog/use-case/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/typescript/nest/services/admin-videos-catalog/use-case/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/typescript/nest/services/admin-videos-catalog/use-case/jest.config.ts"
+      }
+    }
+  },
+  "tags": ["lang:typescript-nest", "scope:service-utis"]
+}

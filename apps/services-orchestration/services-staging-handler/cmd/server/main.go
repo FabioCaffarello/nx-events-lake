@@ -41,11 +41,19 @@ func main() {
 	webserver := webserver.NewWebServer(configs.WebServerPort)
 
 	webProcessingJobDependenciesHandler := NewWebProcessingJobDependenciesHandler(client, eventDispatcher, configs.DBName)
+    webProcessingGraphHandler := NewWebProcessingGraphsHandler(client, configs.DBName)
 
     webserver.AddHandler("/", "POST", "/jobs-dependencies", webProcessingJobDependenciesHandler.CreateProcessingJobDependenciesHandler)
     webserver.AddHandler("/", "GET", "/jobs-dependencies/{id}", webProcessingJobDependenciesHandler.ListOneProcessingJobDependenciesByIdHandler)
     webserver.AddHandler("/", "DELETE", "/jobs-dependencies/{id}", webProcessingJobDependenciesHandler.RemoveProcessingJobDependenciesHandler)
     webserver.AddHandler("/", "POST", "/jobs-dependencies/{id}", webProcessingJobDependenciesHandler.UpdateProcessingJobDependenciesHandler)
+
+    webserver.AddHandler("/", "POST", "/processing-graph", webProcessingGraphHandler.CreateProcessingGraphHandler)
+    webserver.AddHandler("/", "GET", "/processing-graph/source/{source}/start-processing-id/{start_processing_id}", webProcessingGraphHandler.ListOneProcessingGraphBySourceAndStartProcessingIdUseCase)
+    webserver.AddHandler("/", "POST", "/processing-graph/source/{source}/start-processing-id/{start_processing_id}", webProcessingGraphHandler.CreateTaskToProcessingGraphHandler)
+    webserver.AddHandler("/", "GET", "/processing-graph/source/{source}/parent-processing-id/{parent_processing_id}", webProcessingGraphHandler.ListOneProcessingGraphByTaskSourceAndParentProcessingIdUseCase)
+    webserver.AddHandler("/", "POST", "/processing-graph/source/{source}/processing-id/{processing_id}/status/{status}/processing-date/{processing_timestamp}", webProcessingGraphHandler.UpdateTaskStatusProcessingGraphHandler)
+    webserver.AddHandler("/", "POST", "/processing-graph/source/{source}/processing-id/{processing_id}/output-id/{output_id}", webProcessingGraphHandler.UpdateTaskOutputProcessingGraphHandler)
 
 	webserver.HandleHealthz(healthzUseCase.Healthz)
 

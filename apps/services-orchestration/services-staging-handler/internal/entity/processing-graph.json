@@ -1,0 +1,36 @@
+{
+    "id": "",
+    "context": "br",
+    "source": "ceaf",
+    "start_processing_id": "1591d02f-3bd6-4c94-94e1-4646210e2c89",
+    "tasks": [
+        {
+            "source": "ceaf",
+            "service": "source-watcher",
+            "processing_id": "1591d02f-3bd6-4c94-94e1-4646210e2c89",
+            "parent_processing_id": "1591d02f-3bd6-4c94-94e1-4646210e2c89",
+            "config_version_id": "be188d85-e856-5e8c-be10-9f6a38cf2eae",
+            "input_schema_version_id": "44be769f-56fa-5a37-b0aa-9e219b2a61e0",
+            "output_schema_version_id": "",
+            "input_id": "fca1ced9e6efb2252ca056988d2f4495",
+            "output_id": "3ef702427d2e223f401c55c43db4f717",
+            "status_code": 200,
+            "processing_timestamp": "2024-01-10T01:53:12Z"
+        },
+        {
+            "source": "ceaf",
+            "service": "file-downloader",
+            "processing_id": "536bd2cc-ead7-4608-ba07-365e5a333020",
+            "parent_processing_id": "1591d02f-3bd6-4c94-94e1-4646210e2c89",
+            "config_version_id": "2bf98ff4-bce6-5d2e-989d-f945b7f1a608",
+            "input_schema_version_id": "7986d0b5-9d1d-5a1b-bba3-a5416fbcea69",
+            "output_schema_version_id": "",
+            "input_id": "98cb19e884b089910b951bbee57be86d",
+            "output_id": "ce7ab5a39b97df1101da9c36adf57631",
+            "status_code": 200,
+            "processing_timestamp": "2024-01-10T01:53:18Z"
+        }
+    ],
+    "created_at": "2024-01-10T01:53:12Z",
+    "updated_at": "2024-01-10T01:53:18Z"
+}

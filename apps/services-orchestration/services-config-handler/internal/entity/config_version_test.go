@@ -28,11 +28,11 @@ func (suite *ConfigVersionSuite) TestNewConfigVersionWhenIsANewConfigVersion() {
 			Source:  "test",
 		},
 	}
-	config, err := NewConfig("name-test", true, "daily", "service-test", "source-test", "context-test", "event", dependsOn, jobParams, serviceParams)
+	config, err := NewConfig("name-test", true, "daily", "service-test", "source-test", "context-test", "GenerateInputUsingBucketUriAndPartition", "event", dependsOn, jobParams, serviceParams)
 	suite.NoError(err)
 	suite.NotNil(config)
 
-	configVersion, err := NewConfigVersion(config.Name, config.Active, config.Frequency, config.Service, config.Source, config.Context, config.OutputMethod, config.DependsOn, config.JobParameters, config.ServiceParameters, config.ConfigID, config.CreatedAt, config.UpdatedAt)
+	configVersion, err := NewConfigVersion(config.Name, config.Active, config.Frequency, config.Service, config.Source, config.Context, config.InputMethod, config.OutputMethod, config.DependsOn, config.JobParameters, config.ServiceParameters, config.ConfigID, config.CreatedAt, config.UpdatedAt)
 	suite.NoError(err)
 	suite.NotNil(configVersion)
 

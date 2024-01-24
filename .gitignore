@@ -11,6 +11,7 @@ site
 .cache
 __pycache__
 out
+.nx
 
 # compiled output
 dist

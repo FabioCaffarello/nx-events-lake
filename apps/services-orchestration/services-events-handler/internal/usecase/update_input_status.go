@@ -4,7 +4,6 @@ import (
 	apiClient "libs/golang/services/api-clients/services-input-handler/client"
 	inputHandlerOutputDTO "libs/golang/services/dtos/services-input-handler/output"
 	inputHandlerSharedDTO "libs/golang/services/dtos/services-input-handler/shared"
-	"log"
 )
 
 type UpdateStatusInputUseCase struct {
@@ -19,9 +18,7 @@ func NewUpdateStatusInputUseCase() *UpdateStatusInputUseCase {
 
 func (uiu *UpdateStatusInputUseCase) Execute(status inputHandlerSharedDTO.Status, contextEnv string, service string, source string, id string) (inputHandlerOutputDTO.InputDTO, error) {
 	input, err := uiu.InputHandlerAPIClient.UpdateInputStatus(status, contextEnv, service, source, id)
-	log.Println("input update err", err)
-    log.Println("input", input)
-    if err != nil {
+	if err != nil {
 		return inputHandlerOutputDTO.InputDTO{}, err
 	}
 	return input, nil

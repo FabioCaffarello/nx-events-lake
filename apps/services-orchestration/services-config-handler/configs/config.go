@@ -1,7 +1,8 @@
 package configs
 
 import (
-  "fmt"
+	"fmt"
+
 	"github.com/spf13/viper"
 )
 

@@ -25,10 +25,6 @@ readme = "README.md"
   Flask = "^3.0.0"
   requests = "^2.31.0"
 
-    [tool.poetry.dependencies.shared-py-spotify]
-    path = "../../../libs/python/shared/py-spotify"
-    develop = true
-
 [build-system]
 requires = [ "poetry-core" ]
 build-backend = "poetry.core.masonry.api"

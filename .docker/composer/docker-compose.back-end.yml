@@ -1,0 +1,27 @@
+version: '3'
+
+
+services:
+  db:
+    image: mysql:8.0.30-debian
+    container_name: db
+    environment:
+      - MYSQL_DATABASE=micro_videos
+      - MYSQL_ROOT_PASSWORD=root
+    # volumes:
+    #   - ./.docker/mysql:/docker-entrypoint-initdb.d
+    tmpfs:
+      - /var/lib/mysql
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      - nx-events-lake-network
+
+
+volumes:
+  minio_data:
+
+networks:
+  nx-events-lake-network:
+    name: nx-events-lake-network
+    driver: bridge

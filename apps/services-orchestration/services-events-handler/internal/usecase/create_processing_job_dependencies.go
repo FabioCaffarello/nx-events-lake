@@ -4,7 +4,6 @@ import (
 	apiClient "libs/golang/services/api-clients/services-staging-handler/client"
 	stagingHandlerInputDTO "libs/golang/services/dtos/services-staging-handler/input"
 	stagingHandlerOutputDTO "libs/golang/services/dtos/services-staging-handler/output"
-	"log"
 )
 
 type CreateProcessingJobDependenciesUseCase struct {
@@ -18,10 +17,7 @@ func NewCreateProcessingJobDependenciesUseCase() *CreateProcessingJobDependencie
 }
 
 func (la *CreateProcessingJobDependenciesUseCase) Execute(jobDependencies stagingHandlerInputDTO.ProcessingJobDependenciesDTO) (stagingHandlerOutputDTO.ProcessingJobDependenciesDTO, error) {
-	log.Println("jobDependencies", jobDependencies)
-    jobDependenciesCreated, err := la.StagingHandlerAPIClient.CreateProcessingJobDependencies(jobDependencies)
-	log.Println("jobDependenciesCreated", jobDependenciesCreated)
-	log.Println("err jobDependenciesCreated", err)
+	jobDependenciesCreated, err := la.StagingHandlerAPIClient.CreateProcessingJobDependencies(jobDependencies)
 	if err != nil {
 		return stagingHandlerOutputDTO.ProcessingJobDependenciesDTO{}, err
 	}

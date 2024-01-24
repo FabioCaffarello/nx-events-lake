@@ -14,15 +14,36 @@ export class Config {
     };
   }
 
+  static bucketName() {
+    Config.readEnv();
+
+    return Config.env.GOOGLE_CLOUD_STORAGE_BUCKET_NAME;
+  }
+
+  static googleCredentials() {
+    Config.readEnv();
+
+    return JSON.parse(Config.env.GOOGLE_CLOUD_CREDENTIALS);
+  }
+
+  static rabbitmqUri() {
+    Config.readEnv();
+
+    return Config.env.RABBITMQ_URI;
+  }
+
   static readEnv(service = 'admin-videos-catalog') {
     if (Config.env) {
       return;
     }
 
-    console.log('NODE_ENV', process.env['NODE_ENV']);
-    console.log("__dirname", __dirname);
-    Config.env = readEnv({
+    const { parsed } = readEnv({
       path: join(__dirname, `../../../../../../../../../apps/client-layer/backend/${service}/envs/.env.${process.env["NODE_ENV"]}`),
-    }).parsed;
+    });
+
+    Config.env = {
+      ...parsed,
+      ...process.env,
+    };
   }
 }

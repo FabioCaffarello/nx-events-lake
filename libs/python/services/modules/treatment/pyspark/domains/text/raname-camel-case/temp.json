@@ -1,0 +1,6 @@
+{
+    "domain": "text",
+    "id": "domain-text-rename-camel-case",
+    "method": "RenameUsingCamelCaseRuleDomain",
+    "module_name": "domain_rename_camel_case"
+}

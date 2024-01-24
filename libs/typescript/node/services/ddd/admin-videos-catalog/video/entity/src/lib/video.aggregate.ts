@@ -10,6 +10,10 @@ import { Thumbnail, ThumbnailHalf } from '@nodelib/services/ddd/admin-videos-cat
 import { VideoMedia } from '@nodelib/services/ddd/admin-videos-catalog/video/value-objects/video-media';
 import { VideoValidatorFactory } from '@nodelib/services/ddd/admin-videos-catalog/video/validator';
 import { AudioVideoMediaStatus } from '@nodelib/shared/value-objects/audio-video-media';
+import { VideoFakeBuilder } from './video-fake.builder';
+import { 
+  VideoCreatedEvent,
+  VideoAudioMediaReplaced } from '@nodelib/services/ddd/admin-videos-catalog/video/events';
 
 
 export type VideoConstructorProps = {

@@ -49,18 +49,6 @@ readme = "README.md"
     path = "../../../libs/python/services/dtos/services-config-handler"
     develop = true
 
-    [tool.poetry.dependencies.services-input-handler-dto]
-    path = "../../../libs/python/services/dtos/services-input-handler"
-    develop = true
-
-    [tool.poetry.dependencies.shared-py-serializer]
-    path = "../../../libs/python/shared/py-serializer"
-    develop = true
-
-    [tool.poetry.dependencies.services-schema-handler-client]
-    path = "../../../libs/python/services/api-clients/services-schema-handler"
-    develop = true
-
     [tool.poetry.dependencies.services-events-handler-dto]
     path = "../../../libs/python/services/dtos/services-events-handler"
     develop = true
@@ -71,6 +59,18 @@ readme = "README.md"
 
     [tool.poetry.dependencies.shared-py-youtube]
     path = "../../../libs/python/shared/py-youtube"
+    develop = true
+
+    [tool.poetry.dependencies.consumer-module]
+    path = "../../../libs/python/services/modules/consumer"
+    develop = true
+
+    [tool.poetry.dependencies.controller-module]
+    path = "../../../libs/python/services/modules/controller"
+    develop = true
+
+    [tool.poetry.dependencies.jobs-module]
+    path = "../../../libs/python/services/modules/jobs"
     develop = true
 
 [build-system]

@@ -123,9 +123,11 @@ func DispatchOutput(rabbitMQ *queue.RabbitMQ, exchange string, jsonOutput []byte
 func (l *ServiceInputListener) getServiceOutputDTO(uriOrigin string, uriResult string, partition string, serviceInputDTO inputHandlerOutputDTO.InputDTO, statusCode int, StatusDetail string) eventsHandlerInputDTO.ServiceFeedbackDTO {
 	return eventsHandlerInputDTO.ServiceFeedbackDTO{
 		Data: map[string]interface{}{
-			"documentUri": uriResult,
-			"partition":   partition,
-		},
+            "result": map[string]interface{}{
+                "documentUri": uriResult,
+                "partition": partition,
+            },
+        },
 		Metadata: l.getJobMetadataDTO(uriOrigin, serviceInputDTO),
 		Status: eventsHandlerSharedDTO.Status{
 			Code:   statusCode,

@@ -8,11 +8,12 @@ import (
 
 	"apps/services-orchestration/services-events-handler/internal/usecase"
 	eventsHandlerInputDTO "libs/golang/services/dtos/services-events-handler/input"
-	inputHandlerInputDTO "libs/golang/services/dtos/services-input-handler/input"
 	inputHandlerSharedDTO "libs/golang/services/dtos/services-input-handler/shared"
 	outputHandlerInputDTO "libs/golang/services/dtos/services-output-handler/input"
 	outputHandlerISharedDTO "libs/golang/services/dtos/services-output-handler/shared"
 	stagingHandlerSharedDTO "libs/golang/services/dtos/services-staging-handler/shared"
+	generateInputs "libs/golang/services/modules/generate-inputs/core"
+	configId "libs/golang/shared/go-id/config"
 	"libs/golang/shared/go-id/md5"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -24,31 +25,21 @@ var (
 )
 
 type ServiceFeedbackListener struct {
+	GenerateInputs *generateInputs.DomainFactory
 }
 
 func NewServiceFeedbackListener() *ServiceFeedbackListener {
-	return &ServiceFeedbackListener{}
-}
-
-func extractStatusCodeRange(statusCode int) string {
-	if statusCode >= 200 && statusCode < 300 {
-		return "2XX"
-	} else if statusCode >= 400 && statusCode < 500 {
-		return "4XX"
-	} else if statusCode >= 500 && statusCode < 600 {
-		return "5XX"
+	return &ServiceFeedbackListener{
+		GenerateInputs: generateInputs.NewDomainFactory(),
 	}
-	return "invalid"
 }
 
 func (l *ServiceFeedbackListener) Handle(msg amqp.Delivery) error {
-	// fmt.Println(string(msg.Body))
 	var serviceFeedbackDTO eventsHandlerInputDTO.ServiceFeedbackDTO
 	err := json.Unmarshal(msg.Body, &serviceFeedbackDTO)
 	if err != nil {
 		return ErrorInvalidServiceFeedbackDTO
 	}
-	statusCodeRange := extractStatusCodeRange(serviceFeedbackDTO.Status.Code)
 
 	statusDTO := getStatusInputDTO(serviceFeedbackDTO)
 	service := serviceFeedbackDTO.Metadata.Service
@@ -64,35 +55,21 @@ func (l *ServiceFeedbackListener) Handle(msg amqp.Delivery) error {
 		log.Println(err)
 	}
 
-	switch statusCodeRange {
-	case "2XX":
-		l.HandleFeedback200(serviceFeedbackDTO, service, source, processingId)
-	case "4XX":
-		l.HandleFeedback400(serviceFeedbackDTO, service, source, processingId)
-	case "5XX":
-		l.HandleFeedback500(serviceFeedbackDTO, service, source, processingId)
-	default:
-		return ErrorInvalidStatus
+	updateProcessingGraphTaskStatus := usecase.NewUpdateProcessingGraphTaskStatusUseCase()
+	_, err = updateProcessingGraphTaskStatus.Execute(source, processingId, statusDTO.Code, serviceFeedbackDTO.Metadata.ProcessingTimestamp)
+	if err != nil {
+		log.Println(err)
 	}
-	return nil
-}
 
-func floatToInt(value float64) int {
-	return int(value)
-}
-
-func InterfaceArrayToStringArray(interfaceArray []interface{}) []string {
-	stringArray := make([]string, len(interfaceArray))
-	for i, v := range interfaceArray {
-		stringArray[i] = v.(string)
-	}
-	return stringArray
-}
-
-func (l *ServiceFeedbackListener) HandleFeedback200(msg eventsHandlerInputDTO.ServiceFeedbackDTO, service string, source string, processingId string) {
-	outputData := getServiceOutputDTO(msg)
+	outputData := getServiceOutputDTO(serviceFeedbackDTO)
 	createOutputUseCase := usecase.NewCreateOutputUseCase()
-	_, err := createOutputUseCase.Execute(service, outputData)
+	output, err := createOutputUseCase.Execute(service, outputData)
+	if err != nil {
+		log.Println(err)
+	}
+
+	updateProcessingGraphTaskOutput := usecase.NewUpdateProcessingGraphTaskOutputIdUseCase()
+	_, err = updateProcessingGraphTaskOutput.Execute(source, processingId, output.ID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -103,92 +80,77 @@ func (l *ServiceFeedbackListener) HandleFeedback200(msg eventsHandlerInputDTO.Se
 	updateProcessingJobDependenciesUseCase := usecase.NewUpdateProcessingJobDependenciesUseCase()
 	checkAllJobDependenciesStatus200UseCase := usecase.NewCheckAllJobDependenciesStatus200UseCase()
 	removeProcessingJobDependenciesUseCase := usecase.NewRemoveProcessingJobDependenciesUseCase()
+	findOneJobConfigById := usecase.NewListOneConfigByIdUseCase()
 
 	dependentJobs, err := findAllDependentJobUseCase.Execute(service, source)
 	if err != nil {
 		log.Println(err)
 	}
 
-	var inputQuantity int
-	if val, ok := msg.Data["totalDocuments"]; ok {
+	jobDep := getProcessingJobDependencies(serviceFeedbackDTO)
 
-		documentsQuantity, ok := val.(float64)
-		if !ok {
-			log.Println(err)
-		} else {
-			log.Println("Total Documents:", documentsQuantity)
-			inputQuantity = floatToInt(documentsQuantity)
-		}
-
-	} else {
-		// Handle the case where "totalDocuments" key does not exist
-		log.Println("totalDocuments key not found in msg.Data")
-		inputQuantity = 1
+	createProcessingGraphTaskUseCase := usecase.NewCreateProcessingGraphTaskUseCase()
+	processingGraphStartProcessingIdUseCase := usecase.NewGetProcessingGraphStartIdByParentProcessingIdUseCase()
+	processingGraphStartProcessingId, err := processingGraphStartProcessingIdUseCase.Execute(source, processingId)
+	if err != nil {
+		log.Println(err)
 	}
-
-	log.Println("inputQuantity: ", inputQuantity)
-
-	inputDTOs := make([]inputHandlerInputDTO.InputDTO, inputQuantity)
-	if inputQuantity == 1 {
-		for i := 0; i < inputQuantity; i++ {
-			log.Println("inputQuantity == 1")
-			inputDTOs[i] = inputHandlerInputDTO.InputDTO{
-				Data: map[string]interface{}{
-					"documentUri": msg.Data["documentUri"],
-					"partition":   msg.Data["partition"],
-				},
-			}
-		}
-	} else {
-		for i := 0; i < inputQuantity; i++ {
-			log.Println("inputQuantity > 1")
-			inputDTOs[i] = inputHandlerInputDTO.InputDTO{
-				Data: map[string]interface{}{
-					"documentUri":    InterfaceArrayToStringArray(msg.Data["documentUri"].([]interface{}))[i],
-					"partition":      InterfaceArrayToStringArray(msg.Data["partition"].([]interface{}))[i],
-					"targetDocument": InterfaceArrayToStringArray(msg.Data["targetDocuments"].([]interface{}))[i],
-				},
-			}
-			log.Println("inputDTOs[i]: ", inputDTOs[i])
-		}
-	}
-
-	jobDep := getProcessingJobDependencies(msg)
-
-	log.Println("jobDep: ", jobDep)
 
 	if len(dependentJobs) > 0 {
 		for _, dependentJob := range dependentJobs {
 			processingJobParentId := string(md5.NewMd5Hash(fmt.Sprintf("%s-%s-%s-%s", dependentJob.Context, dependentJob.Service, dependentJob.Source, processingId)))
-			log.Println("processingJobParentId: ", processingJobParentId)
 
-			// Should Update batch
 			updateProcessingJobDependenciesUseCase.Execute(processingJobParentId, jobDep)
 			shouldRun, err := checkAllJobDependenciesStatus200UseCase.Execute(processingJobParentId)
-			log.Println("shouldRun: ", shouldRun)
+			log.Println("\nshouldRun: ", shouldRun)
 			if err != nil {
 				log.Println(err)
 			}
 			if shouldRun {
+				depJobConfigId := getConfigId(dependentJob.Service, dependentJob.Source)
+				depJobConfig, err := findOneJobConfigById.Execute(depJobConfigId)
+				if err != nil {
+					log.Println(err)
+				}
+				inputDTOs, err := l.GenerateInputs.GenerateInputs(depJobConfig.InputMethod, outputData.Data)
+				if err != nil {
+					log.Println(err)
+				}
+
+
 				for _, inputDTO := range inputDTOs {
-					_, err := createInputUseCase.Execute(dependentJob.Service, dependentJob.Source, dependentJob.Context, inputDTO)
+					inputDep, err := createInputUseCase.Execute(dependentJob.Service, dependentJob.Source, dependentJob.Context, inputDTO)
 					if err != nil {
 						log.Println(err)
 					}
-                    // TODO: Update pipeline graph
+					_, err = createProcessingGraphTaskUseCase.Execute(
+						dependentJob.Source,
+						dependentJob.Service,
+						inputDep.Metadata.ProcessingId,
+						contextEnv,
+						processingId,
+						inputDep.ID,
+						output.ID,
+						inputDep.Metadata.ProcessingTimestamp,
+						processingGraphStartProcessingId,
+					)
+					if err != nil {
+						log.Println(err)
+					}
 				}
 				removeProcessingJobDependenciesUseCase.Execute(processingJobParentId)
 			}
 		}
 	}
+	return nil
 }
 
-func (l *ServiceFeedbackListener) HandleFeedback400(msg eventsHandlerInputDTO.ServiceFeedbackDTO, service string, source string, processingId string) {
-
-}
-
-func (l *ServiceFeedbackListener) HandleFeedback500(msg eventsHandlerInputDTO.ServiceFeedbackDTO, service string, source string, processingId string) {
-
+func InterfaceArrayToStringArray(interfaceArray []interface{}) []string {
+	stringArray := make([]string, len(interfaceArray))
+	for i, v := range interfaceArray {
+		stringArray[i] = v.(string)
+	}
+	return stringArray
 }
 
 func getServiceOutputDTO(msg eventsHandlerInputDTO.ServiceFeedbackDTO) outputHandlerInputDTO.ServiceOutputDTO {
@@ -207,6 +169,10 @@ func getServiceOutputDTO(msg eventsHandlerInputDTO.ServiceFeedbackDTO) outputHan
 			Source:  msg.Metadata.Source,
 		},
 	}
+}
+
+func getConfigId(service string, source string) string {
+	return configId.NewID(service, source)
 }
 
 func getStatusInputDTO(msg eventsHandlerInputDTO.ServiceFeedbackDTO) inputHandlerSharedDTO.Status {

@@ -31,6 +31,7 @@ func (lcv *ListOneConfigVersionByIdAndVersionIdUseCase) Execute(id string, versi
 		Service:           item.Service,
 		Source:            item.Source,
 		Context:           item.Context,
+        InputMethod:       item.InputMethod,
         OutputMethod:      item.OutputMethod,
 		DependsOn:         ConvertEntityToUseCaseDependencies(item.DependsOn),
 		ConfigID:          item.ConfigID,

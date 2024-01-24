@@ -34,6 +34,7 @@ func (uc *UpdateConfigVersionUseCase) Execute(config outputDTO.ConfigDTO) (outpu
 		Service:           configEntity.Service,
 		Source:            configEntity.Source,
 		Context:           configEntity.Context,
+        InputMethod:       configEntity.InputMethod,
         OutputMethod:      configEntity.OutputMethod,
 		DependsOn:         usecaseDeps,
 		ConfigID:          configEntity.ConfigID,

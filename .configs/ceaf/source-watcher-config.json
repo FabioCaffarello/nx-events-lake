@@ -5,6 +5,7 @@
   "service": "source-watcher",
   "source": "ceaf",
   "context": "br",
+  "input_method": "",
   "output_method": "event",
   "service_parameters": {
     "job_handler": "default"

@@ -1,8 +1,11 @@
 import { Sequelize, Transaction } from 'sequelize';
 import { IUnitOfWork } from '@nodelib/shared/ddd-utils/repository';
+import { AggregateRoot } from '@nodelib/shared/ddd-utils/aggregate-root';
 
 export class UnitOfWorkSequelize implements IUnitOfWork {
   private transaction: Transaction | null;
+  private aggregateRoots: Set<AggregateRoot> = new Set<AggregateRoot>();
+
   constructor(private sequelize: Sequelize) {}
 
   async start(): Promise<void> {
@@ -55,5 +58,12 @@ export class UnitOfWorkSequelize implements IUnitOfWork {
     if (!this.transaction) {
       throw new Error('No transaction started');
     }
+  }
+
+  addAggregateRoot(aggregateRoot: AggregateRoot): void {
+    this.aggregateRoots.add(aggregateRoot);
+  }
+  getAggregateRoots(): AggregateRoot[] {
+    return [...this.aggregateRoots];
   }
 }

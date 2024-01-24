@@ -2,93 +2,70 @@ package entity
 
 import (
 	"errors"
-	pipeid "libs/golang/shared/go-id/pipeline/md5"
+	"fmt"
+	"libs/golang/shared/go-id/md5"
 	"time"
 )
 
 var (
-	ErrPipelineFrequencyEmpty    = errors.New("pipeline frequency is empty")
-	ErrPipelineContextEmpty      = errors.New("pipeline context is empty")
-	ErrPipelineSourceEmpty       = errors.New("pipeline source is empty")
-	ErrPipelineServiceStartEmpty = errors.New("pipeline service start is empty")
-	ErrPipelineProcessingIdEmpty = errors.New("pipeline processing id is empty")
-	ErrPipelineTasksEmpty        = errors.New("pipeline tasks is empty")
+	ErrContextEmpty           = errors.New("pipeline context is empty")
+	ErrSourceEmpty            = errors.New("pipeline source is empty")
+	ErrStartProcessingIdEmpty = errors.New("start processing id is empty")
 )
 
-type ChildJob struct {
-	Source  string `bson:"source"`
-	Service string `bson:"service"`
-	Kind    string `bson:"kind"`
-}
-
 type Task struct {
-	Source                 string     `bson:"source"`
-	Service                string     `bson:"service"`
-	ProcessingId           string     `bson:"processing_id"`
-	InputSchemaVersionId   string     `bson:"input_schema_version_id"`
-	OutputSchemaVersionId  string     `bson:"output_schema_version_id"`
-	JobDefinitionVersionId string     `bson:"job_definition_version_id"`
-	InputId                string     `bson:"input_id"`
-	OutputId               string     `bson:"output_id"`
-	StatusCode             int        `bson:"status_code"`
-	ChildJobs              []ChildJob `bson:"child_jobs"`
+	Source                string `bson:"source"`
+	Service               string `bson:"service"`
+	ProcessingId          string `bson:"processing_id"`
+	ParentProcessingId    string `bson:"parent_processing_id"`
+	ConfigVersionId       string `bson:"config_version_id"`
+	InputSchemaVersionId  string `bson:"input_schema_version_id"`
+	OutputSchemaVersionId string `bson:"output_schema_version_id"`
+	InputId               string `bson:"input_id"`
+	OutputId              string `bson:"output_id"`
+	StatusCode            int    `bson:"status_code"`
+	ProcessingTimestamp   string `bson:"processing_timestamp"`
 }
 
 type ProcessingGraph struct {
-	ID           pipeid.ID `bson:"id"`
-	Frequency    string    `bson:"frequency"`
-	Context      string    `bson:"context"`
-	Source       string    `bson:"source"`
-	ServiceStart string    `bson:"service_start"`
-	ProcessingId string    `bson:"processing_id"`
-	Tasks        []Task    `bson:"tasks"`
-	CreatedAt    string    `bson:"created_at"`
-	UpdatedAt    string    `bson:"updated_at"`
+	ID                md5.ID `bson:"id"`
+	Context           string `bson:"context"`
+	Source            string `bson:"source"`
+	StartProcessingId string `bson:"start_processing_id"`
+	Tasks             []Task `bson:"tasks"`
+	CreatedAt         string `bson:"created_at"`
+	UpdatedAt         string `bson:"updated_at"`
 }
 
-func NewPipeline(
-	frequency string,
+func NewProcessingGraph(
 	context string,
 	source string,
-	serviceStart string,
-	ProcessingId string,
-	tasks []Task,
+	startProcessingId string,
 ) (*ProcessingGraph, error) {
 	pipeline := &ProcessingGraph{
-		ID:           pipeid.NewPipelineGraphID(context, serviceStart, source, ProcessingId),
-		Frequency:    frequency,
-		Context:      context,
-		Source:       source,
-		ServiceStart: serviceStart,
-		Tasks:        tasks,
-		CreatedAt:    time.Now().Format(time.RFC3339),
-		UpdatedAt:    time.Now().Format(time.RFC3339),
+		ID:                md5.NewMd5Hash(fmt.Sprintf("%s-%s-%s", context, source, startProcessingId)),
+		Context:           context,
+		Source:            source,
+		StartProcessingId: startProcessingId,
+		CreatedAt:         time.Now().Format(time.RFC3339),
+		UpdatedAt:         time.Now().Format(time.RFC3339),
 	}
-	err := pipeline.IsPipelineValid()
+	err := pipeline.IsProcessingGraphValid()
 	if err != nil {
 		return nil, err
 	}
 	return pipeline, nil
 }
 
-func (p *ProcessingGraph) IsPipelineValid() error {
-	if p.Frequency == "" {
-		return ErrPipelineFrequencyEmpty
-	}
+func (p *ProcessingGraph) IsProcessingGraphValid() error {
 	if p.Context == "" {
-		return ErrPipelineContextEmpty
+		return ErrContextEmpty
 	}
 	if p.Source == "" {
-		return ErrPipelineSourceEmpty
+		return ErrSourceEmpty
 	}
-	if p.ServiceStart == "" {
-		return ErrPipelineServiceStartEmpty
-	}
-	if p.ProcessingId == "" {
-		return ErrPipelineProcessingIdEmpty
-	}
-	if len(p.Tasks) == 0 {
-		return ErrPipelineTasksEmpty
+	if p.StartProcessingId == "" {
+		return ErrStartProcessingIdEmpty
 	}
 	return nil
 }

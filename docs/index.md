@@ -121,6 +121,9 @@ This comand will try to make the compose up again.
 
 ![Architecture](diagrams/Architecture.png)
 
+## Diagram Use Cases
+
+![diagram-source-watcher](diagrams/usecases/pipeline-source-watcher.png)
 
 --- 
 This repo was structured with a monorepo approach and optimize with NX framework.

@@ -1,9 +1,12 @@
 import asyncio
 import os
+import time
 from typing import List
 
 from config_loader.loader import fetch_configs
-from source_watcher.consumer.consumer import EventConsumer
+from mod_consumer.consumer import EventConsumer
+from mod_controller.controller import EventController
+from mod_jobs.job_handler import JobHandler
 from pydotenv.loader import DotEnvLoader
 from pylog.log import setup_logging
 from pyrabbitmq.consumer import RabbitMQConsumer
@@ -38,7 +41,7 @@ async def create_consumers_channel(sd: ServiceDiscovery, service_name: str, cont
             logger.info(f"Creating consumer for config: {config.id}")
             tasks.append(
                 asyncio.create_task(
-                    EventConsumer(sd, rabbitmq_service, config, QUEUE_ACTIVE_JOBS).run()
+                    EventConsumer(sd, rabbitmq_service, config, QUEUE_ACTIVE_JOBS).run(EventController, JobHandler)
                 )
             )
     return tasks
@@ -63,4 +66,8 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except:
+        time.sleep(30)
+        asyncio.run(main())

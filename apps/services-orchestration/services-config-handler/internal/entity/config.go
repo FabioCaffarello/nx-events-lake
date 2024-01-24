@@ -31,7 +31,8 @@ type Config struct {
 	Service           string                 `bson:"service"`
 	Source            string                 `bson:"source"`
 	Context           string                 `bson:"context"`
-	OutputMethod      string                 `json:"output_method"`
+	OutputMethod      string                 `bson:"output_method"`
+    InputMethod       string                 `bson:"input_method"`
 	DependsOn         []JobDependencies      `bson:"depends_on"`
 	ServiceParameters map[string]interface{} `bson:"service_parameters"`
 	JobParameters     map[string]interface{} `bson:"job_parameters"`
@@ -47,6 +48,7 @@ func NewConfig(
 	service string,
 	source string,
 	context string,
+    inputMethod string,
 	outputMethod string,
 	dependsOn []JobDependencies,
 	jobParameters map[string]interface{},
@@ -60,6 +62,7 @@ func NewConfig(
 		Service:           service,
 		Source:            source,
 		Context:           context,
+        InputMethod:       inputMethod,
 		OutputMethod:      outputMethod,
 		DependsOn:         dependsOn,
 		ServiceParameters: serviceParameters,
@@ -96,6 +99,7 @@ func getConfigParamsToGenerateVersionID(config *Config) map[string]interface{} {
 		"source":             config.Source,
 		"frequency":          config.Frequency,
 		"context":            config.Context,
+        "input_method":       config.InputMethod,
 		"output_method":      config.OutputMethod,
 		"depends_on":         convertDependsOn(config.DependsOn),
 		"job_parameters":     config.JobParameters,

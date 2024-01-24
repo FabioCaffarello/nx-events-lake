@@ -1,0 +1,123 @@
+version: '3'
+
+
+services:
+  speech-transcriber:
+    image: fabiocaffarello/speech-transcriber:latest
+    container_name: speech-transcriber
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      config-handler:
+        condition: service_healthy
+      schema-handler:
+        condition: service_healthy
+    networks:
+      - nx-events-lake-network
+
+  media-transcoder:
+    image: fabiocaffarello/media-transcoder:latest
+    container_name: media-transcoder
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      config-handler:
+        condition: service_healthy
+      schema-handler:
+        condition: service_healthy
+    networks:
+      - nx-events-lake-network
+
+  streamlit-genai:
+    image: fabiocaffarello/streamlit-genai:latest
+    container_name: streamlit-genai
+    environment:
+      - NEO4J_URI=${NEO4J_URI-neo4j://neo4j-database:7687}
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD-password}
+      - NEO4J_USERNAME=${NEO4J_USERNAME-neo4j}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL-http://host.docker.internal:11434}
+      - LLM=${LLM-llama2}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL-sentence_transformer}
+    ports:
+      - 8503:8503
+    depends_on:
+      neo4j-database:
+        condition: service_healthy
+      pull-model:
+        condition: service_completed_successfully
+    networks:
+      - nx-events-lake-network
+
+  document-vectorizer:
+    image: fabiocaffarello/document-vectorizer:latest
+    container_name: document-vectorizer
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      config-handler:
+        condition: service_healthy
+      schema-handler:
+        condition: service_healthy
+    networks:
+      - nx-events-lake-network
+
+  llm:
+    image: ollama/ollama:latest
+    container_name: llm
+    ports:
+      - 11434:11434
+    networks:
+      - nx-events-lake-network
+    # FIXME: Need to figure out how to deploy with GPU (AMD instead of Nvidia)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1 
+    #           capabilities: [ gpu ]
+
+  pull-model:
+    container_name: pull-model
+    image: genai-stack/pull-model:latest
+    build:
+      dockerfile: ./.build/pull_model.Dockerfile
+    environment:
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL-http://host.docker.internal:11434}
+      - LLM=${LLM-llama2}
+    networks:
+      -  nx-events-lake-network
+
+  neo4j-database:
+    image: neo4j:5.11
+    container_name: neo4j-database
+    ports:
+      - 7687:7687
+      - 7474:7474
+    volumes:
+      - $PWD/data:/data
+    environment:
+      - NEO4J_AUTH=${NEO4J_USERNAME-neo4j}/${NEO4J_PASSWORD-password}
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_db_tx__log_rotation_retention__policy=false
+    healthcheck:
+        test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider localhost:7474 || exit 1"]
+        interval: 5s
+        timeout: 3s
+        retries: 5
+    networks:
+      - nx-events-lake-network
+
+volumes:
+  minio_data:
+
+networks:
+  nx-events-lake-network:
+    name: nx-events-lake-network
+    driver: bridge

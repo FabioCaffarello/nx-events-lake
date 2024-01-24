@@ -5,6 +5,7 @@
   "service": "file-unzip",
   "source": "ceaf",
   "context": "br",
+  "input_method": "GenerateInputUsingBucketUriAndPartition",
   "output_method": "event",
   "depends_on": [{
     "service": "file-downloader",

@@ -72,6 +72,9 @@ def serialize_to_dataclass(data: Dict[str, any], cls: Type) -> dataclass:
         json_name = field_metadata.get("json_name", field_name)
 
         if json_name in data:
+            if is_dataclass(field_obj.type):
+                # If the field is another dataclass, recursively serialize it
+                args[field_name] = serialize_to_dataclass(data[json_name], field_obj.type)
             args[field_name] = data[json_name]
 
     return cls(**args)

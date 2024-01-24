@@ -7,19 +7,19 @@ import (
 )
 
 type CreateInputUseCase struct {
-     InputHandlerAPIClient apiClient.Client
+	InputHandlerAPIClient apiClient.Client
 }
 
 func NewCreateInputUseCase() *CreateInputUseCase {
-     return &CreateInputUseCase{
-          InputHandlerAPIClient: *apiClient.NewClient(),
-     }
+	return &CreateInputUseCase{
+		InputHandlerAPIClient: *apiClient.NewClient(),
+	}
 }
 
 func (ciu *CreateInputUseCase) Execute(service string, source string, contextEnv string, input inputHandlerInputDTO.InputDTO) (inputHandlerOutputDTO.InputDTO, error) {
-     inputCreated, err := ciu.InputHandlerAPIClient.CreateInput(service, source, contextEnv, input)
-     if err != nil {
-          return inputHandlerOutputDTO.InputDTO{}, err
-     }
-     return inputCreated, nil
+	inputCreated, err := ciu.InputHandlerAPIClient.CreateInput(service, source, contextEnv, input)
+	if err != nil {
+		return inputHandlerOutputDTO.InputDTO{}, err
+	}
+	return inputCreated, nil
 }

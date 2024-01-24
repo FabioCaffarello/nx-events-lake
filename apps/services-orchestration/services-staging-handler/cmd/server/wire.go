@@ -21,6 +21,13 @@ var setProcessingJobDependenciesRepositoryDependency = wire.NewSet(
 		new(*database.ProcessingJobDependenciesRepository),
 	),
 )
+var setProcessingGraphRepositoryDependency = wire.NewSet(
+	database.NewProcessingGaphRepository,
+	wire.Bind(
+		new(entity.ProcessingGraphInterface),
+		new(*database.ProcessingGraphRepository),
+	),
+)
 
 var setProcessingJobDependenciesCreatedEvent = wire.NewSet(
 	event.NewProcessingJobDependenciesCreated,
@@ -34,6 +41,14 @@ func NewWebProcessingJobDependenciesHandler(client *mongo.Client, eventDispatche
 		webHandler.NewWebProcessingJobDependenciesHandler,
 	)
 	return &webHandler.WebProcessingJobDependenciesHandler{}
+}
+
+func NewWebProcessingGraphsHandler(client *mongo.Client, database string) *webHandler.WebProcessingGraphHandler {
+	wire.Build(
+		setProcessingGraphRepositoryDependency,
+		webHandler.NewWebProcessingGraphHandler,
+	)
+	return &webHandler.WebProcessingGraphHandler{}
 }
 
 func NewHealthzHandler() *webHandler.WebHealthzHandler {
