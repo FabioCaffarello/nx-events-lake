@@ -22,6 +22,21 @@ class AsyncPySchemaHandlerClient:
         self.__period = 60
         self.client = RateLimitedAsyncHttpClient(base_url, self.__max_calls, self.__period)
 
+    async def create(self, schema: SchemaDTO) -> SchemaDTO:
+        """
+        Create a schema.
+
+        Args:
+            schema (SchemaDTO): The schema to create.
+
+        Returns:
+            SchemaDTO: The created schema in the form of a data class.
+
+        """
+        endpoint = "/schemas"
+        result = await self.client.make_request("POST", endpoint, schema)
+        return serialize_to_dataclass(result, SchemaDTO)
+
     async def list_one_schema_by_service_n_source_n_schema_type(self, service_name: str, source_name: str, schema_type: str) -> SchemaDTO:
         """
         Retrieve a specific schema by service name, source name, and schema type.

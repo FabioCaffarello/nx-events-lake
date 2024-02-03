@@ -25,4 +25,3 @@ class MetadataDTO:
     context: str = field(metadata={"json_name": "context"})
     processing_timestamp: str = field(metadata={"json_name": "processing_timestamp"})
     job_frequency: str = field(metadata={"json_name": "job_frequency"})
-    job_config_id: str = field(metadata={"json_name": "job_config_id"})

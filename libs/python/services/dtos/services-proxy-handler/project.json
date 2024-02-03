@@ -1,0 +1,68 @@
+{
+  "name": "python-services-dtos-services-proxy-handler",
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/python/services/dtos/services-proxy-handler/dto_proxy_handler",
+  "targets": {
+    "lock": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry lock --no-update",
+        "cwd": "libs/python/services/dtos/services-proxy-handler"
+      }
+    },
+    "add": {
+      "executor": "@nxlv/python:add",
+      "options": {}
+    },
+    "update": {
+      "executor": "@nxlv/python:update",
+      "options": {}
+    },
+    "remove": {
+      "executor": "@nxlv/python:remove",
+      "options": {}
+    },
+    "build": {
+      "executor": "@nxlv/python:build",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "outputPath": "libs/python/services/dtos/services-proxy-handler/dist",
+        "publish": false,
+        "lockedVersions": true,
+        "bundleLocalDependencies": true
+      }
+    },
+    "install": {
+      "executor": "@nxlv/python:install",
+      "options": {
+        "silent": false,
+        "args": "",
+        "cacheDir": ".cache/pypoetry",
+        "verbose": false,
+        "debug": false
+      }
+    },
+    "lint": {
+      "executor": "@nxlv/python:flake8",
+      "outputs": [
+        "{workspaceRoot}/reports/libs/python/services/dtos/services-proxy-handler/pylint.txt"
+      ],
+      "options": {
+        "outputFile": "reports/libs/python/services/dtos/services-proxy-handler/pylint.txt"
+      }
+    },
+    "test": {
+      "executor": "@nxlv/python:run-commands",
+      "outputs": [
+        "{workspaceRoot}/reports/libs/python/services/dtos/services-proxy-handler/unittests",
+        "{workspaceRoot}/coverage/libs/python/services/dtos/services-proxy-handler"
+      ],
+      "options": {
+        "command": "poetry run pytest tests/",
+        "cwd": "libs/python/services/dtos/services-proxy-handler"
+      }
+    }
+  },
+  "tags": ["lang:python", "scope:service-utils"]
+}

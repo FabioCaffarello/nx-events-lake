@@ -3,4 +3,4 @@
 
 def hello():
     """Return a friendly greeting."""
-    return "Hello python-services-modules-treatment-python-core"
+    return "Hello process-input-scheduler-handler"

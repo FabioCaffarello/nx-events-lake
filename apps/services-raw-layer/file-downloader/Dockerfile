@@ -1,9 +1,8 @@
-FROM python:3.10-slim-buster
+FROM python:3.10-slim-buster as devimage
 
-USER root
-
-WORKDIR /app
-
+ARG USER
+ARG USER_ID
+ARG GROUP_ID
 ARG ENVIRONMENT
 ENV ENVIRONMENT=$ENVIRONMENT
 
@@ -11,8 +10,27 @@ COPY dist/*.tar.gz .
 RUN pip install *.tar.gz
 RUN rm -rf *.tar.gz
 
-COPY envs/.env.$ENVIRONMENT .
-COPY file_downloader/ file_downloader/
+COPY envs/.env.${ENVIRONMENT} /app/.env.${ENVIRONMENT}
+COPY file_downloader/ /app/file_downloader/
+COPY tests/ /app/tests/
+COPY hack/ /app/hack/
 
-ENTRYPOINT ["python", "file_downloader/main.py"]
+RUN chmod +x /app/hack/check-integration.sh
 
+RUN groupadd -f -g ${GROUP_ID} ${USER} && \
+    useradd -m -g ${GROUP_ID} -u ${USER_ID} ${USER} || echo "User already exists"
+
+USER ${USER_ID}:${GROUP_ID}
+
+WORKDIR /app
+
+
+ENTRYPOINT ["python", "/app/file_downloader/main.py"]
+
+
+FROM devimage as prodimage
+
+COPY --from=devimage /app/.env.${ENVIRONMENT} /app/.env.${ENVIRONMENT}
+COPY --from=devimage /app/file_downloader/ /app/file_downloader/
+
+ENTRYPOINT ["python", "/app/file_downloader/main.py"]

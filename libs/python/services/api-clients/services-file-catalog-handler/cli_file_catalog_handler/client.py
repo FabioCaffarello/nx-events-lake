@@ -10,6 +10,11 @@ class AsyncPyFileCatalogHandlerClient:
         self.__period = 60
         self.client = RateLimitedAsyncHttpClient(base_url, self.__max_calls, self.__period)
 
+    async def create(self, data: dict):
+        endpoint = "/file-catalog"
+        result = await self.client.make_request("POST", endpoint, data=data)
+        return serialize_to_dataclass(result, FileCatalogDTO)
+
     async def list_one_file_catalog_by_id(self, file_catalog_id: str):
         endpoint = "/file-catalog/{file_catalog_id}".format(
             file_catalog_id=file_catalog_id

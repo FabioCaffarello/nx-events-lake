@@ -1,17 +1,21 @@
-from typing import Tuple
+from typing import Tuple, Union
 
 import requests
 import warlock
 from dto_config_handler.output import ConfigDTO
 from dto_events_handler.shared import StatusDTO
+from mod_base_job.http_gateway import BaseJob
 from pylog.log import setup_logging
+from dto_jobs_handler.output import JobParamsHttpGateway
+from py_external_request.factory_request import create_request
 from pyminio.client import minio_client
+import mod_debug.debug as debug
 
 
 logger = setup_logging(__name__)
 
 
-class Job:
+class Job(BaseJob):
     """
     Represents a job that makes HTTP requests and handles the response.
 
@@ -47,23 +51,17 @@ class Job:
 
     """
 
-    def __init__(self, config: ConfigDTO, input_data: type[warlock.model.Model]) -> None:
+    def __init__(self, config: ConfigDTO, input_data: type[warlock.model.Model],  dbg: Union[debug.DisabledDebug, debug.EnabledDebug]) -> None:
         self._config = config
         self._source = config.source
         self._context = config.context
         self._input_data = input_data
-        self._job_url = config.job_parameters["url"]
         self._partition = input_data.partition
-        self._target_endpoint = self._get_endpoint()
+        self._target_endpoint = ""
+        super().__init__(service=config.service, source=config.source, context_env=config.context, dbg=dbg)
 
-    def _get_endpoint(self) -> str:
-        """
-        Generates the target endpoint URL.
-
-        Returns:
-            str: The target endpoint URL.
-        """
-        return self._job_url.format(self._partition)
+    def _get_endpoint(self, job_params: JobParamsHttpGateway) -> str:
+        return job_params.base_url.format(self._partition)
 
     def _get_bucket_name(self) -> str:
         """
@@ -92,7 +90,7 @@ class Job:
             detail=response.reason,
         )
 
-    def make_request(self) -> requests.Response:
+    def make_request(self, job_params: JobParamsHttpGateway) -> requests.Response:
         """
         Makes an HTTP GET request to the target endpoint.
 
@@ -100,18 +98,10 @@ class Job:
             requests.Response: The HTTP response.
         """
         logger.info(f"endpoint: {self._target_endpoint}")
-        headers = {
-            # Add your headers here
-            "Sec-Fetch-Site": "same-origin",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:92.0) Gecko/20100101 Firefox/92.0",
-        }
-        return requests.get(
-            self._target_endpoint,
+        return create_request(
+            url=self._target_endpoint,
             verify=False,
-            headers=headers,
+            headers=job_params.headers,
             timeout=10*60,
         )
 
@@ -123,7 +113,10 @@ class Job:
             tuple: A tuple containing result data and status information.
         """
         logger.info(f"Job triggered with input: {self._input_data}")
-        response = self.make_request()
+        job_params = await self.get_jobs_params()
+        self._target_endpoint = self._get_endpoint(job_params)
+        response = self.make_request(job_params)
+        self.debug_response("file-source.zip", response.content)
         minio = minio_client()
         uri = minio.upload_bytes(self._get_bucket_name(), f"{self._partition}/{self._source}.zip", response.content)
         logger.info(f"File storage uri: {uri}")

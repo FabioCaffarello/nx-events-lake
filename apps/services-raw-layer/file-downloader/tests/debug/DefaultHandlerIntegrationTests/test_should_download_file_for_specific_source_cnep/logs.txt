@@ -1,0 +1,4 @@
+{"levelname": "INFO", "filename": "main.py", "message": "Service name: file-downloader"}
+{"levelname": "INFO", "filename": "debug.py", "message": "Creating debug enabled storage at: /app/tests/debug/DefaultHandlerIntegrationTests/test_should_download_file_for_specific_source_cnep"}
+{"levelname": "INFO", "filename": "main.py", "message": "Creating consumer for config: file-downloader-cnep"}
+{"levelname": "INFO", "filename": "main.py", "message": "Creating consumer for config: file-downloader-ceaf"}

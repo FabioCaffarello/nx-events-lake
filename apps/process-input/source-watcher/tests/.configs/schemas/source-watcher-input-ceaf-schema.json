@@ -1,0 +1,33 @@
+{
+    "schema_type": "service-input",
+    "service": "source-watcher",
+    "source": "ceaf",
+    "context": "br",
+    "json_schema": {
+        "type": "object",
+        "properties": {
+            "reference": {
+                "type": "object",
+                "properties": {
+                    "year": {
+                        "type": "integer"
+                    },
+                    "month": {
+                        "type": "integer"
+                    },
+                    "day": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "year",
+                    "month",
+                    "day"
+                ]
+            }
+        },
+        "required": [
+            "reference"
+        ]
+    }
+}

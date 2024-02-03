@@ -1,0 +1,21 @@
+{
+    "schema_type": "service-output",
+    "service": "file-downloader",
+    "source": "cnep",
+    "context": "br",
+    "json_schema": {
+        "type": "object",
+        "properties": {
+            "documentUri": {
+                "type": "string"
+            },
+            "partition": {
+                "type": "string"
+            }
+        },
+        "required": [
+            "documentUri",
+            "partition"
+        ]
+    }
+}

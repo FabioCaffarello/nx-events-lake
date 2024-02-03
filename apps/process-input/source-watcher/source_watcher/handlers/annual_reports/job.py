@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List, Tuple
 import grequests
 import requests
+from py_external_request.factory_request import create_request
 import warlock
 from dto_config_handler.output import ConfigDTO
 from dto_events_handler.shared import StatusDTO
@@ -137,7 +138,7 @@ class Job:
             requests.Response: The HTTP response.
         """
         logger.info(f"endpoint: {self._target_endpoint}")
-        return requests.get(
+        return create_request(
             url=self._target_endpoint,
             verify=False,
             timeout=10*60,

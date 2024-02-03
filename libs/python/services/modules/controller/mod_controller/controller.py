@@ -2,7 +2,7 @@ import asyncio
 import json
 import time
 from datetime import datetime
-from typing import Dict
+from typing import Dict, Union
 
 import warlock
 from cli_schema_handler.client import async_py_schema_handler_client
@@ -13,6 +13,7 @@ from dto_input_handler.output import InputDTO
 from pylog.log import setup_logging
 import pywarlock.serializer
 from pyrabbitmq.consumer import RabbitMQConsumer
+import mod_debug.debug as debug
 from pyserializer.serializer import serialize_to_dataclass, serialize_to_json
 
 logger = setup_logging(__name__)
@@ -59,7 +60,7 @@ class Controller:
         async job_dispatcher(self, event_input, job_handler) -> ServiceFeedbackDTO:
             Dispatch a job to process the event input data and collect the results.
     """
-    def __init__(self, config: ConfigDTO, queue_active_jobs: asyncio.Queue):
+    def __init__(self, config: ConfigDTO, queue_active_jobs: asyncio.Queue, dbg: Union[debug.EnabledDebug, debug.DisabledDebug]):
         """
         Initializes a Controller instance with the provided configuration and active jobs queue.
 
@@ -70,6 +71,7 @@ class Controller:
         Returns:
             None
         """
+        self._dbg = dbg
         self._config = config
         self._config_id = config.id
         self._service_name = config.service
@@ -157,7 +159,6 @@ class Controller:
             source=self._config.source,
             processing_timestamp=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
             job_frequency=self._config.frequency,
-            job_config_id=self._config.config_id,
         )
 
     async def job_dispatcher(self, event_input, job_handler: callable) -> ServiceFeedbackDTO:
@@ -173,7 +174,7 @@ class Controller:
 
         """
         await self._queue_active_jobs.put(1)
-        job_data, status_data = await job_handler(self._config).run(event_input)
+        job_data, status_data = await job_handler(self._config, self._dbg).run(event_input)
         return ServiceFeedbackDTO(
             data=job_data,
             metadata=self._get_metadata(),
@@ -203,7 +204,7 @@ class EventController(Controller):
                 message: The incoming event message.
                 job_handler (callable): The job handler class responsible for processing the data.
     """
-    def __init__(self, config: ConfigDTO, rabbitmq_service: RabbitMQConsumer, queue_active_jobs: asyncio.Queue, job_handler: callable) -> None:
+    def __init__(self, config: ConfigDTO, rabbitmq_service: RabbitMQConsumer, queue_active_jobs: asyncio.Queue, job_handler: callable, dbg: Union[debug.EnabledDebug, debug.DisabledDebug]):
         """
         Initializes an EventController instance with the provided configuration, RabbitMQ service, and active jobs queue.
 
@@ -217,7 +218,7 @@ class EventController(Controller):
         """
         self._rabbitmq_service = rabbitmq_service
         self._job_handler = job_handler
-        super().__init__(config, queue_active_jobs)
+        super().__init__(config, queue_active_jobs, dbg)
 
     async def run(self, message) -> None:
         """

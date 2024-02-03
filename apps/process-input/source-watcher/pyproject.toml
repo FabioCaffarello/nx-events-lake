@@ -71,6 +71,34 @@ readme = "README.md"
     path = "../../../libs/python/services/modules/jobs"
     develop = true
 
+    [tool.poetry.dependencies.shared-py-external-request]
+    path = "../../../libs/python/shared/py-external-request"
+    develop = true
+
+    [tool.poetry.dependencies.services-proxy-handler-client]
+    path = "../../../libs/python/services/api-clients/services-proxy-handler"
+    develop = true
+
+    [tool.poetry.dependencies.services-jobs-handler-dto]
+    path = "../../../libs/python/services/dtos/services-jobs-handler"
+    develop = true
+
+    [tool.poetry.dependencies.besa-job-module]
+    path = "../../../libs/python/services/modules/base-job"
+    develop = true
+
+    [tool.poetry.dependencies.shared-py-argparse]
+    path = "../../../libs/python/shared/py-argparse"
+    develop = true
+
+    [tool.poetry.dependencies.setup-bedub]
+    path = "../../../libs/python/services/setup/debug"
+    develop = true
+
+[tool.poetry.dependencies.setup-testlib-service-fixtures]
+path = "../../../libs/python/services/setup/testlib/fixtures/service-fixture"
+develop = true
+
 [build-system]
 requires = [ "poetry-core" ]
 build-backend = "poetry.core.masonry.api"

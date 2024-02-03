@@ -74,7 +74,29 @@
       "executor": "nx:run-commands",
       "dependsOn": ["build"],
       "options": {
-        "command": "docker build -t fabiocaffarello/spark-batch-bronze:latest --build-arg ENVIRONMENT={args.env} -f ./Dockerfile .",
+        "command": "docker build --target {args.image} -t fabiocaffarello/spark-batch-bronze:latest --build-arg ENVIRONMENT={args.env} --build-arg USER={args.user} --build-arg USER_ID={args.user_id} --build-arg GROUP_ID={args.group_id} -f ./Dockerfile .",
+        "cwd": "apps/services-bronze-layer/spark-batch"
+      }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose up -d",
+        "cwd": "apps/services-bronze-layer/spark-batch"
+      }
+    },
+    "stop-service": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose stop {args.service}",
+        "cwd": "apps/services-bronze-layer/spark-batch"
+      }
+    },
+    "check-integration": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["start"],
+      "options": {
+        "command": "docker-compose run --rm --entrypoint '/app/hack/check-integration.sh {args.user_id} {args.group_id}' spark-batch-bronze",
         "cwd": "apps/services-bronze-layer/spark-batch"
       }
     },

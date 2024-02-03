@@ -1,4 +1,5 @@
 // go:build wireinject
+//go:build wireinject
 // +build wireinject
 
 package main
@@ -29,8 +30,8 @@ func NewWebServiceOutputHandler(client *mongo.Client, database string) *webHandl
 }
 
 func NewHealthzHandler() *webHandler.WebHealthzHandler {
-    wire.Build(
-         webHandler.NewWebHealthzHandler,
-    )
-    return &webHandler.WebHealthzHandler{}
+	wire.Build(
+		webHandler.NewWebHealthzHandler,
+	)
+	return &webHandler.WebHealthzHandler{}
 }

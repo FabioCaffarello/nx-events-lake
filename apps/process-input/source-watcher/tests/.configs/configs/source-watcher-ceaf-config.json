@@ -1,0 +1,17 @@
+{
+  "id": "source-watcher-ceaf",
+  "name": "ceaf",
+  "active": true,
+  "frequency": "daily",
+  "service": "source-watcher",
+  "source": "ceaf",
+  "context": "br",
+  "input_method": "",
+  "output_method": "event",
+  "service_parameters": {
+    "job_handler": "default"
+  },
+  "job_parameters": {
+    "url": "https://portaldatransparencia.gov.br/download-de-dados/ceaf"
+  }
+}

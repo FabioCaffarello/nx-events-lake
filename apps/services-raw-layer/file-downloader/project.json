@@ -69,7 +69,29 @@
       "executor": "nx:run-commands",
       "dependsOn": ["build"],
       "options": {
-        "command": "docker build -t fabiocaffarello/file-downloader:latest --build-arg ENVIRONMENT={args.env} -f ./Dockerfile .",
+        "command": "docker build --target {args.image} -t fabiocaffarello/file-downloader:latest --build-arg ENVIRONMENT={args.env} --build-arg USER={args.user} --build-arg USER_ID={args.user_id} --build-arg GROUP_ID={args.group_id} -f ./Dockerfile .",
+        "cwd": "apps/services-raw-layer/file-downloader"
+      }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose up -d",
+        "cwd": "apps/services-raw-layer/file-downloader"
+      }
+    },
+    "stop-service": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose stop {args.service}",
+        "cwd": "apps/services-raw-layer/file-downloader"
+      }
+    },
+    "check-integration": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["start"],
+      "options": {
+        "command": "docker-compose run --rm --entrypoint '/app/hack/check-integration.sh {args.user_id} {args.group_id}' file-downloader",
         "cwd": "apps/services-raw-layer/file-downloader"
       }
     },

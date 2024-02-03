@@ -1,0 +1,17 @@
+{"levelname": "INFO", "filename": "main.py", "message": "Service name: file-downloader"}
+{"levelname": "INFO", "filename": "debug.py", "message": "Creating debug enabled storage at: /app/tests/debug/DefaultHandlerIntegrationTests/test_should_download_file_for_specific_source_ceaf"}
+{"levelname": "INFO", "filename": "main.py", "message": "Creating consumer for config: file-downloader-cnep"}
+{"levelname": "INFO", "filename": "main.py", "message": "Creating consumer for config: file-downloader-ceaf"}
+{"levelname": "INFO", "filename": "base.py", "message": "Published message to exchange 'services' with routing key 'input-processing'"}
+{"levelname": "INFO", "filename": "job_handler.py", "message": "[RUNNING JOB] - Config ID: file-downloader-ceaf - handler: default"}
+{"levelname": "INFO", "filename": "job.py", "message": "Job triggered with input: {'__test__': 'DefaultHandlerIntegrationTests.test_should_download_file_for_specific_source_ceaf', 'documentUri': 'http://minio:9000/process-input-br-source-ceaf/20240131.zip', 'partition': '20240131'}"}
+{"levelname": "INFO", "filename": "job.py", "message": "endpoint: https://portaldatransparencia.gov.br/download-de-dados/ceaf/20240131"}
+/usr/local/lib/python3.10/site-packages/urllib3/connectionpool.py:1103: InsecureRequestWarning: Unverified HTTPS request is being made to host 'portaldatransparencia.gov.br'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+{"levelname": "INFO", "filename": "debug.py", "message": "Writing file 1-file-source.zip to /app/tests/debug/DefaultHandlerIntegrationTests/test_should_download_file_for_specific_source_ceaf/responses/"}
+{"levelname": "INFO", "filename": "job.py", "message": "File storage uri: http://minio:9000/landing-br-source-ceaf/20240131/ceaf.zip"}
+{"levelname": "INFO", "filename": "job.py", "message": "Job result: {'documentUri': 'http://minio:9000/landing-br-source-ceaf/20240131/ceaf.zip', 'partition': '20240131'}"}
+{"levelname": "INFO", "filename": "controller.py", "message": "sleeping for 5 seconds..."}
+{"levelname": "INFO", "filename": "controller.py", "message": "Output: {\"data\": {\"result\": {\"documentUri\": \"http://minio:9000/landing-br-source-ceaf/20240131/ceaf.zip\", \"partition\": \"20240131\"}}, \"metadata\": {\"context\": \"br\", \"input\": {\"data\": {\"__test__\": \"DefaultHandlerIntegrationTests.test_should_download_file_for_specific_source_ceaf\", \"documentUri\": \"http://minio:9000/process-input-br-source-ceaf/20240131.zip\", \"partition\": \"20240131\"}, \"id\": \"c230738d01254cbfb4ceb801605d055c\", \"input_schema_id\": \"7986d0b5-9d1d-5a1b-bba3-a5416fbcea69\", \"processing_id\": \"c646a05e1f5a43d8a43992ef9e9418d7\", \"processing_timestamp\": \"2024-02-02T05:10:18.906859\"}, \"job_frequency\": \"daily\", \"processing_timestamp\": \"2024-02-02T05:10:24Z\", \"service\": \"file-downloader\", \"source\": \"ceaf\"}, \"status\": {\"code\": 403, \"detail\": \"Forbidden\"}}"}
+{"levelname": "INFO", "filename": "base.py", "message": "Published message to exchange 'services' with routing key 'feedback'"}
+{"levelname": "INFO", "filename": "controller.py", "message": "Published message to service"}

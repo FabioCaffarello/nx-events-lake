@@ -81,7 +81,33 @@ class BaseRabbitMQ:
         else:
             raise RuntimeError("Failed to connect to RabbitMQ after multiple retries")
 
+    async def purge_queue(self, queue_name: str) -> None:
+        """Purge a RabbitMQ queue.
 
+        Args:
+            queue_name (str): The name of the queue to purge.
+
+        Returns:
+            None
+
+        """
+        channel = await self.create_channel()
+        queue = await channel.declare_queue(queue_name, durable=True)
+        await queue.purge()
+
+    async def delete_queue(self, queue_name: str) -> None:
+        """Delete a RabbitMQ queue.
+
+        Args:
+            queue_name (str): The name of the queue to delete.
+
+        Returns:
+            None
+
+        """
+        channel = await self.create_channel()
+        queue = await channel.declare_queue(queue_name, durable=True)
+        await queue.delete()
 
     def on_connection_error(self, error: Exception) -> None:
         """Handle connection errors.

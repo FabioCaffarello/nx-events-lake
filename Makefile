@@ -67,9 +67,6 @@ run: image cleanup
 reload: start-service-setup
 	docker-compose up -d
 
-run-simple-pipe: start-service-setup start-service-orchestration
-	docker-compose up -d source-watcher file-downloader file-unzip
-
 logs:
 	docker logs -f $(service)
 
@@ -78,6 +75,7 @@ run-spark-stack:
 	docker-compose \
 	-f ./.docker/composer/docker-compose.core.yml \
 	-f ./.docker/composer/docker-compose.orchestration.yml \
+	-f ./.docker/composer/docker-compose.dependencies.yml \
 	-f ./.docker/composer/docker-compose.raw-layer.yml \
 	-f ./.docker/composer/docker-compose.bronze-layer.yml \
 	up -d
@@ -87,5 +85,13 @@ run-llm-stack:
 	-f ./.docker/composer/docker-compose.core.yml \
 	-f ./.docker/composer/docker-compose.orchestration.yml \
 	-f ./.docker/composer/docker-compose.raw-layer.yml \
+	-f ./.docker/composer/docker-compose.dependencies.yml \
 	-f ./.docker/composer/docker-compose.llm.yml \
+	up -d
+
+
+
+run-proxy:
+	docker-compose \
+	-f ./.docker/composer/docker-compose.core.yml \
 	up -d

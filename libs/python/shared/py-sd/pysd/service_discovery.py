@@ -31,7 +31,9 @@ class ServiceVars:
     fileCatalogHandler: str = "FILE_CATALOG_HANDLER"
     schemasHandler: str = "SCHEMA_HANDLER"
     jobsHandler: str = "JOBS_HANDLER"
+    proxyHandler: str = "PROXY_HANDLER"
     minio: str = "MINIO"
+    mongo: str = "MONGODB"
     services_rabbitmq_exchange: str = "services"
 
 
@@ -159,6 +161,30 @@ class ServiceDiscovery:
         endpoint = self._get_endpoint("JOBS_HANDLER_PORT_8000_TCP", service_name)
         if "localhost" in endpoint:
             endpoint = endpoint.replace("8000", "8007")
+        return endpoint
+
+    def services_proxy_handler_endpoint(self):
+        """
+        Gets the services proxy handler endpoint.
+
+        Returns:
+            str: The services proxy handler endpoint.
+        """
+        service_name = self._service_vars.proxyHandler
+        endpoint = self._get_endpoint("PROXY_HANDLER_PORT_8000_TCP", service_name)
+        if "localhost" in endpoint:
+            endpoint = endpoint.replace("8000", "8008")
+        return endpoint
+
+    def mongo_endpoint(self):
+        """
+        Gets the Mongo endpoint.
+
+        Returns:
+            str: The Minio endpoint.
+        """
+        service_name = self._service_vars.mongo
+        endpoint = self._get_endpoint("MONGODB_PORT_27017_TCP", service_name, protocol="mongodb")
         return endpoint
 
     def minio_endpoint(self):

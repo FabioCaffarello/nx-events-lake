@@ -1,18 +1,19 @@
 package configs
 
 import (
-  "fmt"
+	"fmt"
+
 	"github.com/spf13/viper"
 )
 
 type conf struct {
-	DBDriver                  string `mapstructure:"DB_DRIVER"`
-	DBPort                    string `mapstructure:"DB_PORT"`
-	DBHost                    string `mapstructure:"DB_HOST"`
-	DBUser                    string `mapstructure:"DB_USER"`
-	DBPassword                string `mapstructure:"DB_PASSWORD"`
-	DBName                    string `mapstructure:"DB_NAME"`
-	WebServerPort             string `mapstructure:"WEB_SERVER_PORT"`
+	DBDriver      string `mapstructure:"DB_DRIVER"`
+	DBPort        string `mapstructure:"DB_PORT"`
+	DBHost        string `mapstructure:"DB_HOST"`
+	DBUser        string `mapstructure:"DB_USER"`
+	DBPassword    string `mapstructure:"DB_PASSWORD"`
+	DBName        string `mapstructure:"DB_NAME"`
+	WebServerPort string `mapstructure:"WEB_SERVER_PORT"`
 }
 
 type Config *conf

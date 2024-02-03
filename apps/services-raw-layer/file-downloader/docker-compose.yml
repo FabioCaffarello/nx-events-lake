@@ -1,0 +1,143 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: /
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 2
+    networks:
+      - nx-file-downloader-network
+
+  rockmongo:
+    image: mongo-express
+    container_name: rockmongo
+    ports:
+      - 8082:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_PORT: 27017
+    depends_on:
+      - mongodb
+    networks:
+      - nx-file-downloader-network
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    networks:
+      - nx-file-downloader-network
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ROOT_USER: minio-root-user
+      MINIO_ROOT_PASSWORD: minio-root-password
+      MINIO_DOMAIN: storage
+      MINIO_REGION_NAME: us-east-1
+      MINIO_REGION: us-east-1
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://minio:9000/minio/health/live"]
+      interval: 10s
+      timeout: 1s
+      retries: 4
+    networks:
+      - nx-file-downloader-network
+
+  tor:
+    image: palnabarun/tor:latest
+    container_name: tor
+    ports:
+      - 9050:9050
+    restart: unless-stopped
+    networks:
+      - nx-file-downloader-network
+
+  config-handler:
+    image: fabiocaffarello/config-handler:latest
+    container_name: config-handler
+    ports:
+      - 8002:8000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://config-handler:8000/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+    networks:
+      - nx-file-downloader-network
+
+  schema-handler:
+    image: fabiocaffarello/schema-handler:latest
+    container_name: schema-handler
+    ports:
+      - 8003:8000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://schema-handler:8000/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+    networks:
+      - nx-file-downloader-network
+
+  jobs-handler:
+    image: fabiocaffarello/jobs-handler:latest
+    container_name: jobs-handler
+    ports:
+      - 8007:8000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://jobs-handler:8000/healthz"]
+      interval: 10s
+      timeout: 1s
+      retries: 4
+    networks:
+      - nx-file-downloader-network
+
+  file-downloader:
+    image: fabiocaffarello/file-downloader:latest
+    container_name: file-downloader
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      config-handler:
+        condition: service_healthy
+      schema-handler:
+        condition: service_healthy
+      jobs-handler:
+        condition: service_healthy
+    volumes:
+      - ./tests/debug:/app/tests/debug
+    networks:
+      - nx-file-downloader-network
+
+volumes:
+  minio_data:
+
+networks:
+  nx-file-downloader-network:
+    name: nx-file-downloader-network
+    driver: bridge

@@ -36,6 +36,18 @@ readme = "README.md"
     path = "../../../shared/py-log"
     develop = true
 
+    [tool.poetry.dependencies.services-jobs-handler-client]
+    path = "../../api-clients/services-jobs-handler"
+    develop = true
+
+    [tool.poetry.dependencies.services-jobs-handler-dto]
+    path = "../../dtos/services-jobs-handler"
+    develop = true
+
+    [tool.poetry.dependencies.setup-bedub]
+    path = "../../setup/debug"
+    develop = true
+
 [build-system]
 requires = [ "poetry-core" ]
 build-backend = "poetry.core.masonry.api"

@@ -5,6 +5,7 @@ import warlock
 from dto_config_handler.output import ConfigDTO
 from dto_events_handler.shared import StatusDTO
 from pylog.log import setup_logging
+import mod_debug.debug as debug
 
 logger = setup_logging(__name__)
 
@@ -39,7 +40,8 @@ class JobHandler:
 
     """
 
-    def __init__(self, config: ConfigDTO) -> None:
+    def __init__(self, config: ConfigDTO, dbg: Union[debug.EnabledDebug, debug.DisabledDebug]):
+        self._dbg = dbg
         self._config = config
         self._job_handler = config.service_parameters["job_handler"]
         self._config_id = config.id
@@ -80,5 +82,5 @@ class JobHandler:
             tuple: A tuple containing job_data and job_status.
         """
         logger.info(f"[RUNNING JOB] - Config ID: {self._config_id} - handler: {self._job_handler}")
-        job_data, job_status = await self._module.Job(self._config, source_input).run()
+        job_data, job_status = await self._module.Job(self._config, source_input, self._dbg).run()
         return self._apply_result_mask(job_data), job_status

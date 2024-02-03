@@ -24,6 +24,7 @@ readme = "README.md"
   python = ">=3.9,<4.0"
   warlock = "^2.0.1"
   requests = "^2.31.0"
+  pytest = "7.3.1"
 
     [tool.poetry.dependencies.shared-py-dotenv]
     path = "../../../libs/python/shared/py-dotenv"
@@ -31,6 +32,10 @@ readme = "README.md"
 
     [tool.poetry.dependencies.shared-py-log]
     path = "../../../libs/python/shared/py-log"
+    develop = true
+
+    [tool.poetry.dependencies.shared-py-proxy]
+    path = "../../../libs/python/shared/py-proxy"
     develop = true
 
     [tool.poetry.dependencies.shared-py-sd]
@@ -72,6 +77,34 @@ readme = "README.md"
     [tool.poetry.dependencies.jobs-module]
     path = "../../../libs/python/services/modules/jobs"
     develop = true
+
+    [tool.poetry.dependencies.shared-py-external-request]
+    path = "../../../libs/python/shared/py-external-request"
+    develop = true
+
+    [tool.poetry.dependencies.services-proxy-handler-client]
+    path = "../../../libs/python/services/api-clients/services-proxy-handler"
+    develop = true
+
+    [tool.poetry.dependencies.services-jobs-handler-dto]
+    path = "../../../libs/python/services/dtos/services-jobs-handler"
+    develop = true
+
+    [tool.poetry.dependencies.besa-job-module]
+    path = "../../../libs/python/services/modules/base-job"
+    develop = true
+
+    [tool.poetry.dependencies.shared-py-argparse]
+    path = "../../../libs/python/shared/py-argparse"
+    develop = true
+
+    [tool.poetry.dependencies.setup-bedub]
+    path = "../../../libs/python/services/setup/debug"
+    develop = true
+
+[tool.poetry.dependencies.setup-testlib-service-fixtures]
+path = "../../../libs/python/services/setup/testlib/fixtures/service-fixture"
+develop = true
 
 [build-system]
 requires = [ "poetry-core" ]

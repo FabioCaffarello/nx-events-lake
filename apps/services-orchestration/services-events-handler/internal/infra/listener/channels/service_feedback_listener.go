@@ -106,6 +106,8 @@ func (l *ServiceFeedbackListener) Handle(msg amqp.Delivery) error {
 			if err != nil {
 				log.Println(err)
 			}
+            // TODO: Consider batch control
+            // // multiple files from the same source
 			if shouldRun {
 				depJobConfigId := getConfigId(dependentJob.Service, dependentJob.Source)
 				depJobConfig, err := findOneJobConfigById.Execute(depJobConfigId)
@@ -116,7 +118,6 @@ func (l *ServiceFeedbackListener) Handle(msg amqp.Delivery) error {
 				if err != nil {
 					log.Println(err)
 				}
-
 
 				for _, inputDTO := range inputDTOs {
 					inputDep, err := createInputUseCase.Execute(dependentJob.Service, dependentJob.Source, dependentJob.Context, inputDTO)

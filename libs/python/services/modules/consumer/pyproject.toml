@@ -39,6 +39,10 @@ readme = "README.md"
     path = "../../dtos/services-config-handler"
     develop = true
 
+    [tool.poetry.dependencies.setup-bedub]
+    path = "../../setup/debug"
+    develop = true
+
 [build-system]
 requires = [ "poetry-core" ]
 build-backend = "poetry.core.masonry.api"

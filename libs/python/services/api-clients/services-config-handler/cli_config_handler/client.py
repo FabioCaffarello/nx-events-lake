@@ -23,7 +23,7 @@ class AsyncPyConfigHandlerClient:
         self.__period = 60
         self.client = RateLimitedAsyncHttpClient(base_url, self.__max_calls, self.__period)
 
-    async def create_config(self, data: dict) -> ConfigDTO:
+    async def create(self, data: dict) -> ConfigDTO:
         """
         Create a new configuration using the provided data.
 

@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  tor:
+    image: palnabarun/tor:latest
+    container_name: tor
+    restart: always
+    ports:
+      - 9050:9050
+    networks:
+      - nx-events-lake-network
+
+  # proxy-handler:
+  #   image: fabiocaffarello/proxy-handler:latest
+  #   container_name: proxy-handler
+  #   ports:
+  #     - 8008:8000
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://proxy-handler:8008/healthz"]
+  #     interval: 10s
+  #     timeout: 2s
+  #     retries: 3
+  #   networks:
+  #     - nx-events-lake-network
+
+networks:
+  nx-events-lake-network:
+    name: nx-events-lake-network
+    driver: bridge

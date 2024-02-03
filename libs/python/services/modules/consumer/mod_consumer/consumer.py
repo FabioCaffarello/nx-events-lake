@@ -1,9 +1,11 @@
 import asyncio
+from typing import Union
 
 from dto_config_handler.output import ConfigDTO
 from pylog.log import setup_logging
 from pyrabbitmq.consumer import RabbitMQConsumer
 from pysd.service_discovery import ServiceDiscovery
+import mod_debug.debug as debug
 
 logger = setup_logging(__name__)
 
@@ -67,7 +69,7 @@ class Consumer:
 
         async _run(self, controller: callable) -> None:
     """
-    def __init__(self, sd: ServiceDiscovery, rabbitmq_service: RabbitMQConsumer, config: ConfigDTO, queue_active_jobs: asyncio.Queue):
+    def __init__(self, sd: ServiceDiscovery, rabbitmq_service: RabbitMQConsumer, config: ConfigDTO, queue_active_jobs: asyncio.Queue, dbg: Union[debug.EnabledDebug, debug.DisabledDebug]):
         """
         Initializes a Consumer instance with the provided ServiceDiscovery, RabbitMQConsumer, configuration, and active jobs queue.
 
@@ -83,6 +85,7 @@ class Consumer:
         Raises:
             None
         """
+        self._dbg = dbg
         self._config = config
         self._rabbitmq_service = rabbitmq_service
         self._queue_active_jobs = queue_active_jobs
@@ -105,7 +108,7 @@ class Consumer:
             self._exchange_name,
             self._routing_key
         )
-        await self._rabbitmq_service.listen(queue, controller(self._config, self._rabbitmq_service, self._queue_active_jobs, job_handler).run)
+        await self._rabbitmq_service.listen(queue, controller(self._config, self._rabbitmq_service, self._queue_active_jobs, job_handler, self._dbg).run)
 
 
 class EventConsumer(Consumer):
@@ -120,8 +123,8 @@ class EventConsumer(Consumer):
 
     """
 
-    def __init__(self, sd: ServiceDiscovery, rabbitmq_service: RabbitMQConsumer, config: ConfigDTO, queue_active_jobs: asyncio.Queue):
-        super().__init__(sd, rabbitmq_service, config, queue_active_jobs)
+    def __init__(self, sd: ServiceDiscovery, rabbitmq_service: RabbitMQConsumer, config: ConfigDTO, queue_active_jobs: asyncio.Queue, dbg: Union[debug.EnabledDebug, debug.DisabledDebug]):
+        super().__init__(sd, rabbitmq_service, config, queue_active_jobs, dbg)
 
     async def run(self, controller: callable, job_handler: callable) -> None:
         """

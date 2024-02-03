@@ -1,7 +1,7 @@
 import asyncio
 import os
 import time
-from typing import List
+from typing import List, Union
 
 from config_loader.loader import fetch_configs
 from mod_consumer.consumer import EventConsumer
@@ -11,13 +11,16 @@ from pydotenv.loader import DotEnvLoader
 from pylog.log import setup_logging
 from pyrabbitmq.consumer import RabbitMQConsumer
 from pysd.service_discovery import ServiceDiscovery, new_from_env
+import pyargparse.argsparser as pyargparser
+import mod_debug.debug as debug
+
 
 logger = setup_logging(__name__, log_level="DEBUG")
 
 QUEUE_ACTIVE_JOBS = asyncio.Queue()
 ENVIRONMENT = os.getenv("ENVIRONMENT")
 
-async def create_consumers_channel(sd: ServiceDiscovery, service_name: str, context_env: str) -> List[asyncio.Task]:
+async def create_consumers_channel(sd: ServiceDiscovery, service_name: str, context_env: str, dbg: Union[debug.EnabledDebug, debug.DisabledDebug]) -> List[asyncio.Task]:
     """
     Create consumers for processing data from various configurations.
 
@@ -40,11 +43,28 @@ async def create_consumers_channel(sd: ServiceDiscovery, service_name: str, cont
             logger.info(f"Creating consumer for config: {config.id}")
             tasks.append(
                 asyncio.create_task(
-                    EventConsumer(sd, rabbitmq_service, config, QUEUE_ACTIVE_JOBS).run(EventController, JobHandler)
+                    EventConsumer(sd, rabbitmq_service, config, QUEUE_ACTIVE_JOBS, dbg).run(EventController, JobHandler)
                 )
             )
     return tasks
 
+
+def _parse_args():
+    parser = pyargparser.new("file-downloader args parser")
+    return parser.parse_args()
+
+
+def setup_debug_storage(args):
+    if args.enable_debug_storage:
+        os.environ["DEBUG_STORAGE_ENABLED"] = "True"
+        os.environ["DEBUG_STORAGE_DIR"] = args.debug_storage_dir
+
+
+def cast_string_to_boolean(input_string):
+    if input_string.lower() == "true":
+        return True
+    else:
+        return False
 
 async def main():
     """
@@ -58,8 +78,13 @@ async def main():
     context_env = envs.get_variable("CONTEXT_ENV")
     logger.info(f"Service name: {service_name}")
 
+    args = _parse_args()
+    setup_debug_storage(args)
+
+    dbg = debug.new(cast_string_to_boolean(envs.get_variable("DEBUG_STORAGE_ENABLED")), envs.get_variable("DEBUG_STORAGE_DIR"))
+
     sd = new_from_env()
-    tasks = await create_consumers_channel(sd, service_name, context_env)
+    tasks = await create_consumers_channel(sd, service_name, context_env, dbg)
 
     await asyncio.gather(*tasks)
 
